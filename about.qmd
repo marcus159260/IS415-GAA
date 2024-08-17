@@ -1,9 +1,5 @@
 ---
-title: "Aboutawdawd"
+title: "About"
 ---
 
-About this site
-
-```{r}
-1 + 1
-```
+About the website, you'll find stuff on IS415 - GAA.
