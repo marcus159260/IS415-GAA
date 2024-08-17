@@ -3,7 +3,3 @@ title: "IS415-GAA"
 ---
 
 Welcome to my **IS415 Geospatial Analytics and Applications** website. In this site, you will be able to view weekly learning, projects, and notes. Stay tuned :)
-
-<https://quarto.org>
-[Quarto](https://quarto.org)
-![Caption](elephant.png)
