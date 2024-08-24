@@ -53,7 +53,7 @@
     "href": "hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html#joining-data",
     "title": "Hands-on-Exercise 2: Thematic Mapping and GeoVisualisation with R",
     "section": "Joining data",
-    "text": "Joining data\n\nconvert PA and SZ to uppercase (toupper)\n\nbecause data in PA and SZ are in uppercase and lowercase, while data in mpsz (e.g SUBZONE_N and PLN_AREA_N) are in uppercase.\n\n\n    popdata2020 &lt;- popdata2020 %&gt;%\n      mutate_at(.vars = vars(PA, SZ), \n              .funs = list(toupper)) %&gt;%\n      filter(`ECONOMY ACTIVE` &gt; 0)\n\njoin attribute data (popdata2020) and geospatial data (mpsz) using left_join()\n\nusing common identifier: SUBZONE_N = SZ\n\n\n    mpsz_pop2020 &lt;- left_join(mpsz, popdata2020,\n                              by = c(\"SUBZONE_N\" = \"SZ\"))\n\n\nsave mpsz_pop2020 data as an r object (write_rds)\n\nwrite_rds(mpsz_pop2020, \"data/rds/mpszpop2020.rds\")\n\nawdawd"
+    "text": "Joining data\n\nconvert PA and SZ to uppercase (toupper)\n\nbecause data in PA and SZ are in uppercase and lowercase, while data in mpsz (e.g SUBZONE_N and PLN_AREA_N) are in uppercase.\n\n\n    popdata2020 &lt;- popdata2020 %&gt;%\n      mutate_at(.vars = vars(PA, SZ), \n              .funs = list(toupper)) %&gt;%\n      filter(`ECONOMY ACTIVE` &gt; 0)\n\njoin attribute data (popdata2020) and geospatial data (mpsz) using left_join()\n\nusing common identifier: SUBZONE_N = SZ\n\n\n    mpsz_pop2020 &lt;- left_join(mpsz, popdata2020,\n                              by = c(\"SUBZONE_N\" = \"SZ\"))\n\n\nsave mpsz_pop2020 data as an r object (write_rds)\n\nwrite_rds(mpsz_pop2020, \"data/rds/mpszpop2020.rds\")"
   },
   {
     "objectID": "hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html#plotting-choropleth-maps",
