@@ -1,6 +1,11 @@
 ---
 title: "Hands-on-Exercise 1"
 author: "Marcus Jaeson Yeo"
+date: "August 24, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
 ---
 
 # Getting Started
