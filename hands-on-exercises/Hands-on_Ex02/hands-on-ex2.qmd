@@ -154,6 +154,8 @@ write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 
 ## 
 
+awdjawodaw
+
 ## Plotting Choropleth maps
 
 -   using qtm()
