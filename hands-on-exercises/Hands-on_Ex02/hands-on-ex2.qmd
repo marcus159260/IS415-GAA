@@ -29,6 +29,8 @@ execute:
 
         -   used for?
 
+        -   refer: [Advantages and Disadvantages of Choropleth Maps](https://chatgpt.com/c/235bd54d-27d1-4c74-815d-3cebea7f11ed)
+
 -   **GeoVisualisation**
 
     -   Interacting and Interpreting geospatial data through visual representations
