@@ -151,8 +151,6 @@ save mpsz_pop2020 data as an r object (write_rds)
 write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 ```
 
-awdawd
-
 ## Plotting Choropleth maps
 
 -   using qtm()
