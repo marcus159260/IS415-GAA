@@ -1,6 +1,6 @@
 ---
-title: "in-class Exercise 1: Geospatial Data Science"
-author: "Marcus Jae"
+title: "In-Class Exercise 1: Geospatial Data Science"
+author: "Marcus Jaeson Yeo"
 date: "August 18, 2024"
 date-modified: "last-modified"
 execute: 
