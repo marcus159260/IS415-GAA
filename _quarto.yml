@@ -9,6 +9,12 @@ website:
         menu: 
           - text: "Hands-on Exercise 1"
             href: "hands-on-exercises/Hands-on_Ex01/hands-on-ex1.html"
+          - text: "Hands-on Exercise 2"
+            href: "hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html"
+      - text: "In-class Exercise"
+        menu: 
+          - text: "In-class Exercise 1"
+            href: "in-class_exercises/in_class_ex01.html"
     right: 
       - href: index.qmd
         text: Home
