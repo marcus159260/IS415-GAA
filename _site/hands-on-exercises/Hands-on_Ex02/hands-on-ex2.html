@@ -9,7 +9,7 @@
 <meta name="author" content="Marcus Jaeson Yeo">
 <meta name="dcterms.date" content="2024-08-24">
 
-<title>IS415-GAA - Hands-on-Exercise 2</title>
+<title>IS415-GAA - Hands-on-Exercise 2: Thematic Mapping and GeoVisualisation with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -138,14 +172,25 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#topics" id="toc-topics" class="nav-link active" data-scroll-target="#topics">Topics:</a></li>
+  <li><a href="#packages-used" id="toc-packages-used" class="nav-link" data-scroll-target="#packages-used">Packages used</a></li>
+  <li><a href="#install-packages" id="toc-install-packages" class="nav-link" data-scroll-target="#install-packages">Install packages</a></li>
+  <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data">Importing data</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a></li>
+  <li><a href="#joining-data" id="toc-joining-data" class="nav-link" data-scroll-target="#joining-data">Joining data</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-on-Exercise 2</h1>
+<h1 class="title">Hands-on-Exercise 2: Thematic Mapping and GeoVisualisation with R</h1>
 </div>
 
 
@@ -180,8 +225,253 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="topics" class="level2">
+<h2 class="anchored" data-anchor-id="topics">Topics:</h2>
+<ul>
+<li><p><strong>Thematic Mapping</strong></p>
+<ul>
+<li><p>Creating maps to: visualise properties of geographic features that are unable to be naturally seen</p></li>
+<li><p>Types of thematic maps:</p>
+<ul>
+<li><strong>Choropleth maps</strong> (shading areas based on data values)</li>
+</ul>
+<!-- -->
+<ul>
+<li><p><strong>Dot distribution maps</strong> (using dots to represent occurrences)</p></li>
+<li><p><strong>Isarithmic maps</strong> (using contour lines to represent continuous data)</p></li>
+<li><p><strong>Proportional symbol maps</strong> (using symbols of different sizes to represent data values)</p></li>
+</ul></li>
+<li><p>Focus is on Choropleth maps</p>
+<ul>
+<li><p>advantages</p></li>
+<li><p>disadvantages</p></li>
+<li><p>used for?</p></li>
+</ul></li>
+</ul></li>
+<li><p><strong>GeoVisualisation</strong></p>
+<ul>
+<li><p>Interacting and Interpreting geospatial data through visual representations</p></li>
+<li><p>Using dynamic and interactive visual tools to explore spatial data and patterns</p></li>
+<li><p>e.g:</p>
+<ul>
+<li><p>3D models</p></li>
+<li><p>Interactive maps</p></li>
+<li><p>Time-based animations</p></li>
+<li><p>VR environments (Virtual Reality)</p></li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="packages-used" class="level2">
+<h2 class="anchored" data-anchor-id="packages-used">Packages used</h2>
+<ul>
+<li><p><strong>*tmap</strong>: thematic maps</p></li>
+<li><p>tidyverse:</p>
+<ul>
+<li><p>readr: for importing delimited text files</p></li>
+<li><p>tidyr: tidying up data</p></li>
+<li><p>dplyr: for data wrangling</p></li>
+</ul></li>
+<li><p>sf: rendering simple features, handling geospatial data</p></li>
+</ul>
+</section>
+<section id="install-packages" class="level2">
+<h2 class="anchored" data-anchor-id="install-packages">Install packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># use this got timeout issue</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># options(timeout = 300)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tmap")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importing-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-data">Importing data</h2>
+<ul>
+<li><p>Geospatial Data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP"</span>, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">layer =</span> <span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `MP14_SUBZONE_WEB_PL' from data source 
+  `C:\marcus159260\IS415-GAA\hands-on-exercises\Hands-on_Ex02\data\geospatial\MasterPlan2014SubzoneBoundaryWebSHP' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 323 features and 15 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33
+Projected CRS: SVY21</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mpsz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 323 features and 15 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33
+Projected CRS: SVY21
+First 10 features:
+   OBJECTID SUBZONE_NO       SUBZONE_N SUBZONE_C CA_IND      PLN_AREA_N
+1         1          1    MARINA SOUTH    MSSZ01      Y    MARINA SOUTH
+2         2          1    PEARL'S HILL    OTSZ01      Y          OUTRAM
+3         3          3       BOAT QUAY    SRSZ03      Y SINGAPORE RIVER
+4         4          8  HENDERSON HILL    BMSZ08      N     BUKIT MERAH
+5         5          3         REDHILL    BMSZ03      N     BUKIT MERAH
+6         6          7  ALEXANDRA HILL    BMSZ07      N     BUKIT MERAH
+7         7          9   BUKIT HO SWEE    BMSZ09      N     BUKIT MERAH
+8         8          2     CLARKE QUAY    SRSZ02      Y SINGAPORE RIVER
+9         9         13 PASIR PANJANG 1    QTSZ13      N      QUEENSTOWN
+10       10          7       QUEENSWAY    QTSZ07      N      QUEENSTOWN
+   PLN_AREA_C       REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR
+1          MS CENTRAL REGION       CR 5ED7EB253F99252E 2014-12-05 31595.84
+2          OT CENTRAL REGION       CR 8C7149B9EB32EEFC 2014-12-05 28679.06
+3          SR CENTRAL REGION       CR C35FEFF02B13E0E5 2014-12-05 29654.96
+4          BM CENTRAL REGION       CR 3775D82C5DDBEFBD 2014-12-05 26782.83
+5          BM CENTRAL REGION       CR 85D9ABEF0A40678F 2014-12-05 26201.96
+6          BM CENTRAL REGION       CR 9D286521EF5E3B59 2014-12-05 25358.82
+7          BM CENTRAL REGION       CR 7839A8577144EFE2 2014-12-05 27680.06
+8          SR CENTRAL REGION       CR 48661DC0FBA09F7A 2014-12-05 29253.21
+9          QT CENTRAL REGION       CR 1F721290C421BFAB 2014-12-05 22077.34
+10         QT CENTRAL REGION       CR 3580D2AFFBEE914C 2014-12-05 24168.31
+     Y_ADDR SHAPE_Leng SHAPE_Area                       geometry
+1  29220.19   5267.381  1630379.3 MULTIPOLYGON (((31495.56 30...
+2  29782.05   3506.107   559816.2 MULTIPOLYGON (((29092.28 30...
+3  29974.66   1740.926   160807.5 MULTIPOLYGON (((29932.33 29...
+4  29933.77   3313.625   595428.9 MULTIPOLYGON (((27131.28 30...
+5  30005.70   2825.594   387429.4 MULTIPOLYGON (((26451.03 30...
+6  29991.38   4428.913  1030378.8 MULTIPOLYGON (((25899.7 297...
+7  30230.86   3275.312   551732.0 MULTIPOLYGON (((27746.95 30...
+8  30222.86   2208.619   290184.7 MULTIPOLYGON (((29351.26 29...
+9  29893.78   6571.323  1084792.3 MULTIPOLYGON (((20996.49 30...
+10 30104.18   3454.239   631644.3 MULTIPOLYGON (((24472.11 29...</code></pre>
+</div>
+</div></li>
+<li><p>Aspatial Data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>popdata <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/respopagesextod2011to2020.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 984656 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): PA, SZ, AG, Sex, TOD
+dbl (2): Pop, Time
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>popdata</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 984,656 × 7
+   PA         SZ                     AG     Sex     TOD                Pop  Time
+   &lt;chr&gt;      &lt;chr&gt;                  &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;dbl&gt;
+ 1 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   HDB 1- and 2-Ro…     0  2011
+ 2 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   HDB 3-Room Flats    10  2011
+ 3 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   HDB 4-Room Flats    30  2011
+ 4 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   HDB 5-Room and …    50  2011
+ 5 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   HUDC Flats (exc…     0  2011
+ 6 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   Landed Properti…     0  2011
+ 7 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   Condominiums an…    40  2011
+ 8 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males   Others               0  2011
+ 9 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Females HDB 1- and 2-Ro…     0  2011
+10 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Females HDB 3-Room Flats    10  2011
+# ℹ 984,646 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#see all columns</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span>(popdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>cols(
+  PA = col_character(),
+  SZ = col_character(),
+  AG = col_character(),
+  Sex = col_character(),
+  TOD = col_character(),
+  Pop = col_double(),
+  Time = col_double()
+)</code></pre>
+</div>
+</div></li>
+</ul>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
+<ul>
+<li><p>tidyr -&gt; pivot_wider()</p></li>
+<li><p>dplyr -&gt; mutate(), filter(), group_by(), select()</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>popdata2020 <span class="ot">&lt;-</span> popdata <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">==</span> <span class="dv">2020</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PA, SZ, AG) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">`</span><span class="at">POP</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">Pop</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()<span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from=</span>AG, </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from=</span>POP) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">YOUNG =</span> <span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>])</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>         <span class="sc">+</span><span class="fu">rowSums</span>(.[<span class="dv">12</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">rowSums</span>(.[<span class="dv">7</span><span class="sc">:</span><span class="dv">11</span>])<span class="sc">+</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">rowSums</span>(.[<span class="dv">13</span><span class="sc">:</span><span class="dv">15</span>]))<span class="sc">%&gt;%</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="st">`</span><span class="at">AGED</span><span class="st">`</span><span class="ot">=</span><span class="fu">rowSums</span>(.[<span class="dv">16</span><span class="sc">:</span><span class="dv">21</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span><span class="ot">=</span><span class="fu">rowSums</span>(.[<span class="dv">3</span><span class="sc">:</span><span class="dv">21</span>])) <span class="sc">%&gt;%</span>  </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span> <span class="ot">=</span> (<span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">AGED</span><span class="st">`</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">PA</span><span class="st">`</span>, <span class="st">`</span><span class="at">SZ</span><span class="st">`</span>, <span class="st">`</span><span class="at">YOUNG</span><span class="st">`</span>, </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>       <span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span>, <span class="st">`</span><span class="at">AGED</span><span class="st">`</span>, </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>       <span class="st">`</span><span class="at">TOTAL</span><span class="st">`</span>, <span class="st">`</span><span class="at">DEPENDENCY</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'PA', 'SZ'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>popdata2020</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 332 × 7
+   PA         SZ                   YOUNG `ECONOMY ACTIVE`  AGED TOTAL DEPENDENCY
+   &lt;chr&gt;      &lt;chr&gt;                &lt;dbl&gt;            &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+ 1 Ang Mo Kio Ang Mo Kio Town Cen…  1440             2610   760  4810      0.843
+ 2 Ang Mo Kio Cheng San             6640            15460  6050 28150      0.821
+ 3 Ang Mo Kio Chong Boon            6150            13950  6470 26570      0.905
+ 4 Ang Mo Kio Kebun Bahru           5540            12090  5120 22750      0.882
+ 5 Ang Mo Kio Sembawang Hills       2100             3410  1310  6820      1    
+ 6 Ang Mo Kio Shangri-La            3960             8420  3610 15990      0.899
+ 7 Ang Mo Kio Tagore                2220             4200  1530  7950      0.893
+ 8 Ang Mo Kio Townsville            4690            11450  5100 21240      0.855
+ 9 Ang Mo Kio Yio Chu Kang             0                0     0     0    NaN    
+10 Ang Mo Kio Yio Chu Kang East     1220             2300   750  4270      0.857
+# ℹ 322 more rows</code></pre>
+</div>
+</div></li>
+</ul>
+</section>
+<section id="joining-data" class="level2">
+<h2 class="anchored" data-anchor-id="joining-data">Joining data</h2>
+<ul>
+<li><p>convert PA and SZ to uppercase (toupper)</p>
+<ul>
+<li><p>because data in PA and SZ are in uppercase and lowercase, while data in mpsz (e.g SUBZONE_N and PLN_AREA_N) are in uppercase.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>popdata2020 <span class="ot">&lt;-</span> popdata2020 <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="at">.vars =</span> <span class="fu">vars</span>(PA, SZ), </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">.funs =</span> <span class="fu">list</span>(toupper)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span> <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul></li>
+<li><p>join attribute data (popdata2020) and geospatial data (mpsz) using left_join()</p>
+<ul>
+<li><p>using common identifier: SUBZONE_N = SZ</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>mpsz_pop2020 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(mpsz, popdata2020,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"SUBZONE_N"</span> <span class="ot">=</span> <span class="st">"SZ"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul></li>
+<li><p>save mpsz_pop2020 data as an r object (write_rds)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(mpsz_pop2020, <span class="st">"data/rds/mpszpop2020.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

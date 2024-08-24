@@ -18,13 +18,8 @@ execute:
     -   Types of thematic maps:
 
         -   **Choropleth maps** (shading areas based on data values)
-
-        <!-- -->
-
         -   **Dot distribution maps** (using dots to represent occurrences)
-
         -   **Isarithmic maps** (using contour lines to represent continuous data)
-
         -   **Proportional symbol maps** (using symbols of different sizes to represent data values)
 
     -   Focus is on Choropleth maps
@@ -68,11 +63,8 @@ execute:
 ## Install packages
 
 ```{r}
-pacman::p_load(tmap, sf, tidyverse)
+pacman::p_load(sf, tmap, tidyverse)
 
-# use this got timeout issue
-# options(timeout = 300)
-# install.packages("tmap")
 
 ```
 
@@ -138,24 +130,428 @@ pacman::p_load(tmap, sf, tidyverse)
 
     -   because data in PA and SZ are in uppercase and lowercase, while data in mpsz (e.g SUBZONE_N and PLN_AREA_N) are in uppercase.
 
-        ```{r}
+    ```{r}
         popdata2020 <- popdata2020 %>%
           mutate_at(.vars = vars(PA, SZ), 
                   .funs = list(toupper)) %>%
           filter(`ECONOMY ACTIVE` > 0)
-        ```
+    ```
 
 -   join attribute data (popdata2020) and geospatial data (mpsz) using left_join()
 
     -   using common identifier: SUBZONE_N = SZ
 
-        ```{r}
+    ```{r}
         mpsz_pop2020 <- left_join(mpsz, popdata2020,
                                   by = c("SUBZONE_N" = "SZ"))
-        ```
+    ```
 
--   save mpsz_pop2020 data as an r object (write_rds)
+save mpsz_pop2020 data as an r object (write_rds)
+
+```{r}
+write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+```
+
+## 
+
+## Plotting Choropleth maps
+
+-   using qtm()
+
+    -   to take note of:
+
+        -   *tmap_mode()* with “plot” option is used to produce a static map. For interactive mode, “view” option should be used.
+
+        -   *fill* argument is used to map the attribute (i.e. DEPENDENCY)
+
+    -   disadvantage of choropleth maps:
+
+        -   it makes aesthetics of individual layers harder to control. 
+
+```{r}
+tmap_mode("plot")
+qtm(mpsz_pop2020, 
+fill = "DEPENDENCY")
+```
+
+-   using tmap's elements (using palette: red)
 
     ```{r}
-    write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+    tm_shape(mpsz_pop2020)+
+      tm_fill("DEPENDENCY", 
+              style = "quantile", 
+              palette = "red",
+              title = "Dependency ratio") +
+      tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone",
+                main.title.position = "center",
+                main.title.size = 1.2,
+                legend.height = 0.45, 
+                legend.width = 0.35,
+                frame = TRUE) +
+      tm_borders(alpha = 0.5) +
+      tm_compass(type="8star", size = 2) +
+      tm_scale_bar() +
+      tm_grid(alpha =0.2) +
+      tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+                 position = c("left", "bottom"))
     ```
+
+-   drawing base map
+
+    -   using tm_shape(input data variable)
+
+    -   using tm_polygons() -\> draw the planning subzone polygons
+
+    ```{r}
+    tm_shape(mpsz_pop2020) +
+      tm_polygons()
+    ```
+
+    -   input DEPENDENCY into tm_polygons()
+
+    ```{r}
+        tm_shape(mpsz_pop2020) +
+          tm_polygons("DEPENDENCY")
+    ```
+
+-   tm_polygons()
+
+    -   default missing value: grey
+
+    -   default color scheme ("DEPENDENCY"): YlOrRd of ColorBrewer
+
+    -   default interval binning: pretty
+
+    -   wrapper of tm_fill() and tm_borders()
+
+        -   tm_borders()
+
+            -   lwd -\> border line width, default is 1
+
+            -   alpha -\> transparency in between 0 (totally transparent) and 1 (not transparent), default is 1
+
+            -   col -\> border color, default is black
+
+    ```{r}
+        tm_shape(mpsz_pop2020)+
+          tm_fill("DEPENDENCY") +
+          tm_borders(lwd = 0.1,  alpha = 1, col = "blue")
+    ```
+
+## Data Classification methods of tmap
+
+[important to take note:]{.underline}
+
+-   In R, the `+` operator should be at the end of a line rather than the beginning of the next line.
+
+-   wrong
+
+    -   `tm_shape(mpsz_pop2020) +    tm_fill("DEPENDENCY", n = 5, style = 'equal')`
+
+        `+   tm_borders(alpha = 0.5)`
+
+-   correct
+
+    -   `tm_shape(mpsz_pop2020) +`
+
+        `tm_fill("DEPENDENCY", n = 5, style = 'equal') +`
+
+        `tm_borders(alpha = 0.5)`
+
+[point of classification:]{.underline}
+
+-   is to take a large number of observations and group them into data ranges and classes
+
+-   tmap data classification methods:
+
+    -   pretty (default)
+
+    -   fixed
+
+    -   sd
+
+    -   equal
+
+    -   quantile
+
+    -   kmeans
+
+    -   hclust
+
+    -   bclust
+
+    -   jenks
+
+-   define classification method (use **style** argument of tm_fill())
+
+    -   DIstribution Comparison (quantile vs equal) -\> quantile is **more evenly distributed** than equal
+
+        -   quantile
+
+```{r}
+    tm_shape(mpsz_pop2020)+
+      tm_fill("DEPENDENCY",
+              n = 5,
+              style = "quantile") +
+      tm_borders(alpha = 0.5)
+```
+
+-   equal
+
+```{r}
+    tm_shape(mpsz_pop2020) + 
+      tm_fill("DEPENDENCY", n=5, style='equal') + 
+      tm_borders(alpha = 0.5) 
+```
+
+-   DIY
+
+    -   sd
+
+    ```{r}
+    tm_shape(mpsz_pop2020)+
+          tm_fill("DEPENDENCY",
+                  n = 5,
+                  style = "sd") +
+          tm_borders(alpha = 0.5)
+
+    ```
+
+## Applying Custom break to Choropleth Maps
+
+-   descriptive statistics
+
+    ```{r}
+
+    summary(mpsz_pop2020$DEPENDENCY)
+
+    ```
+
+-   setting break points (under tm_fill)
+
+    ```{r}
+    tm_shape(mpsz_pop2020)+
+      tm_fill("DEPENDENCY",
+              breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1.00)) +
+      tm_borders(alpha = 0.5)
+    ```
+
+## Color Scheme
+
+-   tmap uses color packages from RColorBrewer package
+
+-   palette argument (from tm_fill)
+
+    ```{r}
+    tm_shape(mpsz_pop2020)+
+      tm_fill("DEPENDENCY",
+              n = 6,
+              style = "quantile",
+              palette = "Blues") +
+      tm_borders(alpha = 0.5)
+
+    ```
+
+    -   reverse color shading add "-" prefix in front of color name
+
+        ```{r}
+
+        tm_shape(mpsz_pop2020)+
+          tm_fill("DEPENDENCY",
+                  style = "quantile",
+                  palette = "-Blues") +
+          tm_borders(alpha = 0.5)
+        ```
+
+## Map Layouts
+
+-   Map Legends (tm_layout)
+
+    ```{r}
+
+    tm_shape(mpsz_pop2020)+
+      tm_fill("DEPENDENCY", 
+              style = "jenks", 
+              palette = "Blues", 
+              legend.hist = TRUE, 
+              legend.is.portrait = TRUE,
+              legend.hist.z = 0.1) +
+      tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone \n(Jenks classification)",
+                main.title.position = "center",
+                main.title.size = 1,
+                legend.height = 0.45, 
+                legend.width = 0.35,
+                legend.outside = FALSE,
+                legend.position = c("right", "bottom"),
+                frame = FALSE) +
+      tm_borders(alpha = 0.5)
+    ```
+
+-   Map Style
+
+    -   default for tmap_style: white
+
+    ```{r}
+        tm_shape(mpsz_pop2020)+
+          tm_fill("DEPENDENCY", 
+                  style = "quantile", 
+                  palette = "-Greens") +
+          tm_borders(alpha = 0.5) +
+          tmap_style("classic")
+    ```
+
+-   Cartographic Furniture
+
+    -   tm_compass, tm_scale_bar, tm_grid, tm_credits
+
+    ```{r}
+
+        tm_shape(mpsz_pop2020)+
+          tm_fill("DEPENDENCY", 
+                  style = "quantile", 
+                  palette = "Blues",
+                  title = "No. of persons") +
+          tm_layout(main.title = "Distribution of Dependency Ratio \nby planning subzone",
+                    main.title.position = "center",
+                    main.title.size = 1.2,
+                    legend.height = 0.45, 
+                    legend.width = 0.35,
+                    frame = TRUE) +
+          tm_borders(alpha = 0.5) +
+          tm_compass(type="8star", size = 2) +
+          tm_scale_bar(width = 0.15) +
+          tm_grid(lwd = 0.1, alpha = 0.2) +
+          tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+                     position = c("left", "bottom"))
+
+    ```
+
+## Drawing Small Multiple Choropleth Maps
+
+-   **Small Multiple Maps,** also known as **facet maps,** composed of many maps side-by-side and can be stacked vertically.
+
+    -   purpose: to visualise how spatial relationships change with other variables, such as time.
+
+    -   3 ways to plot small multiple maps
+
+        1.  by assigning multiple values to at least one of the aesthetic arguments,
+
+        2.  by defining a group-by variable in *tm_facets()*
+
+        3.  by creating multiple stand-alone maps with *tmap_arrange()*
+
+1.  By assigning multiple values to at least one of the aesthetic arguments
+
+    -   define **ncols** in **tm_fill()**
+
+        -   "YOUNG" and "AGED"
+
+    ```{r}
+
+    tm_shape(mpsz_pop2020)+
+      tm_fill(c("YOUNG", "AGED"),
+              style = "equal", 
+              palette = "Blues") +
+      tm_layout(legend.position = c("right", "bottom")) +
+      tm_borders(alpha = 0.5) +
+      tmap_style("white")
+
+    ```
+
+    ```{r}
+    tm_shape(mpsz_pop2020)+ 
+      tm_polygons(c("DEPENDENCY","AGED"),
+              style = c("equal", "quantile"), 
+              palette = list("Blues","Greens")) +
+      tm_layout(legend.position = c("right", "bottom"))
+    ```
+
+2.  By defining a group-by variable in *tm_facets()*
+
+    ```{r}
+    tm_shape(mpsz_pop2020) +
+      tm_fill("DEPENDENCY",
+              style = "quantile",
+              palette = "Blues",
+              thres.poly = 0) + 
+      tm_facets(by="REGION_N", 
+                free.coords=TRUE, 
+                drop.shapes=TRUE) +
+      tm_layout(legend.show = FALSE,
+                title.position = c("center", "center"), 
+                title.size = 20) +
+      tm_borders(alpha = 0.5)
+
+    ```
+
+3.  by creating multiple stand-alone maps with *tmap_arrange()*
+
+    -   assigning variables to hold the tmap information
+
+    -   use tmap_arrange to plot both maps against each other
+
+    ```{r}
+    youngmap <- tm_shape(mpsz_pop2020)+ 
+      tm_polygons("YOUNG", 
+                  style = "quantile", 
+                  palette = "Blues")
+
+    agedmap <- tm_shape(mpsz_pop2020)+ 
+      tm_polygons("AGED", 
+                  style = "quantile", 
+                  palette = "Blues")
+
+    tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+    ```
+
+## Use Selection Function to map spatial objects meeting the selection criterion
+
+-   alternative to creating **small multiple maps**
+
+-   specify a column (REGION_N) using \$
+
+```{r}
+tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues", 
+          legend.hist = TRUE, #is a histogram
+          legend.is.portrait = TRUE, 
+          legend.hist.z = 0.1) +
+  tm_layout(legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 5.0,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
+```
+
+## References
+
+#### - All about tmap package
+
+-   tmap
+
+    -   [tmap: Thematic Maps in R](https://www.jstatsoft.org/article/view/v084i06)
+
+    -   [tmap documentation](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
+
+#### - Geospatial Data Wrangling
+
+-   sf
+
+    -   [Simple Features for R: StandardizedSupport for Spatial Vector Data](https://journal.r-project.org/archive/2018/RJ-2018-009/RJ-2018-009.pdf)
+
+    -   [Reading, Writing and Converting Simple Features](https://cran.r-project.org/web/packages/sf/vignettes/sf2.html)
+
+#### - Data Wrangling
+
+-   dplyr
+
+    -   [dplyr documentation](https://dplyr.tidyverse.org/)
+
+-   tidyverse
+
+    -   [tidy data documentation](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+
+    -   
