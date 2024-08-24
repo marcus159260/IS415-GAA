@@ -5,16 +5,16 @@ website:
   title: "IS415-GAA"
   navbar:
     left:
-      - text: "Hands on Exercise"
+      - text: "Hands-on Exercises"
         menu: 
           - text: "Hands-on Exercise 1"
             href: "hands-on-exercises/Hands-on_Ex01/hands-on-ex1.html"
           - text: "Hands-on Exercise 2"
             href: "hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html"
-      - text: "In-class Exercise"
+      - text: "In-class Exercises"
         menu: 
           - text: "In-class Exercise 1"
-            href: "in-class_exercises/in_class_ex01.html"
+            href: "in-class_exercises/in-class_ex01/in-class_Ex01-v2.html"
     right: 
       - href: index.qmd
         text: Home

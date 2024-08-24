@@ -1,5 +1,6 @@
 ---
 title: "Hands-on-Exercise 1"
+author: "Marcus Jaeson Yeo"
 ---
 
 # Getting Started
