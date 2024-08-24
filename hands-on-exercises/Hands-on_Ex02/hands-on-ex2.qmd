@@ -1,5 +1,5 @@
 ---
-title: "Hands-on-Exercise 2"
+title: "Hands-on-Exercise 2: Thematic Mapping and GeoVisualisation with R"
 author: "Marcus Jaeson Yeo"
 date: "August 24, 2024"
 date-modified: "last-modified"
@@ -8,3 +8,154 @@ execute:
   echo: true
   freeze: true
 ---
+
+## Topics:
+
+-   **Thematic Mapping**
+
+    -   Creating maps to: visualise properties of geographic features that are unable to be naturally seen
+
+    -   Types of thematic maps:
+
+        -   **Choropleth maps** (shading areas based on data values)
+
+        <!-- -->
+
+        -   **Dot distribution maps** (using dots to represent occurrences)
+
+        -   **Isarithmic maps** (using contour lines to represent continuous data)
+
+        -   **Proportional symbol maps** (using symbols of different sizes to represent data values)
+
+    -   Focus is on Choropleth maps
+
+        -   advantages
+
+        -   disadvantages
+
+        -   used for?
+
+-   **GeoVisualisation**
+
+    -   Interacting and Interpreting geospatial data through visual representations
+
+    -   Using dynamic and interactive visual tools to explore spatial data and patterns
+
+    -   e.g:
+
+        -   3D models
+
+        -   Interactive maps
+
+        -   Time-based animations
+
+        -   VR environments (Virtual Reality)
+
+## Packages used
+
+-   **\*tmap**: thematic maps
+
+-   tidyverse:
+
+    -   readr: for importing delimited text files
+
+    -   tidyr: tidying up data
+
+    -   dplyr: for data wrangling
+
+-   sf: rendering simple features, handling geospatial data
+
+## Install packages
+
+```{r}
+pacman::p_load(tmap, sf, tidyverse)
+
+# use this got timeout issue
+# options(timeout = 300)
+# install.packages("tmap")
+
+```
+
+## Importing data
+
+-   Geospatial Data
+
+    ```{r}
+    mpsz = st_read(dsn = "data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", 
+                      layer = "MP14_SUBZONE_WEB_PL")
+    ```
+
+    ```{r}
+    mpsz
+    ```
+
+-   Aspatial Data
+
+    ```{r}
+    popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+    ```
+
+    ```{r}
+    popdata
+
+    #see all columns
+    spec(popdata)
+
+    ```
+
+## Data Wrangling
+
+-   tidyr -\> pivot_wider()
+
+-   dplyr -\> mutate(), filter(), group_by(), select()
+
+    ```{r}
+    popdata2020 <- popdata %>%
+      filter(Time == 2020) %>%
+      group_by(PA, SZ, AG) %>%
+      summarise(`POP` = sum(`Pop`)) %>%
+      ungroup()%>%
+      pivot_wider(names_from=AG, 
+                  values_from=POP) %>%
+      mutate(YOUNG = rowSums(.[3:6])
+             +rowSums(.[12])) %>%
+    mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
+    rowSums(.[13:15]))%>%
+    mutate(`AGED`=rowSums(.[16:21])) %>%
+    mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+    mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+    /`ECONOMY ACTIVE`) %>%
+      select(`PA`, `SZ`, `YOUNG`, 
+           `ECONOMY ACTIVE`, `AGED`, 
+           `TOTAL`, `DEPENDENCY`)
+
+    popdata2020
+    ```
+
+## Joining data
+
+-   convert PA and SZ to uppercase (toupper)
+
+    -   because data in PA and SZ are in uppercase and lowercase, while data in mpsz (e.g SUBZONE_N and PLN_AREA_N) are in uppercase.
+
+        ```{r}
+        popdata2020 <- popdata2020 %>%
+          mutate_at(.vars = vars(PA, SZ), 
+                  .funs = list(toupper)) %>%
+          filter(`ECONOMY ACTIVE` > 0)
+        ```
+
+-   join attribute data (popdata2020) and geospatial data (mpsz) using left_join()
+
+    -   using common identifier: SUBZONE_N = SZ
+
+        ```{r}
+        mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                                  by = c("SUBZONE_N" = "SZ"))
+        ```
+
+-   save mpsz_pop2020 data as an r object (write_rds)
+
+    ```{r}
+    write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+    ```
