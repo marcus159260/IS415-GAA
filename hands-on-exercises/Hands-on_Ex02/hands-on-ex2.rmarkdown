@@ -8,6 +8,7 @@ execute:
   echo: true
 ---
 
+
 ## Topics:
 
 -   **Thematic Mapping**
@@ -63,15 +64,18 @@ execute:
 
 ## Install packages
 
+
 ```{r}
 pacman::p_load(sf, tmap, tidyverse)
 
 
 ```
 
+
 ## Importing data
 
 -   Geospatial Data
+
 
     ```{r}
     mpsz = st_read(dsn = "data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", 
@@ -82,7 +86,9 @@ pacman::p_load(sf, tmap, tidyverse)
     mpsz
     ```
 
+
 -   Aspatial Data
+
 
     ```{r}
     popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
@@ -96,11 +102,13 @@ pacman::p_load(sf, tmap, tidyverse)
 
     ```
 
+
 ## Data Wrangling
 
 -   tidyr -\> pivot_wider()
 
 -   dplyr -\> mutate(), filter(), group_by(), select()
+
 
     ```{r}
     popdata2020 <- popdata %>%
@@ -124,11 +132,13 @@ pacman::p_load(sf, tmap, tidyverse)
     popdata2020
     ```
 
+
 ## Joining data
 
 -   convert PA and SZ to uppercase (toupper)
 
     -   because data in PA and SZ are in uppercase and lowercase, while data in mpsz (e.g SUBZONE_N and PLN_AREA_N) are in uppercase.
+
 
     ```{r}
         popdata2020 <- popdata2020 %>%
@@ -137,20 +147,25 @@ pacman::p_load(sf, tmap, tidyverse)
           filter(`ECONOMY ACTIVE` > 0)
     ```
 
+
 -   join attribute data (popdata2020) and geospatial data (mpsz) using left_join()
 
     -   using common identifier: SUBZONE_N = SZ
+
 
     ```{r}
         mpsz_pop2020 <- left_join(mpsz, popdata2020,
                                   by = c("SUBZONE_N" = "SZ"))
     ```
 
+
 save mpsz_pop2020 data as an r object (write_rds)
+
 
 ```{r}
 write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 ```
+
 
 ## Plotting Choropleth maps
 
@@ -166,13 +181,16 @@ write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 
         -   it makes aesthetics of individual layers harder to control. 
 
+
 ```{r}
 tmap_mode("plot")
 qtm(mpsz_pop2020, 
 fill = "DEPENDENCY")
 ```
 
+
 -   using tmap's elements (using palette: red)
+
 
     ```{r}
     tm_shape(mpsz_pop2020)+
@@ -194,23 +212,28 @@ fill = "DEPENDENCY")
                  position = c("left", "bottom"))
     ```
 
+
 -   drawing base map
 
     -   using tm_shape(input data variable)
 
     -   using tm_polygons() -\> draw the planning subzone polygons
 
+
     ```{r}
     tm_shape(mpsz_pop2020) +
       tm_polygons()
     ```
 
+
     -   input DEPENDENCY into tm_polygons()
+
 
     ```{r}
         tm_shape(mpsz_pop2020) +
           tm_polygons("DEPENDENCY")
     ```
+
 
 -   tm_polygons()
 
@@ -230,11 +253,13 @@ fill = "DEPENDENCY")
 
             -   col -\> border color, default is black
 
+
     ```{r}
         tm_shape(mpsz_pop2020)+
           tm_fill("DEPENDENCY") +
           tm_borders(lwd = 0.1,  alpha = 1, col = "blue")
     ```
+
 
 ## Data Classification methods of tmap
 
@@ -286,6 +311,7 @@ fill = "DEPENDENCY")
 
         -   quantile
 
+
 ```{r}
     tm_shape(mpsz_pop2020)+
       tm_fill("DEPENDENCY",
@@ -294,7 +320,9 @@ fill = "DEPENDENCY")
       tm_borders(alpha = 0.5)
 ```
 
+
 -   equal
+
 
 ```{r}
     tm_shape(mpsz_pop2020) + 
@@ -302,9 +330,11 @@ fill = "DEPENDENCY")
       tm_borders(alpha = 0.5) 
 ```
 
+
 -   DIY
 
     -   sd
+
 
     ```{r}
     tm_shape(mpsz_pop2020)+
@@ -315,9 +345,11 @@ fill = "DEPENDENCY")
 
     ```
 
+
 ## Applying Custom break to Choropleth Maps
 
 -   descriptive statistics
+
 
     ```{r}
 
@@ -325,7 +357,9 @@ fill = "DEPENDENCY")
 
     ```
 
+
 -   setting break points (under tm_fill)
+
 
     ```{r}
     tm_shape(mpsz_pop2020)+
@@ -334,11 +368,13 @@ fill = "DEPENDENCY")
       tm_borders(alpha = 0.5)
     ```
 
+
 ## Color Scheme
 
 -   tmap uses color packages from RColorBrewer package
 
 -   palette argument (from tm_fill)
+
 
     ```{r}
     tm_shape(mpsz_pop2020)+
@@ -350,7 +386,9 @@ fill = "DEPENDENCY")
 
     ```
 
+
     -   reverse color shading add "-" prefix in front of color name
+
 
         ```{r}
 
@@ -361,9 +399,11 @@ fill = "DEPENDENCY")
           tm_borders(alpha = 0.5)
         ```
 
+
 ## Map Layouts
 
 -   Map Legends (tm_layout)
+
 
     ```{r}
 
@@ -385,9 +425,11 @@ fill = "DEPENDENCY")
       tm_borders(alpha = 0.5)
     ```
 
+
 -   Map Style
 
     -   default for tmap_style: white
+
 
     ```{r}
         tm_shape(mpsz_pop2020)+
@@ -398,9 +440,11 @@ fill = "DEPENDENCY")
           tmap_style("classic")
     ```
 
+
 -   Cartographic Furniture
 
     -   tm_compass, tm_scale_bar, tm_grid, tm_credits
+
 
     ```{r}
 
@@ -424,6 +468,7 @@ fill = "DEPENDENCY")
 
     ```
 
+
 ## Drawing Small Multiple Choropleth Maps
 
 -   **Small Multiple Maps,** also known as **facet maps,** composed of many maps side-by-side and can be stacked vertically.
@@ -443,6 +488,7 @@ fill = "DEPENDENCY")
     -   define **ncols** in **tm_fill()**
 
         -   "YOUNG" and "AGED"
+
 
     ```{r}
 
@@ -464,7 +510,9 @@ fill = "DEPENDENCY")
       tm_layout(legend.position = c("right", "bottom"))
     ```
 
+
 2.  By defining a group-by variable in *tm_facets()*
+
 
     ```{r}
     tm_shape(mpsz_pop2020) +
@@ -482,11 +530,13 @@ fill = "DEPENDENCY")
 
     ```
 
+
 3.  by creating multiple stand-alone maps with *tmap_arrange()*
 
     -   assigning variables to hold the tmap information
 
     -   use tmap_arrange to plot both maps against each other
+
 
     ```{r}
     youngmap <- tm_shape(mpsz_pop2020)+ 
@@ -502,11 +552,13 @@ fill = "DEPENDENCY")
     tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
     ```
 
+
 ## Use Selection Function to map spatial objects meeting the selection criterion
 
 -   alternative to creating **small multiple maps**
 
 -   specify a column (REGION_N) using \$
+
 
 ```{r}
 tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
@@ -523,6 +575,7 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
             frame = FALSE) +
   tm_borders(alpha = 0.5)
 ```
+
 
 ## References
 
@@ -551,3 +604,4 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
 -   tidyverse
 
     -   [tidy data documentation](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+

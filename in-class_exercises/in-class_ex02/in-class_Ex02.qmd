@@ -1,0 +1,115 @@
+---
+title: "In-class-Exercise 2"
+author: "Marcus Jaeson Yeo"
+date: "August 24, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+### Load packages
+
+::: {style="font-size: 1.50em"}
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+:::
+
+### Importing data
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP", 
+                  layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+class(mpsz)
+
+```
+
+```{r}
+mpsz14_shp <- st_read("data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.shp")
+
+```
+
+```{r}
+st_write(mpsz14_shp, "data/geospatial/MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.kml",
+         delete_dsn = TRUE)
+```
+
+-   Master Plan 2019 Subzone Boundary Data
+
+    ```{r}
+    mpsz19_shp <- st_read(dsn="data/geospatial/MPSZ-2019", 
+                          layer = "MPSZ-2019" ) %>%
+      st_transform(crs = 3414)
+    ```
+
+    ```{r}
+    mpsz19_kml <- st_read("data/geospatial/MPSZ-2019/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
+                          
+    ```
+
+    ```{r}
+    mpsz19_geocode <- st_read("data/geospatial/MPSZ-2019/MasterPlan2019SubzoneBoundaryNoSeaGEOJSON.geojson")
+    ```
+
+-   aspatial
+
+    -   import data
+
+    ```{r}
+
+        popdata = read_csv("data/aspatial/respopagesextod2023/respopagesextod2023.csv")
+
+    ```
+
+-   Data wrangling
+
+    ```{r}
+
+    # popdata2023 <- popdata %>%
+    #   group_by(PA, SZ, AG) %>%
+    #   summarise(`POP` =sum(`Pop`)) %>%
+    #   ungroup() %>%
+    #   pivot_wider(names_from=AG, 
+    #               values_from=POP)
+
+    popdata2023 <- popdata %>%
+      group_by(PA, SZ, AG) %>%
+      summarise(`POP` = sum(`Pop`)) %>%
+      ungroup()%>%
+      pivot_wider(names_from=AG, 
+                  values_from=POP) %>%
+      mutate(YOUNG = rowSums(.[3:6])
+             +rowSums(.[12])) %>%
+    mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
+    rowSums(.[13:15]))%>%
+    mutate(`AGED`=rowSums(.[16:21])) %>%
+    mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+    mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+    /`ECONOMY ACTIVE`) %>%
+      select(`PA`, `SZ`, `YOUNG`, 
+           `ECONOMY ACTIVE`, `AGED`, 
+           `TOTAL`, `DEPENDENCY`)
+
+    colnames(popdata2023)
+    ```
+
+    -   convert everything to uppercase
+
+    ```{r}
+
+    popdata2023 <- popdata2023 %>%
+      mutate_at(.vars = vars(PA, SZ), 
+                .funs = list(toupper))
+                
+    ```
+
+    -   left_join
+
+    ```{r}
+    pop2023_mpsz <- left_join(popdata2023, mpsz19_shp,
+                              by = c("SZ" = "SUBZONE_N"))
+    ```
