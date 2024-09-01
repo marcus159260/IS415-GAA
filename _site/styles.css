@@ -3,7 +3,7 @@
 /* Add a border to the navigation */
 nav.navbar {
   border: 1px solid black; /* Orange border */
-  background-color: #33ffd1;    /* Dark background color */
+  background-color: #b18fd7;    /* Dark background color */
   padding: 10px;             /* Add some padding for aesthetics */
 }
 
