@@ -6,6 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Marcus Jaeson Yeo">
+<meta name="dcterms.date" content="2024-08-18">
 
 <title>IS415-GAA</title>
 <style>
@@ -19,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -148,7 +184,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#importantuseful-codes" id="toc-importantuseful-codes" class="nav-link active" data-scroll-target="#importantuseful-codes">Important/Useful Codes</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -162,8 +204,26 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marcus Jaeson Yeo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 18, 2024</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">September 1, 2024</p>
+    </div>
+  </div>
     
   </div>
   
@@ -173,8 +233,251 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>Welcome to my <strong>IS415 Geospatial Analytics and Applications</strong> website. In this site, you will be able to view weekly learning, projects, and notes. Stay tuned :)</p>
+<p>Below are some important/useful codes and concepts that can be implemented.</p>
+<section id="importantuseful-codes" class="level2">
+<h2 class="anchored" data-anchor-id="importantuseful-codes">Important/Useful Codes</h2>
+<ul>
+<li><p>print new line (useful for separating codes)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>e.g</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"5555"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5555</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"6666"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>6666</code></pre>
+</div>
+</div></li>
+<li><p>list all packages with <strong>{ package-name : version number }</strong></p>
+<ul>
+<li>can view packages have been installed and its latest version</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>    ip <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">installed.packages</span>()[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>)])</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    ip <span class="ot">=</span> ip[<span class="fu">is.na</span>(ip<span class="sc">$</span>Priority),<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,drop<span class="ot">=</span><span class="cn">FALSE</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    ip</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                            Package   Version
+abind                         abind     1.4-5
+askpass                     askpass     1.2.0
+backports                 backports     1.5.0
+base64enc                 base64enc     0.1-3
+bit                             bit     4.0.5
+bit64                         bit64     4.0.5
+blob                           blob     1.2.4
+brew                           brew    1.0-10
+brio                           brio     1.1.5
+broom                         broom     1.0.6
+bslib                         bslib     0.8.0
+cachem                       cachem     1.1.0
+callr                         callr     3.7.6
+cellranger               cellranger     1.1.0
+classInt                   classInt    0.4-10
+cli                             cli     3.6.3
+clipr                         clipr     0.8.0
+colorspace               colorspace     2.1-1
+commonmark               commonmark     1.9.1
+conflicted               conflicted     1.2.0
+covr                           covr     3.6.4
+cpp11                         cpp11     0.4.7
+crayon                       crayon     1.5.3
+credentials             credentials     2.0.1
+crosstalk                 crosstalk     1.2.1
+curl                           curl     5.2.1
+data.table               data.table    1.15.4
+DBI                             DBI     1.2.3
+dbplyr                       dbplyr     2.5.0
+deldir                       deldir     2.0-4
+desc                           desc     1.4.3
+devtools                   devtools     2.4.5
+dichromat                 dichromat   2.0-0.1
+diffobj                     diffobj     0.3.5
+digest                       digest    0.6.36
+downlit                     downlit     0.4.4
+dplyr                         dplyr     1.1.4
+dtplyr                       dtplyr     1.3.1
+e1071                         e1071    1.7-14
+ellipsis                   ellipsis     0.3.2
+evaluate                   evaluate    0.24.0
+fansi                         fansi     1.0.6
+farver                       farver     2.1.2
+fastmap                     fastmap     1.2.0
+fontawesome             fontawesome     0.5.2
+forcats                     forcats     1.0.0
+fs                               fs     1.6.4
+gargle                       gargle     1.5.2
+generics                   generics     0.1.3
+geojsonsf                 geojsonsf     2.0.3
+geometries               geometries     0.2.4
+gert                           gert     2.1.1
+ggplot2                     ggplot2     3.5.1
+gh                               gh     1.4.1
+gitcreds                   gitcreds     0.1.2
+glue                           glue     1.7.0
+goftest                     goftest     1.2-3
+googledrive             googledrive     2.1.1
+googlesheets4         googlesheets4     1.1.1
+gtable                       gtable     0.3.5
+haven                         haven     2.5.4
+highr                         highr      0.11
+hms                             hms     1.1.3
+htmltools                 htmltools   0.5.8.1
+htmlwidgets             htmlwidgets     1.6.4
+httpuv                       httpuv    1.6.15
+httr                           httr     1.4.7
+httr2                         httr2     1.0.2
+ids                             ids     1.0.1
+ini                             ini     0.3.1
+isoband                     isoband     0.2.7
+jquerylib                 jquerylib     0.1.4
+jsonify                     jsonify     1.2.2
+jsonlite                   jsonlite     1.8.8
+knitr                         knitr      1.48
+labeling                   labeling     0.4.3
+later                         later     1.3.2
+lazyeval                   lazyeval     0.2.2
+leafem                       leafem     0.2.3
+leaflet                     leaflet     2.2.2
+leaflet.providers leaflet.providers     2.0.0
+leafpop                     leafpop     0.1.0
+leafsync                   leafsync     0.1.0
+lifecycle                 lifecycle     1.0.4
+lubridate                 lubridate     1.9.3
+lwgeom                       lwgeom    0.2-14
+magrittr                   magrittr     2.0.3
+maps                           maps     3.4.2
+mapview                     mapview    2.11.2
+memoise                     memoise     2.0.1
+microbenchmark       microbenchmark    1.4.10
+mime                           mime      0.12
+miniUI                       miniUI   0.1.1.1
+modelr                       modelr    0.1.11
+munsell                     munsell     0.5.1
+nanoarrow                 nanoarrow   0.5.0.1
+odbc                           odbc     1.5.0
+openssl                     openssl     2.2.1
+pacman                       pacman     0.5.1
+pbapply                     pbapply     1.7-2
+pillar                       pillar     1.9.0
+pkgbuild                   pkgbuild     1.4.4
+pkgconfig                 pkgconfig     2.0.3
+pkgdown                     pkgdown     2.1.0
+pkgload                     pkgload     1.4.0
+plogr                         plogr     0.2.0
+plyr                           plyr     1.8.9
+png                             png     0.1-8
+polyclip                   polyclip    1.10-7
+pool                           pool     1.0.3
+praise                       praise     1.0.0
+prettyunits             prettyunits     1.2.0
+processx                   processx     3.8.4
+profvis                     profvis     0.3.8
+progress                   progress     1.2.3
+promises                   promises     1.3.0
+proxy                         proxy    0.4-27
+ps                               ps     1.7.7
+purrr                         purrr     1.0.2
+quarto                       quarto     1.4.4
+R6                               R6     2.5.1
+ragg                           ragg     1.3.2
+rapidjsonr               rapidjsonr     1.2.0
+rappdirs                   rappdirs     0.3.3
+raster                       raster    3.6-26
+rcmdcheck                 rcmdcheck     1.4.0
+RColorBrewer           RColorBrewer     1.1-3
+Rcpp                           Rcpp    1.0.13
+readr                         readr     2.1.5
+readxl                       readxl     1.4.3
+rematch                     rematch     2.0.0
+rematch2                   rematch2     2.1.2
+remotes                     remotes     2.5.0
+reprex                       reprex     2.1.1
+rex                             rex     1.2.1
+rlang                         rlang     1.1.4
+rmarkdown                 rmarkdown      2.27
+roxygen2                   roxygen2     7.3.2
+RPostgres                 RPostgres     1.4.7
+RPostgreSQL             RPostgreSQL     0.7-6
+rprojroot                 rprojroot     2.0.4
+RSQLite                     RSQLite     2.3.7
+rstudioapi               rstudioapi    0.16.0
+rversions                 rversions     2.1.2
+rvest                         rvest     1.0.4
+s2                               s2     1.1.7
+sass                           sass     0.4.9
+satellite                 satellite     1.0.5
+scales                       scales     1.3.0
+selectr                     selectr     0.4-2
+servr                         servr      0.30
+sessioninfo             sessioninfo     1.2.2
+sf                               sf    1.0-16
+sfheaders                 sfheaders     0.4.4
+shiny                         shiny     1.9.1
+sourcetools             sourcetools   0.1.7-1
+sp                               sp     2.1-4
+spatstat                   spatstat     3.1-1
+spatstat.data         spatstat.data     3.1-2
+spatstat.explore   spatstat.explore     3.3-2
+spatstat.geom         spatstat.geom     3.3-2
+spatstat.linnet     spatstat.linnet     3.2-1
+spatstat.model       spatstat.model     3.3-1
+spatstat.random     spatstat.random     3.3-1
+spatstat.sparse     spatstat.sparse     3.1-0
+spatstat.univar     spatstat.univar     3.0-0
+spatstat.utils       spatstat.utils     3.1-0
+stars                         stars     0.6-6
+stringi                     stringi     1.8.4
+stringr                     stringr     1.5.1
+svglite                     svglite     2.1.3
+sys                             sys     3.4.2
+systemfonts             systemfonts     1.1.0
+tensor                       tensor       1.5
+terra                         terra    1.7-78
+testthat                   testthat   3.2.1.1
+textshaping             textshaping     0.4.0
+tibble                       tibble     3.2.1
+tidyr                         tidyr     1.3.1
+tidyselect               tidyselect     1.2.1
+tidyverse                 tidyverse     2.0.0
+timechange               timechange     0.3.0
+tinytex                     tinytex      0.52
+tmap                           tmap     3.3-4
+tmaptools                 tmaptools     3.1-1
+translations           translations     4.4.1
+tzdb                           tzdb     0.4.0
+units                         units     0.8-5
+urlchecker               urlchecker     1.0.1
+usethis                     usethis     3.0.0
+utf8                           utf8     1.2.4
+uuid                           uuid     1.2-1
+vctrs                         vctrs     0.6.5
+viridisLite             viridisLite     0.4.2
+vroom                         vroom     1.6.5
+waldo                         waldo     0.5.2
+whisker                     whisker     0.4.1
+widgetframe             widgetframe     0.3.1
+withr                         withr     3.0.1
+wk                               wk     0.9.2
+xfun                           xfun      0.46
+XML                             XML 3.99-0.17
+xml2                           xml2     1.3.6
+xopen                         xopen     1.0.1
+xtable                       xtable     1.8-4
+yaml                           yaml    2.3.10
+zip                             zip     2.3.1</code></pre>
+</div>
+</div></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
