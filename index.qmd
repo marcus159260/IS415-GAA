@@ -1,5 +1,41 @@
 ---
 title: "IS415-GAA"
+author: "Marcus Jaeson Yeo"
+date: "August 18, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
 ---
 
 Welcome to my **IS415 Geospatial Analytics and Applications** website. In this site, you will be able to view weekly learning, projects, and notes. Stay tuned :)
+
+Below are some important/useful codes and concepts that can be implemented.
+
+## Important/Useful Codes
+
+-   print new line (useful for separating codes)
+
+    ```{r}
+    cat("\n")
+    ```
+
+    -   e.g
+
+    ```{r}
+        cat("5555")
+        cat("\n")
+        cat("6666")
+    ```
+
+-   list all packages with **{ package-name : version number }**
+
+    -   can view packages have been installed and its latest version
+
+    ```{r}
+
+        ip = as.data.frame(installed.packages()[,c(1,3:4)])
+        ip = ip[is.na(ip$Priority),1:2,drop=FALSE]
+        ip
+    ```
