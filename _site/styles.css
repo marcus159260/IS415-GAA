@@ -1,1 +1,27 @@
 /* css styles */
+
+/* Add a border to the navigation */
+nav.navbar {
+  border: 2px solid #ff6600; /* Orange border */
+  background-color: #333;    /* Dark background color */
+  padding: 10px;             /* Add some padding for aesthetics */
+}
+
+/* Change the background color of the nav links */
+.navbar .navbar-nav .nav-link {
+  color: #fff;               /* White text */
+  background-color: #555;     /* Darker background for links */
+  border-radius: 5px;         /* Rounded edges for each link */
+  padding: 8px 12px;          /* Add some padding inside the links */
+}
+
+.navbar .navbar-nav .nav-link:hover {
+  background-color: #ff6600;  /* Change color on hover */
+  color: #000;                /* Change text color on hover */
+}
+
+/* Change background of the dropdown menu */
+.dropdown-menu {
+  background-color: #444;    /* Background for dropdown */
+  border-color: #ff6600;     /* Border for dropdown */
+}
