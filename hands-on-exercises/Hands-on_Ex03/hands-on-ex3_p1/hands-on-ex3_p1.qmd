@@ -1,5 +1,5 @@
 ---
-title: "Hands-on-Exercise 3: 1st Order Spatial Point Patterns Analysis Methods"
+title: "Hands-on-Exercise 3: 1st Order Spatial Point Patterns Analysis"
 author: "Marcus Jaeson Yeo"
 date: "August 31, 2024"
 date-modified: "last-modified"
@@ -10,7 +10,8 @@ execute:
 
 ### About
 
--   1st Order Spatial Point Patterns Analysis Methods
+-   **1st Order Spatial Point Patterns Analysis Methods**
+    -   It is about the distribution of points and point patters in a geographic boundary.
 
 ### Some interesting questions:
 
