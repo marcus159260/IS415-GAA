@@ -32,7 +32,7 @@ execute:
 -   tmap
 
 ```{r}
-pacman::p_load(sf, spatstat, raster, tmap, tidyverse)
+pacman::p_load(sf, spatstat, raster, tmap, tidyverse, maptools)
 ```
 
 ------------------------------------------------------------------------
@@ -413,8 +413,9 @@ plot(kde_childcareSG_adaptive, main = "Adaptive bandwidth")
 
 ```{r}
 # #gridded kernal density object
-# gridded_kde_childcareSG_bw <- as.SpatialGridDataFrame.im(kde_childcareSG.bw)
-# spplot(gridded_kde_childcareSG_bw)
+# if dont have maptools, this doesnt work
+gridded_kde_childcareSG_bw <- maptools::as.SpatialGridDataFrame.im(kde_childcareSG.bw)
+spplot(gridded_kde_childcareSG_bw)
 ```
 
 -   converting gridded output into raster

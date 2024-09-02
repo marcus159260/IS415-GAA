@@ -134,9 +134,9 @@ cat("\n")
 
 ------------------------------------------------------------------------
 
-##                                                   
+## 
 
-##                                                 [**2nd Order SPPA**]{.underline}
+## [**2nd Order SPPA**]{.underline}
 
 ------------------------------------------------------------------------
 
@@ -251,9 +251,8 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     F_ck.csr <- envelope(childcare_ck_ppp, Fest, nsim = 999)
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   plot
 
     ```{r}
@@ -291,9 +290,8 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     F_tm.csr <- envelope(childcare_tm_ppp, Fest, correction = "all", nsim = 999)
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   plot
 
     ```{r}
@@ -335,9 +333,8 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     K_ck.csr <- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   plot
 
     ```{r}
@@ -377,9 +374,8 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     K_tm.csr <- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   plot
 
     ```{r}
@@ -423,9 +419,8 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     L_ck.csr <- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   plot
 
     ```{r}
@@ -465,9 +460,8 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
     ```
 
-```{=html}
 <!-- -->
-```
+
 -   plot
 
     ```{r}
