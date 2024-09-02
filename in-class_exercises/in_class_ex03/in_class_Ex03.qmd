@@ -34,5 +34,3 @@ acled_sf %>%
            tm_shape() + 
            tm_dots()
 ```
-
-### 
