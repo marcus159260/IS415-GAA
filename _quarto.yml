@@ -22,7 +22,7 @@ website:
           - text: "In-class Exercise 2"
             href: "in-class_exercises/in-class_ex02/in-class_Ex02.html"
           - text: "In-class Exercise 3"
-            href: "in-class_exercises/in_class_ex03/in_class_Ex03.html"
+            href: "in-class_exercises/in-class_ex03/in-class_Ex03.html"
         
     right: 
       - href: index.qmd
@@ -31,7 +31,7 @@ website:
 
 format:
   html:
-    theme: morph
+    theme: cerulean
     css: styles.css
     toc: true
 
