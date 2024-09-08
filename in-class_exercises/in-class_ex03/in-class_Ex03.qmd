@@ -1,11 +1,11 @@
 ---
-title: "In-class_Exercise 3" 
-author: "Marcus Jaeson Yeo" 
-date: "September 2, 2024" 
+title: "In-class_exercise 3"
+author: "Marcus Jaeson Yeo"
+date: "September 2, 2024"
 date-modified: "last-modified"
-execute:    
-  eval: true   
-  echo: true 
+execute: 
+  eval: true
+  echo: true
 ---
 
 ### Load packages
