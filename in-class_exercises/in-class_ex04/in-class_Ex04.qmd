@@ -1,0 +1,18 @@
+---
+--- title: "In-class_Exercise 3" author: "Marcus Jaeson Yeo" date: "September 2, 2024" date-modified: "last-modified" execute:    eval: true   echo: true ---
+---
+
+### Load packages
+
+```{r} pacman::p_load(sf, raster, spatstat, tmap, tidyverse)}
+```
+
+### Import data and transform
+
+```{r} acled_sf <- read_csv("data/Myanmar/ACLED_Myanmar.csv") %>%   st_as_sf(coords = c(     "longitude", "latitude"),     crs=4326) %>%   st_transform(crs= 32647) %>%   mutate(event_date = dmy(event_date))}
+```
+
+### Mapping and Plotting
+
+```{r} tmap_mode('view') acled_sf %>%   filter(year==2023 | event_type == 'Political violence') %>%            tm_shape() +             tm_dots()}
+```
