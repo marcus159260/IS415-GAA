@@ -1,0 +1,11 @@
+---
+title: "Take-home Exercise 1"
+author: "Marcus Jaeson Yeo"
+date: "September 08, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+testing
