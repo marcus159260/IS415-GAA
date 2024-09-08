@@ -33,7 +33,7 @@ website:
 
 format:
   html:
-    theme: cerulean
+    theme: cosmo
     css: styles.css
     toc: true
 
