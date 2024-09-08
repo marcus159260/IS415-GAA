@@ -34,7 +34,7 @@ website:
 
 format:
   html:
-    theme: cerulean
+    theme: united
     css: styles.css
     toc: true
 
