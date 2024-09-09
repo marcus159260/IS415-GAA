@@ -9,9 +9,9 @@
   {
     "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html",
     "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html",
-    "title": "IS415-GAA",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
     "section": "",
-    "text": "adwjawodjwaodawdjaw\nhttps://is415-gaa-mjyeo.netlify.app/in-class_exercises/in-class_ex04/in-class_Ex04.html"
+    "text": "are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?\nif the answer is NO, where and when the observed forest fire locations tend to cluster?"
   },
   {
     "objectID": "in-class_exercises/in-class_ex01/data/MPSZ-2019/MPSZ-2019.html",
@@ -124,5 +124,75 @@
     "title": "IS415-GAA",
     "section": "References",
     "text": "References"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#introduction",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#introduction",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "",
+    "text": "are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?\nif the answer is NO, where and when the observed forest fire locations tend to cluster?"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#importing-packages",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#importing-packages",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "2.0 Importing Packages",
+    "text": "2.0 Importing Packages\n\npacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#importing-datasets-into-environment",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#importing-datasets-into-environment",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "3.0 Importing Datasets into Environment",
+    "text": "3.0 Importing Datasets into Environment\n\nimporting kbb shapefiles (geospatial)\n\n\nkbb_sf &lt;- st_read(dsn = \"data/rawdata\", \n                     layer=\"Kepulauan_Bangka_Belitung\") %&gt;%\n  st_union() %&gt;%\n  st_zm(drop = TRUE, what = \"ZM\") %&gt;%\n  st_transform(crs = 32748)\n\nReading layer `Kepulauan_Bangka_Belitung' from data source \n  `C:\\marcus159260\\IS415-GAA\\in-class_exercises\\in-class_ex04\\data\\rawdata' \n  using driver `ESRI Shapefile'\nSimple feature collection with 298 features and 27 fields\nGeometry type: POLYGON\nDimension:     XYZ\nBounding box:  xmin: 105.1085 ymin: -3.116593 xmax: 106.8488 ymax: -1.501603\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\n\n\nst_as_s2(): dropping Z and/or M coordinate\n\n\n\nImporting and Preparing Forest Fire data (aspatial)\n\nfire &lt;- read_csv(\"data/rawdata/forestfires.csv\")\n\nRows: 741 Columns: 15\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr   (3): satellite, instrument, daynight\ndbl  (11): latitude, longitude, brightness, scan, track, acq_time, confidenc...\ndate  (1): acq_date\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\n\nfire_sf &lt;- read_csv(\"data/rawdata/forestfires.csv\") %&gt;%\n  st_as_sf(coords = c(\"longitude\", \"latitude\"),\n           crs = 4326) %&gt;%\n  st_transform(crs=32748)\n\nRows: 741 Columns: 15\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr   (3): satellite, instrument, daynight\ndbl  (11): latitude, longitude, brightness, scan, track, acq_time, confidenc...\ndate  (1): acq_date\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#owin-object-transformation",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#owin-object-transformation",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "4.0 owin Object Transformation",
+    "text": "4.0 owin Object Transformation\n\nconvert to owin (as.owin())\n\nkbb_owin &lt;- as.owin(kbb_sf)\nkbb_owin\n\nwindow: polygonal boundary\nenclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units\n\n\n\nclass(kbb_owin)\n\n[1] \"owin\""
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#data-wrangling",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#data-wrangling",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "5.0 Data Wrangling",
+    "text": "5.0 Data Wrangling\n\n5.1 mutate\n\nwhy do we need to convert (mutate) data type of acq_date to numeric?\n\nbecause ppp object only accept numerical or character as mark\n\n\n\nfire_sf_mutated_date &lt;- fire_sf %&gt;%\n  mutate(DayofYear = yday(acq_date)) %&gt;%\n  mutate(Month_num = month(acq_date)) %&gt;%\n  mutate(Month_fac = month(acq_date, \n                           label = TRUE,\n                           abbr= FALSE))\n\n\n\n5.2 Plot / VIsualising spatial points\n\nVisualising geographic distribution of forest fire points all throughout\n\ntm_shape(kbb_sf) +   \n  tm_polygons() +    \n    tm_shape(fire_sf_mutated_date) +    \n      tm_dots()\n\n\n\n\n\n\n\n\n{r}\nVisualising geographic distribution of forest fire points by month\n\ntm_shape(kbb_sf) +   \n  tm_polygons() +    \n    tm_shape(fire_sf_mutated_date) +    \n      tm_dots(size = 0.1) +    \n        tm_facets(by=\"Month_fac\",              \n                  free.coords = FALSE,             \n                  drop.units = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n5.3 computing STKDE by Month (time series KDE)\n\nfire_month &lt;- fire_sf_mutated_date %&gt;%   \n  select(Month_num)\n\n\nfire_month_ppp &lt;- as.ppp(fire_month) \nfire_month_ppp\n\nMarked planar point pattern: 741 points\nmarks are numeric, of storage type  'double'\nwindow: rectangle = [521564.1, 695791] x [9658137, 9828767] units\n\n\n\n\n5.4 summary + check for duplicates\n\nsummary(fire_month_ppp)\n\nMarked planar point pattern:  741 points\nAverage intensity 2.49258e-08 points per square unit\n\nCoordinates are given to 10 decimal places\n\nmarks are numeric, of type 'double'\nSummary:\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  1.000   8.000   9.000   8.579  10.000  12.000 \n\nWindow: rectangle = [521564.1, 695791] x [9658137, 9828767] units\n                    (174200 x 170600 units)\nWindow area = 29728200000 square units\n\n\n\nany(duplicated(fire_month_ppp))\n\n[1] FALSE\n\n\n\n\n5.5 include created owin object\n\ncombining origin_am_ppp and am_owin objects\n\nfire_month_ppp + kbb_owin\n\n\n\nfire_month_owin &lt;- fire_month_ppp[kbb_owin]\nsummary(fire_month_owin)\n\nMarked planar point pattern:  741 points\nAverage intensity 6.424519e-08 points per square unit\n\nCoordinates are given to 10 decimal places\n\nmarks are numeric, of type 'double'\nSummary:\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  1.000   8.000   9.000   8.579  10.000  12.000 \n\nWindow: polygonal boundary\n2 separate polygons (no holes)\n           vertices        area relative.area\npolygon 1     47493 11533600000      1.00e+00\npolygon 2       256      306427      2.66e-05\nenclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units\n                     (193500 x 178600 units)\nWindow area = 11533900000 square units\nFraction of frame area: 0.334\n\n\n\nplot(fire_month_owin)"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#compute-spatio-temporal-kde",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#compute-spatio-temporal-kde",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "6.0 Compute Spatio-temporal KDE",
+    "text": "6.0 Compute Spatio-temporal KDE\n\nuse spattemp.density() from sparr package, to compute the STKDE\n\n\nst_kde &lt;- spattemp.density(fire_month_owin)\n\nCalculating trivariate smooth...Done.\nEdge-correcting...Done.\nConditioning on time...Done.\n\nsummary(st_kde)\n\nSpatiotemporal Kernel Density Estimate\n\nBandwidths\n  h = 15102.47 (spatial)\n  lambda = 0.0304 (temporal)\n\nNo. of observations\n  741 \n\nSpatial bound\n  Type: polygonal\n  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]\n\nTemporal bound\n  [1, 12]\n\nEvaluation\n  128 x 128 x 12 trivariate lattice\n  Density range: [1.233458e-27, 8.202976e-10]"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#plotting-spatio-temporal-kde-object",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#plotting-spatio-temporal-kde-object",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "7.0 Plotting Spatio-temporal KDE object",
+    "text": "7.0 Plotting Spatio-temporal KDE object\n\nplots KDE between July 2023 - December 2023\n\n\ntims &lt;- c(7,8,9,10,11,12) \npar(mfcol=c(2,3)) \nfor(i in tims) {\n  plot(st_kde, 1,         \n  override.par=FALSE,        \n  fix.range=TRUE,        \n  main=paste(\"KDE at month\", 1)) \n}"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#computing-stkde-by-day-of-year",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#computing-stkde-by-day-of-year",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "8.0 Computing STKDE by Day of Year",
+    "text": "8.0 Computing STKDE by Day of Year\n\n8.1 Create ppp object\n\nfire_yday_ppp &lt;- fire_sf_mutated_date %&gt;% \n  select(DayofYear) %&gt;%\n  as.ppp()\n\n\n\n8.2 Combine both ppp object + owin object (kbb) = combined owin object\n\nfire_yday_owin &lt;- fire_yday_ppp[kbb_owin]\nsummary(fire_yday_owin)\n\nMarked planar point pattern:  741 points\nAverage intensity 6.424519e-08 points per square unit\n\nCoordinates are given to 10 decimal places\n\nmarks are numeric, of type 'double'\nSummary:\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n   10.0   213.0   258.0   245.9   287.0   352.0 \n\nWindow: polygonal boundary\n2 separate polygons (no holes)\n           vertices        area relative.area\npolygon 1     47493 11533600000      1.00e+00\npolygon 2       256      306427      2.66e-05\nenclosing rectangle: [512066.8, 705559.4] x [9655398, 9834006] units\n                     (193500 x 178600 units)\nWindow area = 11533900000 square units\nFraction of frame area: 0.334\n\n\n\n\n8.3 Compute STKDE by day of Year\n\nkde_yday &lt;- spattemp.density(fire_yday_owin)\n\nCalculating trivariate smooth...Done.\nEdge-correcting...Done.\nConditioning on time...Done.\n\nsummary(kde_yday)\n\nSpatiotemporal Kernel Density Estimate\n\nBandwidths\n  h = 15102.47 (spatial)\n  lambda = 6.3198 (temporal)\n\nNo. of observations\n  741 \n\nSpatial bound\n  Type: polygonal\n  2D enclosure: [512066.8, 705559.4] x [9655398, 9834006]\n\nTemporal bound\n  [10, 352]\n\nEvaluation\n  128 x 128 x 343 trivariate lattice\n  Density range: [3.959516e-27, 2.751287e-12]"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#plot-stkde-by-day-of-year",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#plot-stkde-by-day-of-year",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "9.0 Plot STKDE by day of Year",
+    "text": "9.0 Plot STKDE by day of Year\n\ntemporal bound: t=10 to 352\n\n\nplot(kde_yday)"
+  },
+  {
+    "objectID": "in-class_exercises/in-class_ex04/in-class_Ex04.html#references",
+    "href": "in-class_exercises/in-class_ex04/in-class_Ex04.html#references",
+    "title": "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis",
+    "section": "References",
+    "text": "References\n\ntmap: https://r-tmap.github.io/tmap/reference/index.html\nsparr: https://cran.r-project.org/web/packages/sparr/index.html"
   }
 ]
