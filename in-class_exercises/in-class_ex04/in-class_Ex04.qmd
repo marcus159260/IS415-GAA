@@ -97,7 +97,7 @@ fire_sf_mutated_date <- fire_sf %>%
     ```{r}
     tm_shape(kbb_sf) +   
       tm_polygons() +    
-        tm_shape(fire_sf_nutated_date) +    
+        tm_shape(fire_sf_mutated_date) +    
           tm_dots()
     ```
 
