@@ -184,7 +184,7 @@ for(i in tims) {
 
 ## 8.0 Computing STKDE by [Day of Year]{.underline}
 
-### 8.1 Create ppp object 
+### 8.1 Create ppp object
 
 ```{r}
 fire_yday_ppp <- fire_sf_mutated_date %>% 
@@ -193,7 +193,7 @@ fire_yday_ppp <- fire_sf_mutated_date %>%
 
 ```
 
-### 8.2 Combine both ppp object + owin object (kbb) = combined owin object 
+### 8.2 Combine both ppp object + owin object (kbb) = combined owin object
 
 ```{r}
 fire_yday_owin <- fire_yday_ppp[kbb_owin]

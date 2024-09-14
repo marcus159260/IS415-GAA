@@ -12,7 +12,39 @@ execute:
 
 ## 2.0 Importing Packages
 
+-   sf
+
+-   raster
+
+-   spatstat
+
+-   sparr
+
+-   tmap
+
+-   tidyverse
+
+```{r}
+pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
+```
+
 ## 3.0 Importing Datasets into Environment
+
+-   geospatial
+
+-   aspatial (csv)
+
+    ```{r}
+    myanmar_sf <- read_csv("data/aspatial/2021-01-01-2024-06-30-Myanmar.csv")
+    myanmar_sf
+    ```
+
+    ```{r}
+    myanmar_sf <- read_csv("data/aspatial/2021-01-01-2024-06-30-Myanmar.csv") %>%
+      st_as_sf(coords = c("longitude", "latitude"),
+               crs = 4326) %>%
+      st_transform(crs=32748)
+    ```
 
 ## 4.0 Projection Transformation
 

@@ -7,14 +7,18 @@ website:
     left:
       - text: "Hands-on Exercises"
         menu: 
-          - text: "Hands-on Exercise 1"
+          - text: "Hands-on Exercise 1: Geospatial Data Science with R"
             href: "hands-on-exercises/Hands-on_Ex01/hands-on-ex1.html"
-          - text: "Hands-on Exercise 2"
+          - text: "Hands-on Exercise 2: Thematic Mapping and GeoVisualisation with R"
             href: "hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html"
           - text: "Hands-on Exercise 3: 1st Order SPAA"
             href: "hands-on-exercises/Hands-on_Ex03/hands-on-ex3_p1/hands-on-ex3_p1.html"
           - text: "Hands-on Exercise 3: 2nd Order SPAA"
             href: "hands-on-exercises/Hands-on_Ex03/hands-on-ex3_p2/hands-on-ex3_p2.html"
+          - text: "Hands-on Exercise 4: ICE4"
+            href: "in-class_exercises/in-class_ex04/in-class_Ex04.html"
+          - text: "Hands-on Exercise 5: Spatial Weights and Applications"
+            href: "hands-on-exercises/Hands-on_Ex05/hands-on-ex5.html"
       - text: "In-class Exercises"
         menu: 
           - text: "In-class Exercise 1"

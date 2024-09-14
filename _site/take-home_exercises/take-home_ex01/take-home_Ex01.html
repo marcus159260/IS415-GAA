@@ -9,7 +9,7 @@
 <meta name="author" content="Marcus Jaeson Yeo">
 <meta name="dcterms.date" content="2024-09-08">
 
-<title>IS415-GAA - Take-home Exercise 1</title>
+<title>IS415-GAA - Take-home Exercise 1: Geospatial Analytics for Social Good - Application of Spatial and Spatio-temporal Point Patterns Analysis to discover the geographical distribution of Armed Conflict in Myanmar</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -97,11 +131,11 @@ ul.task-list li input[type="checkbox"] {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
         <li>
     <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex01/hands-on-ex1.html">
- <span class="dropdown-text">Hands-on Exercise 1</span></a>
+ <span class="dropdown-text">Hands-on Exercise 1: Geospatial Data Science with R</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html">
- <span class="dropdown-text">Hands-on Exercise 2</span></a>
+ <span class="dropdown-text">Hands-on Exercise 2: Thematic Mapping and GeoVisualisation with R</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex03/hands-on-ex3_p1/hands-on-ex3_p1.html">
@@ -110,6 +144,14 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex03/hands-on-ex3_p2/hands-on-ex3_p2.html">
  <span class="dropdown-text">Hands-on Exercise 3: 2nd Order SPAA</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex04/in-class_Ex04.html">
+ <span class="dropdown-text">Hands-on Exercise 4: ICE4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex05/hands-on-ex5.html">
+ <span class="dropdown-text">Hands-on Exercise 5: Spatial Weights and Applications</span></a>
   </li>  
     </ul>
   </li>
@@ -169,14 +211,30 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1.0 Introduction</a></li>
+  <li><a href="#importing-packages" id="toc-importing-packages" class="nav-link" data-scroll-target="#importing-packages">2.0 Importing Packages</a></li>
+  <li><a href="#importing-datasets-into-environment" id="toc-importing-datasets-into-environment" class="nav-link" data-scroll-target="#importing-datasets-into-environment">3.0 Importing Datasets into Environment</a></li>
+  <li><a href="#projection-transformation" id="toc-projection-transformation" class="nav-link" data-scroll-target="#projection-transformation">4.0 Projection Transformation</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">5.0 Data Wrangling</a></li>
+  <li><a href="#exploratory-spatial-data-analysis" id="toc-exploratory-spatial-data-analysis" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis">6.0 Exploratory Spatial Data Analysis</a></li>
+  <li><a href="#measuring-dispersion" id="toc-measuring-dispersion" class="nav-link" data-scroll-target="#measuring-dispersion">7.0 Measuring Dispersion??</a></li>
+  <li><a href="#first-ordersecond-order-sppa" id="toc-first-ordersecond-order-sppa" class="nav-link" data-scroll-target="#first-ordersecond-order-sppa">8.0 First Order/Second Order SPPA</a></li>
+  <li><a href="#kernel-density-estimation" id="toc-kernel-density-estimation" class="nav-link" data-scroll-target="#kernel-density-estimation">9.0 Kernel Density Estimation</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">10.0 Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Take-home Exercise 1</h1>
+<h1 class="title">Take-home Exercise 1: Geospatial Analytics for Social Good - Application of Spatial and Spatio-temporal Point Patterns Analysis to discover the geographical distribution of Armed Conflict in Myanmar</h1>
 </div>
 
 
@@ -200,7 +258,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 8, 2024</p>
+      <p class="date-modified">September 13, 2024</p>
     </div>
   </div>
     
@@ -211,9 +269,108 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>testing</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1.0 Introduction</h2>
+</section>
+<section id="importing-packages" class="level2">
+<h2 class="anchored" data-anchor-id="importing-packages">2.0 Importing Packages</h2>
+<ul>
+<li><p>sf</p></li>
+<li><p>raster</p></li>
+<li><p>spatstat</p></li>
+<li><p>sparr</p></li>
+<li><p>tmap</p></li>
+<li><p>tidyverse</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, sparr, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importing-datasets-into-environment" class="level2">
+<h2 class="anchored" data-anchor-id="importing-datasets-into-environment">3.0 Importing Datasets into Environment</h2>
+<ul>
+<li><p>geospatial</p></li>
+<li><p>aspatial (csv)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>myanmar_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/2021-01-01-2024-06-30-Myanmar.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 51553 Columns: 31
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...
+dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>myanmar_sf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 51,553 × 31
+   event_id_cnty event_date    year time_precision disorder_type      event_type
+   &lt;chr&gt;         &lt;chr&gt;        &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;     
+ 1 MMR64313      30 June 2024  2024              1 Political violence Battles   
+ 2 MMR64320      30 June 2024  2024              1 Political violence Battles   
+ 3 MMR64321      30 June 2024  2024              1 Political violence Battles   
+ 4 MMR64322      30 June 2024  2024              1 Strategic develop… Strategic…
+ 5 MMR64323      30 June 2024  2024              1 Political violence Battles   
+ 6 MMR64324      30 June 2024  2024              1 Strategic develop… Strategic…
+ 7 MMR64325      30 June 2024  2024              1 Political violence Battles   
+ 8 MMR64326      30 June 2024  2024              1 Political violence Battles   
+ 9 MMR64328      30 June 2024  2024              1 Political violence Battles   
+10 MMR64330      30 June 2024  2024              1 Political violence Battles   
+# ℹ 51,543 more rows
+# ℹ 25 more variables: sub_event_type &lt;chr&gt;, actor1 &lt;chr&gt;, assoc_actor_1 &lt;chr&gt;,
+#   inter1 &lt;dbl&gt;, actor2 &lt;chr&gt;, assoc_actor_2 &lt;chr&gt;, inter2 &lt;dbl&gt;,
+#   interaction &lt;dbl&gt;, civilian_targeting &lt;chr&gt;, iso &lt;dbl&gt;, region &lt;chr&gt;,
+#   country &lt;chr&gt;, admin1 &lt;chr&gt;, admin2 &lt;chr&gt;, admin3 &lt;chr&gt;, location &lt;chr&gt;,
+#   latitude &lt;dbl&gt;, longitude &lt;dbl&gt;, geo_precision &lt;dbl&gt;, source &lt;chr&gt;,
+#   source_scale &lt;chr&gt;, notes &lt;chr&gt;, fatalities &lt;dbl&gt;, tags &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>myanmar_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/2021-01-01-2024-06-30-Myanmar.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">crs =</span> <span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32748</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 51553 Columns: 31
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...
+dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div></li>
+</ul>
+</section>
+<section id="projection-transformation" class="level2">
+<h2 class="anchored" data-anchor-id="projection-transformation">4.0 Projection Transformation</h2>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">5.0 Data Wrangling</h2>
+</section>
+<section id="exploratory-spatial-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis">6.0 Exploratory Spatial Data Analysis</h2>
+</section>
+<section id="measuring-dispersion" class="level2">
+<h2 class="anchored" data-anchor-id="measuring-dispersion">7.0 Measuring Dispersion??</h2>
+</section>
+<section id="first-ordersecond-order-sppa" class="level2">
+<h2 class="anchored" data-anchor-id="first-ordersecond-order-sppa">8.0 First Order/Second Order SPPA</h2>
+</section>
+<section id="kernel-density-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="kernel-density-estimation">9.0 Kernel Density Estimation</h2>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">10.0 Conclusion</h2>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
