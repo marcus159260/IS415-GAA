@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marcus Jaeson Yeo">
-<meta name="dcterms.date" content="2024-09-02">
+<meta name="dcterms.date" content="2024-09-16">
 
-<title>IS415-GAA - In-class_exercise 3</title>
+<title>IS415-GAA - In-class Exercise 05: Geographically Weighted Models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -219,9 +219,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages">Load packages</a></li>
-  <li><a href="#import-data-and-transform" id="toc-import-data-and-transform" class="nav-link" data-scroll-target="#import-data-and-transform">Import data and transform</a></li>
-  <li><a href="#mapping-and-plotting" id="toc-mapping-and-plotting" class="nav-link" data-scroll-target="#mapping-and-plotting">Mapping and Plotting</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1.0 Introduction</a></li>
+  <li><a href="#importing-packages" id="toc-importing-packages" class="nav-link" data-scroll-target="#importing-packages">2.0 Importing Packages</a></li>
+  <li><a href="#importing-datasets-into-environment" id="toc-importing-datasets-into-environment" class="nav-link" data-scroll-target="#importing-datasets-into-environment">3.0 Importing Datasets into Environment</a></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">4.0 Data Wrangling</a></li>
+  <li><a href="#exploratory-spatial-data-analysis" id="toc-exploratory-spatial-data-analysis" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis">5.0 Exploratory Spatial Data Analysis</a></li>
+  <li><a href="#measuring-dispersion" id="toc-measuring-dispersion" class="nav-link" data-scroll-target="#measuring-dispersion">6.0 Measuring Dispersion??</a></li>
+  <li><a href="#first-ordersecond-order-sppa" id="toc-first-ordersecond-order-sppa" class="nav-link" data-scroll-target="#first-ordersecond-order-sppa">7.0 First Order/Second Order SPPA</a></li>
+  <li><a href="#kernel-density-estimation" id="toc-kernel-density-estimation" class="nav-link" data-scroll-target="#kernel-density-estimation">8.0 Kernel Density Estimation</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">9.0 Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
     </div>
@@ -230,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">In-class_exercise 3</h1>
+<h1 class="title">In-class Exercise 05: Geographically Weighted Models</h1>
 </div>
 
 
@@ -247,7 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 2, 2024</p>
+      <p class="date">September 16, 2024</p>
     </div>
   </div>
   
@@ -265,53 +272,265 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="load-packages" class="level3">
-<h3 class="anchored" data-anchor-id="load-packages">Load packages</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, raster, spatstat, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1.0 Introduction</h2>
+<hr>
 </section>
-<section id="import-data-and-transform" class="level3">
-<h3 class="anchored" data-anchor-id="import-data-and-transform">Import data and transform</h3>
+<section id="importing-packages" class="level2">
+<h2 class="anchored" data-anchor-id="importing-packages">2.0 Importing Packages</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Myanmar/ACLED_Myanmar.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span> <span class="co">#wgs84 crs is 4326</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>) <span class="sc">%&gt;%</span> <span class="co">#for myanmar wgs84 crs is 32647</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">event_date =</span> <span class="fu">dmy</span>(event_date))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, spdep, tmap, tidyverse, knitr, GWmodel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+<section id="importing-datasets-into-environment" class="level2">
+<h2 class="anchored" data-anchor-id="importing-datasets-into-environment">3.0 Importing Datasets into Environment</h2>
+<ul>
+<li><p>geospatial (boundary data)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#dont want to run the code again</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Hunan' from data source 
+  `C:\marcus159260\IS415-GAA\in-class_exercises\in-class_ex05\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 88 features and 7 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div></li>
+<li><p>aspatial</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hunan2012_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 55574 Columns: 31
+<pre><code>Rows: 88 Columns: 29
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-chr (20): event_id_cnty, event_date, disorder_type, event_type, sub_event_ty...
-dbl (11): year, time_precision, inter1, inter2, interaction, iso, latitude, ...
+chr  (2): County, City
+dbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hunan2012_sf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 88 × 29
+   County    City   avg_wage deposite    FAI Gov_Rev Gov_Exp    GDP GDPPC    GIO
+   &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+ 1 Anhua     Yiyang    30544   10967   6832.    457.   2703  13225  14567  9277.
+ 2 Anren     Chenz…    28058    4599.  6386.    221.   1455.  4941. 12761  4189.
+ 3 Anxiang   Chang…    31935    5517.  3541     244.   1780. 12482  23667  5109.
+ 4 Baojing   Hunan…    30843    2250   1005.    193.   1379.  4088. 14563  3624.
+ 5 Chaling   Zhuzh…    31251    8241.  6508.    620.   1947  11585  20078  9158.
+ 6 Changning Hengy…    28518   10860   7920     770.   2632. 19886  24418 37392 
+ 7 Changsha  Chang…    54540   24332  33624    5350    7886. 88009  88656 51361 
+ 8 Chengbu   Shaoy…    28597    2581.  1922.    161.   1192.  2570. 10132  1681.
+ 9 Chenxi    Huaih…    33580    4990   5818.    460.   1724.  7755. 17026  6644.
+10 Cili      Zhang…    33099    8117.  4498.    500.   2306. 11378  18714  5843.
+# ℹ 78 more rows
+# ℹ 19 more variables: Loan &lt;dbl&gt;, NIPCR &lt;dbl&gt;, Bed &lt;dbl&gt;, Emp &lt;dbl&gt;,
+#   EmpR &lt;dbl&gt;, EmpRT &lt;dbl&gt;, Pri_Stu &lt;dbl&gt;, Sec_Stu &lt;dbl&gt;, Household &lt;dbl&gt;,
+#   Household_R &lt;dbl&gt;, NOIP &lt;dbl&gt;, Pop_R &lt;dbl&gt;, RSCG &lt;dbl&gt;, Pop_T &lt;dbl&gt;,
+#   Agri &lt;dbl&gt;, Service &lt;dbl&gt;, Disp_Inc &lt;dbl&gt;, RORP &lt;dbl&gt;, ROREmp &lt;dbl&gt;</code></pre>
 </div>
+</div></li>
+</ul>
+<hr>
 </section>
-<section id="mapping-and-plotting" class="level3">
-<h3 class="anchored" data-anchor-id="mapping-and-plotting">Mapping and Plotting</h3>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">4.0 Data Wrangling</h2>
+<ul>
+<li><p>Perform Relational Join</p>
+<ul>
+<li>left_join (from dplyr package) to join by same column (County)</li>
+</ul></li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># | eval: false</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># hunan &lt;- left_join(hunan_sf, hunan2012_sf, join_by(County)) %&gt;%   </span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(1:4, 7, 15)  </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>hunan_sf <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, hunan2012_sf) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">31</span>, <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>tmap mode set to plotting</code></pre>
+<pre><code>Joining with `by = join_by(County)`</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  acled_sf <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2023</span> <span class="sc">|</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>             event_type <span class="sc">==</span> <span class="st">"Political violence"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>()<span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#how do i know to pick column 15? if i were to pick 8 (last column), there will be:   #Error: Fill argument neither colors nor valid variable name(s)  #pick 6 columns (1:4, 7, 15) gives back 7 columns? (GDPPC)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(hunan_sf_origin, <span class="st">"data/rds/hunan_sf.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 88 features and 8 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812
+Geodetic CRS:  WGS 84
+First 10 features:
+     NAME_2  ID_3    NAME_3    County GDPPC      GIO      Agri Service
+1   Changde 21098   Anxiang   Anxiang 23667   5108.9  4524.410 14100.0
+2   Changde 21100   Hanshou   Hanshou 20981  13491.0  6545.350 17727.0
+3   Changde 21101    Jinshi    Jinshi 34592  10935.0  2562.460  7525.0
+4   Changde 21102        Li        Li 24473  18402.0  7562.340 53160.0
+5   Changde 21103     Linli     Linli 25554   8214.0  3583.910  7031.0
+6   Changde 21104    Shimen    Shimen 27137  17795.0  5266.510  6981.0
+7  Changsha 21109   Liuyang   Liuyang 63118  99254.0 10844.470 26617.8
+8  Changsha 21110 Ningxiang Ningxiang 62202 114145.0 12804.480 18447.7
+9  Changsha 21111 Wangcheng Wangcheng 70666 148976.0  5222.356  6648.6
+10 Chenzhou 21112     Anren     Anren 12761   4189.2  2357.764  3814.1
+                         geometry
+1  POLYGON ((112.0625 29.75523...
+2  POLYGON ((112.2288 29.11684...
+3  POLYGON ((111.8927 29.6013,...
+4  POLYGON ((111.3731 29.94649...
+5  POLYGON ((111.6324 29.76288...
+6  POLYGON ((110.8825 30.11675...
+7  POLYGON ((113.9905 28.5682,...
+8  POLYGON ((112.7181 28.38299...
+9  POLYGON ((112.7914 28.52688...
+10 POLYGON ((113.1757 26.82734...</code></pre>
+</div>
+</div>
+<ul>
+<li><p>convert to SpatialPolygonDataFrame</p>
+<ul>
+<li>GWmodel is built around sp, not sf formats</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>hunan_sp <span class="ot">&lt;-</span> hunan_sf <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_Spatial</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+<section id="exploratory-spatial-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis">5.0 Exploratory Spatial Data Analysis</h2>
+<section id="determine-adaptive-bandwidth" class="level4">
+<h4 class="anchored" data-anchor-id="determine-adaptive-bandwidth">5.1 determine adaptive bandwidth</h4>
+<ul>
+<li>cross-validation (put in one, take one out)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>    bw_CV <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> hunan_sp,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">approach =</span> <span class="st">"CV"</span>, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">adaptive =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">kernel=</span> <span class="st">"bisquare"</span>, </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Adaptive bandwidth: 62 CV score: 15515442343 
+Adaptive bandwidth: 46 CV score: 14937956887 
+Adaptive bandwidth: 36 CV score: 14408561608 
+Adaptive bandwidth: 29 CV score: 14198527496 
+Adaptive bandwidth: 26 CV score: 13898800611 
+Adaptive bandwidth: 22 CV score: 13662299974 
+Adaptive bandwidth: 22 CV score: 13662299974 </code></pre>
+</div>
+</div>
+<ul>
+<li>AIC (take whole dataset, re-iterate, see how they converge)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>    bw_AIC <span class="ot">&lt;-</span> <span class="fu">bw.gwr</span>(GDPPC <span class="sc">~</span> <span class="dv">1</span>, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> hunan_sp,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">approach =</span> <span class="st">"AIC"</span>, </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">adaptive =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">kernel=</span> <span class="st">"bisquare"</span>, </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">longlat =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Adaptive bandwidth (number of nearest neighbours): 62 AICc value: 1923.156 
+Adaptive bandwidth (number of nearest neighbours): 46 AICc value: 1920.469 
+Adaptive bandwidth (number of nearest neighbours): 36 AICc value: 1917.324 
+Adaptive bandwidth (number of nearest neighbours): 29 AICc value: 1916.661 
+Adaptive bandwidth (number of nearest neighbours): 26 AICc value: 1914.897 
+Adaptive bandwidth (number of nearest neighbours): 22 AICc value: 1914.045 
+Adaptive bandwidth (number of nearest neighbours): 22 AICc value: 1914.045 </code></pre>
+</div>
+</div>
+<ul>
+<li><p>bw.gwr:</p>
+<ul>
+<li>since i dont have dependent variable, give GDPPC = 1, as a dependent variable</li>
+</ul></li>
+</ul>
+</section>
+<section id="computing-geographically-weighted-summary-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="computing-geographically-weighted-summary-statistics">5.2 Computing geographically weighted summary statistics</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#gwss object</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>gwstat <span class="ot">&lt;-</span> <span class="fu">gwss</span>(<span class="at">data =</span> hunan_sp,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">vars =</span> <span class="st">"GDPPC"</span>, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">bw =</span> bw_AIC,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">kernel =</span> <span class="st">"bisquare"</span>, </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">adaptive =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">longlat =</span> T)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">#@data:</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># -LCV has include.self()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>preparing the output data</p>
+<ul>
+<li><p>cannot do any sorting before converting, because it will mess up the sequence</p></li>
+<li><p>cbind() is used to append the newly derived data.frame onto the hunan_sf sf data.frame</p></li>
+<li><p>gwstat_df takes out the SDF column</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>gwstat_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(gwstat<span class="sc">$</span>SDF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>hunan_gstat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(hunan_sf, gwstat_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul>
+</section>
+<section id="visualisingplotting-the-geographically-weighted-summary-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="visualisingplotting-the-geographically-weighted-summary-statistics">5.3 Visualising/Plotting the geographically weighted summary statistics</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan_gstat) <span class="sc">+</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"GDPPC_LM"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">n=</span><span class="dv">5</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">style=</span><span class="st">"quantile"</span>) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Distribution of geographically weighted mean"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="fl">2.0</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.text.size =</span> <span class="fl">1.2</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.height =</span> <span class="fl">1.50</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.width =</span> <span class="fl">1.50</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">frame =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="in-class_Ex03_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="in-class_Ex05_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<hr>
+</section>
+</section>
+<section id="measuring-dispersion" class="level2">
+<h2 class="anchored" data-anchor-id="measuring-dispersion">6.0 Measuring Dispersion??</h2>
+<hr>
+</section>
+<section id="first-ordersecond-order-sppa" class="level2">
+<h2 class="anchored" data-anchor-id="first-ordersecond-order-sppa">7.0 First Order/Second Order SPPA</h2>
+<hr>
+</section>
+<section id="kernel-density-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="kernel-density-estimation">8.0 Kernel Density Estimation</h2>
+<hr>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">9.0 Conclusion</h2>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
 
 
 </section>

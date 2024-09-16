@@ -340,7 +340,7 @@ summary(wm_q)
 
     -   Can see that exactly 6 neighbours
 
-    #### 8.5 Plotting 
+    #### 8.5 Plotting
 
     ```{r}
     plot(hunan$geometry, border="lightgrey")
@@ -370,7 +370,7 @@ summary(wm_q)
 
         -   style="B"
 
-    -   zero.policy = TRUE, allows for lists of non-neighbours. \
+    -   zero.policy = TRUE, allows for lists of non-neighbours.\
         This should be used with caution since the user may not be aware of missing neighbors in their dataset however, a zero.policy of FALSE would return an error.
 
     ```{r}
@@ -409,9 +409,8 @@ summary(wm_q)
 
     -   With a neighbor structure defined by the non-zero elements of the spatial weights matrix W, a spatially lagged variable is [**a weighted sum or a weighted average of the neighboring values for that variable**]{.underline}. In most commonly used notation, the spatial lag of y is then expressed as Wy.
 
-```{=html}
 <!-- -->
-```
+
 -   Explore 4 different spatial lagged variables:
 
     -   spatial lag with row-standardized weights

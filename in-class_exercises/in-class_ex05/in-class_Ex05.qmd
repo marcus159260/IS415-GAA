@@ -1,0 +1,180 @@
+---
+title: "In-class Exercise 05: Geographically Weighted Models"
+author: "Marcus Jaeson Yeo"
+date: "September 16, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+## 1.0 Introduction
+
+------------------------------------------------------------------------
+
+## 2.0 Importing Packages
+
+```{r}
+pacman::p_load(sf, spdep, tmap, tidyverse, knitr, GWmodel)
+```
+
+------------------------------------------------------------------------
+
+## 3.0 Importing Datasets into Environment
+
+-   geospatial (boundary data)
+
+    ```{r}
+    #| eval: true
+      #dont want to run the code again
+    hunan <- st_read(dsn = "data/geospatial", 
+                     layer = "Hunan")
+    ```
+
+-   aspatial
+
+    ```{r}
+    #| eval: true
+    hunan2012_sf <- read_csv("data/aspatial/Hunan_2012.csv")
+    hunan2012_sf
+    ```
+
+------------------------------------------------------------------------
+
+## 4.0 Data Wrangling
+
+-   Perform Relational Join
+
+    -   left_join (from dplyr package) to join by same column (County)
+
+```{r}
+# | eval: false
+# hunan <- left_join(hunan_sf, hunan2012_sf, join_by(County)) %>%   
+#   select(1:4, 7, 15)  
+
+hunan_sf <- left_join(hunan, hunan2012_sf) %>%
+  select(1:3, 7, 15, 16, 31, 32)
+
+#how do i know to pick column 15? if i were to pick 8 (last column), there will be:   #Error: Fill argument neither colors nor valid variable name(s)  #pick 6 columns (1:4, 7, 15) gives back 7 columns? (GDPPC)
+```
+
+```{r}
+#| eval: false
+write_rds(hunan_sf_origin, "data/rds/hunan_sf.rds")
+```
+
+```{r}
+#| echo: false
+  #dont want to display the code chunk 
+hunan_sf_origin <- read_rds("data/rds/hunan_sf.rds")
+hunan_sf_origin
+```
+
+-   convert to SpatialPolygonDataFrame
+
+    -   GWmodel is built around sp, not sf formats
+
+```{r}
+hunan_sp <- hunan_sf %>%
+  as_Spatial()
+```
+
+------------------------------------------------------------------------
+
+## 5.0 Exploratory Spatial Data Analysis
+
+#### 5.1 determine adaptive bandwidth
+
+-   cross-validation (put in one, take one out)
+
+```{r}
+    bw_CV <- bw.gwr(GDPPC ~ 1, 
+                     data = hunan_sp,
+                     approach = "CV", 
+                     adaptive = TRUE, 
+                     kernel= "bisquare", 
+                     longlat = T)
+```
+
+-   AIC (take whole dataset, re-iterate, see how they converge)
+
+```{r}
+    bw_AIC <- bw.gwr(GDPPC ~ 1, 
+                     data = hunan_sp,
+                     approach = "AIC", 
+                     adaptive = TRUE, 
+                     kernel= "bisquare", 
+                     longlat = T)
+```
+
+-   bw.gwr:
+
+    -   since i dont have dependent variable, give GDPPC = 1, as a dependent variable
+
+#### 5.2 Computing geographically weighted summary statistics
+
+```{r}
+#gwss object
+gwstat <- gwss(data = hunan_sp,
+               vars = "GDPPC", 
+               bw = bw_AIC,
+               kernel = "bisquare", 
+               adaptive = TRUE,
+               longlat = T)
+
+#@data:
+# -LCV has include.self()
+```
+
+-   preparing the output data
+
+    -   cannot do any sorting before converting, because it will mess up the sequence
+
+    -   cbind() is used to append the newly derived data.frame onto the hunan_sf sf data.frame
+
+    -   gwstat_df takes out the SDF column
+
+    ```{r}
+    gwstat_df <- as.data.frame(gwstat$SDF)
+    ```
+
+    ```{r}
+    hunan_gstat <- cbind(hunan_sf, gwstat_df)
+    ```
+
+#### 5.3 Visualising/Plotting the geographically weighted summary statistics
+
+```{r}
+tm_shape(hunan_gstat) + 
+  tm_fill("GDPPC_LM",
+          n=5,
+          style="quantile") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Distribution of geographically weighted mean",
+            main.title.position = "center",
+            main.title.size = 2.0,
+            legend.text.size = 1.2,
+            legend.height = 1.50,
+            legend.width = 1.50,
+            frame = TRUE)
+```
+
+------------------------------------------------------------------------
+
+## 6.0 Measuring Dispersion??
+
+------------------------------------------------------------------------
+
+## 7.0 First Order/Second Order SPPA
+
+------------------------------------------------------------------------
+
+## 8.0 Kernel Density Estimation
+
+------------------------------------------------------------------------
+
+## 9.0 Conclusion
+
+------------------------------------------------------------------------
+
+## References

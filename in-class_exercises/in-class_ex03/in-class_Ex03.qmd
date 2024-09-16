@@ -21,8 +21,8 @@ execute:
 acled_sf <- read_csv("data/Myanmar/ACLED_Myanmar.csv") %>%
   st_as_sf(coords = c(
     "longitude", "latitude"),
-    crs=4326) %>%
-  st_transform(crs = 32647) %>%
+    crs=4326) %>% #wgs84 crs is 4326
+  st_transform(crs = 32647) %>% #for myanmar wgs84 crs is 32647
   mutate(event_date = dmy(event_date))
 ```
 
