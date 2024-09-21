@@ -1,5 +1,5 @@
 ---
-title: "In-class Exercise 04: Forest Fire in Kepulauan Bangka Belitung, Indonesia (Spatio-temporal Point Patterns Analysis"
+title: "In-class Exercise 04: Spatio-temporal Point Patterns Analysis (Forest Fire in Kepulauan Bangka Belitung, Indonesia)"
 author: "Marcus Jaeson Yeo"
 date: "September 09, 2024"
 date-modified: "last-modified"
@@ -31,6 +31,12 @@ pacman::p_load(sf, raster, spatstat, sparr, tmap, tidyverse)
 ## 3.0 Importing Datasets into Environment
 
 -   importing kbb shapefiles (geospatial)
+
+```{r}
+kbb_sf <- st_read(dsn = "data/rawdata", 
+                     layer="Kepulauan_Bangka_Belitung") %>%
+  st_union()
+```
 
 ```{r}
 kbb_sf <- st_read(dsn = "data/rawdata", 

@@ -251,8 +251,6 @@ G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
     F_ck.csr <- envelope(childcare_ck_ppp, Fest, nsim = 999)
     ```
 
-<!-- -->
-
 -   plot
 
     ```{r}

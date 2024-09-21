@@ -68,7 +68,7 @@ pacman::p_load(sf, spdep, tmap, tidyverse, knitr)
 
 ------------------------------------------------------------------------
 
-## 4.0 Projection Transformation
+## 4.0 Data Wrangling
 
 ```{r}
 st_crs(hunan_sf)
