@@ -12,6 +12,10 @@ execute:
 
 ### 1.1 Overview
 
+The Myanmar conflict has been an ongoing disaster for the people of Myanmar, citing a mix of ethnic tensions, political instability, and military power struggles. As a result, violent events such as protests, violent demonstration, sexual violence, and missle attacks, have been the some of the most devastating events for the people of Myanmar face, deeply impacting their lives.
+
+This take home exercise investigates the violent events that took place during the conflict, examining which regions held the conflicts. We will be analysing the spatial patterns of violent events, the distribution of spatial points (random or clustered), and spatial points over quarters across the years from year 2021 to 2024 quarter 3. This analysis could help identify the underlying drivers of violence, ethnic tensions, military operations, and resistance movements.
+
 ### 1.2 Objectives
 
 -   Using appropriate function of **sf** and **tidyverse** packages, import and transform the downloaded armed conflict data and administrative boundary data into sf tibble data.frames.
@@ -46,17 +50,17 @@ execute:
 
 -   spNetwork
 
+-   parallel
+
 ```{r}
-pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse)
+pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel)
 ```
 
 ## 3.0 Importing Datasets into Environment + necessary Projection Transformation
 
 -   geospatial
 
-    -   retrieving the boundary data of Myanmar from:
-
-        -   <https://data.humdata.org/dataset/mimu-geonode-myanmar-national-boundary-mimu?>
+    -   retrieving the boundary data of Myanmar:
 
     ```{r}
     myanmar_boundary = st_read(dsn="data/geospatial/regions_only",
@@ -103,18 +107,28 @@ pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse)
     ```
 
     ```{r}
+    colnames(myanmar_sf)
+    ```
+
+    ```{r}
     myanmar_sf <- myanmar_sf %>%
+      select(event_id_cnty, year, time_precision, sub_event_type,
+         admin1, geo_precision, timestamp, longitude, latitude) %>%
       st_as_sf(coords = c("longitude", "latitude"),
                crs = 4326) %>%
       st_transform(crs=32646)
 
     ```
 
-    ```{r}
-    st_crs(myanmar_sf)
-    ```
+```{r}
+  myanmar_sf
+```
 
-    Now that both geospatial boundary and aspatial armed conflict data is in the correct projection system, we can proceed to perform the other analysis.
+```{{r}}
+st_crs(myanmar_sf)
+```
+
+Now that both geospatial boundary and aspatial armed conflict data is in the correct projection system, we can proceed to perform the other analysis.
 
 ## 4.0 Data Wrangling (summary + EDA + plot) (combine boundary + csv data)
 
@@ -298,7 +312,7 @@ summary(violent_ppp_owin)
 
 ## 5.0 Exploratory Spatial Data Analysis
 
-#### 5.1 Spatial Randomness Test (Nearest Neighbour Analysis)
+#### 5.1 Spatial Randomness Test
 
 -   We want to measure the distribution of the violent data points and derive whether they are randomly distributed.
 
@@ -329,11 +343,11 @@ So what insights did we get?
 
 -   Hence, the distribution is not randomly distributed and we reject h0, accept h1. This tells us that there are other factors that are affecting the spatial distribution of the violent data points.
 
-## 6.0 Quarterly KDE
+## 6.0 1st order SPPA (Deriving KDE layers)
 
 -   new window method: to create default KDE layer
 
--   we need to rescale because from meters to kilometers if not the density values remain way too small to comprehend. We need to allow the density values to be in "number of points per square kilometers".
+-   we need to rescale from meters to kilometers if not the density values remain way too small to comprehend. We need to allow the density values to be in "number of points per square kilometers".
 
 ```{r}
 # Extract x and y coordinates
@@ -502,11 +516,245 @@ plot(kde_diggle, main = "Fixed bandwidth")
 plot(kde_violent_adaptive, main = "Adaptive bandwidth")
 ```
 
-### 6.4 **Converting KDE output into grid object.**
+### 6.4 **Converting KDE output into raster layer**
+
+```{r}
+kde_diggle_raster <- raster(kde_diggle)
+```
+
+```{r}
+kde_diggle_raster
+```
+
+-   Since the CRS property is NA, we need to assign a projection system to the same projection system (CRS=32646)
+
+```{r}
+projection(kde_diggle_raster) <- CRS("+init=EPSG:32646")
+kde_diggle_raster
+```
 
 ### 6.5 **Visualising the output in tmap**
 
+-   Display raster in cartographic map
+
+```{r}
+tm_shape(kde_diggle_raster) + 
+  tm_raster("layer", palette = "viridis") +
+  tm_layout(legend.position = c("left", "bottom"), frame = FALSE)
+```
+
+For Nearest Neighbour Analysis - see section 5.1
+
 ## 7.0 Second Order SPPA
+
+### 7.1 Extract top 3 regions
+
+-   We want to look for the top 3 regions with the highest total count of violent events belonging to that region. We also add a column displaying the violent events that took place in that region, contributing to the total count.
+
+```{r}
+# Group by region and sub_event_type, and calculate the total count
+top_3_regions <- violent_sf %>%
+  group_by(admin1) %>%
+  summarise(
+    total_count = n(),
+    breakdown = paste(sub_event_type, collapse = ', ')
+  ) %>%
+  arrange(desc(total_count)) %>%
+  slice(1:3)  # Select top 3 regions
+```
+
+```{r}
+top_3_regions
+```
+
+As a result, we can see that the regions Sagaing, Mandalay, and Magway, has the highest total count of violent events that took place. After which, we want to extract these regions to perform 2nd Order SPPA.
+
+-   Extracting top 3 regions with highest count of violent events
+
+```{r}
+sagaing <- violent_sf %>%
+  filter(admin1 == "Sagaing")
+mandalay <- violent_sf %>%
+  filter(admin1 == "Mandalay")
+magway <- violent_sf %>%
+  filter(admin1 == "Magway")
+
+```
+
+```{r}
+class(sagaing)
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(sagaing, main = "Sagaing")
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(mandalay, main = "Mandalay")
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(magway, main = "Magway")
+```
+
+### 7.2 Converting to required object forms
+
+```{r}
+class(sagaing)
+```
+
+-   convert to owin object form
+
+```{r}
+
+
+sagaing_geom <- st_geometry(sagaing)
+sagaing_bbox <- st_bbox(sagaing_geom)  # Bounding box of the points
+sagaing_polygon <- st_as_sfc(sagaing_bbox)  # Convert bbox to an 'sfc' object (simple feature collection)
+sagaing_owin <- as.owin(sagaing_polygon)  # Direct conversion to owin format
+
+
+mandalay_geom <- st_geometry(mandalay)
+mandalay_bbox <- st_bbox(mandalay_geom)  # Bounding box of the points
+mandalay_polygon <- st_as_sfc(mandalay_bbox)  # Convert bbox to an 'sfc' object (simple feature collection)
+mandalay_owin <- as.owin(mandalay_polygon)  # Direct conversion to owin format
+
+
+magway_geom <- st_geometry(magway)
+magway_bbox <- st_bbox(magway_geom)  # Bounding box of the points
+magway_polygon <- st_as_sfc(magway_bbox)  # Convert bbox to an 'sfc' object (simple feature collection)
+magway_owin <- as.owin(magway_polygon)  # Direct conversion to owin format
+
+```
+
+```{r}
+class(sagaing_owin)
+```
+
+```{r}
+violent_ppp_jit
+```
+
+-   combine jittered ppp object and owin objects
+
+```{r}
+violent_sagaing_ppp = violent_ppp_jit[sagaing_owin]
+violent_mandalay_ppp = violent_ppp_jit[mandalay_owin]
+violent_magway_ppp = violent_ppp_jit[magway_owin]
+
+```
+
+```{r}
+violent_sagaing_ppp.km = rescale(violent_sagaing_ppp, 1000, "km")
+violent_mandalay_ppp.km = rescale(violent_mandalay_ppp, 1000, "km")
+violent_magway_ppp.km = rescale(violent_magway_ppp, 1000, "km")
+```
+
+```{r}
+par(mfrow=c(2,3))
+plot(violent_sagaing_ppp.km, main="Sagaing", frame=FALSE)
+plot(violent_mandalay_ppp.km, main="Mandalay")
+plot(violent_magway_ppp.km, main="Magway")
+```
+
+### 7.3 Analyse Spatial Point Process using G-function
+
+### 7.3.1 Compute G-function estimate
+
+```{r}
+G_violent = Gest(violent_sagaing_ppp.km, correction = "border")
+plot(G_violent)
+```
+
+### 7.1.2 Perform CSR Test
+
+-   Run Monte Carlo simulation using G-function
+
+If we are using the whole dataset: - since it is computationally intensive to run Monte-Carlo simulations with our big dataset: - we need to utilise the concept of parallelization. This will distribute the workload of the CPU cores, speeding up the process of simulation. Using the parallel package - Alternatively, we can draw a subsample of the dataset but still preserve the spatial structure, which is known as thinning. This will drastically reduce the runtime of the simulations. We can use rthin() to sample a 10% subsample of the dataset (P=0.1)
+
+```{r}
+# thin_violent_ppp_owin <- rthin(violent_ppp_owin, P = 0.1)
+```
+
+```{r}
+G_violent.csr <- envelope(violent_sagaing_ppp.km, Gest, nsim = 999, parallel = TRUE, ncore = 4)
+```
+
+```{r}
+plot(G_violent.csr)
+```
+
+### 7.2 Analyse Spatial Point Process using F-function
+
+-   F function estimates the empty space function F(r) or its hazard rate h(r) from a point pattern in a window of arbitrary shape.
+
+### 7.2.1 Compute F-function estimate
+
+```{r}
+F_violent = Fest(violent_sagaing_ppp.km) 
+plot(F_violent)
+```
+
+### 7.2.2 Perform CSR Test
+
+-   Run Monte Carlo simulation using F-function
+
+```{r}
+F_violent.csr <- envelope(violent_sagaing_ppp.km, Fest, parallel=TRUE, nsim = 999, ncore =4)
+```
+
+```{r}
+plot(F_violent.csr)
+```
+
+### 7.3 Analyse Spatial Point Process using K-function
+
+### 7.3.1 Compute K-function estimate
+
+```{r}
+
+K_violent = Kest(violent_sagaing_ppp.km)  
+plot(K_violent, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+### 7.3.2 Perform CSR Test
+
+-   Run Monte Carlo simulation using K-function
+
+```{r}
+# K_violent.csr <- envelope(violent_sagaing_ppp.km, Kest, nsim = 99, parallel=TRUE, ncore=4)
+```
+
+```{r}
+# plot(K_violent.csr)
+```
+
+### 7.4 Analyse Spatial Point Process using L-function
+
+### 7.4.1 Compute L-function estimate
+
+```{r}
+L_ck = Lest(violent_sagaing_ppp.km)
+plot(L_ck, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+
+
+```
+
+### 7.4.2 Perform CSR Test
+
+-   Run Monte Carlo simulation using G-function
+
+```{r}
+# L_violent.csr <- envelope(violent_sagaing_ppp.km, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+# plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
 
 ## 8.0 Derive Quarterly Spatio-Temporal KDE Layers
 
@@ -555,6 +803,12 @@ plot(kde_violent_adaptive, main = "Adaptive bandwidth")
 
     ```
 
+    We can see that in year 2023 quarter 4 and year 2024 quarter 2, has seen the greatest spike and cluster in violence in the Shan-North region (Dark purple color)
+
+    AND
+
+    for the Rakhine region (pink color), has seen slight increase from 2021 to 2022, slowly decreases till the 2023.3, and then spikes immensely 2023.4 and remain with huge concentration in violence.
+
     -   Computing STKDE by Quarters
 
         -   Extract by Quarter first
@@ -594,7 +848,7 @@ plot(kde_violent_adaptive, main = "Adaptive bandwidth")
     violent_quarter_ppp_jittered
     ```
 
-    -   combine
+    -   combine object forms
 
     ```{r}
     #use the myanmar_owin object created
@@ -657,12 +911,65 @@ plot(kde_violent_adaptive, main = "Adaptive bandwidth")
 
 ## 9.0 2nd Order Spatio-Temporal PPA
 
-## 10.0 KDE and Spatio-Temporal KDE layers on openstreetmap of myanmar
+-   combine jittered ppp object and owin objects
 
--   display
+```{r}
+violent_quarter_sagaing_ppp = violent_quarter_ppp_jittered[sagaing_owin]
+violent_quarter_mandalay_ppp = violent_quarter_ppp_jittered[mandalay_owin]
+violent_quarter_magway_ppp = violent_quarter_ppp_jittered[magway_owin]
 
--   describe + explanation
+```
 
-## 11.0 Conclusion
+```{r}
+violent_quarter_sagaing_ppp.km = rescale(violent_sagaing_ppp, 1000, "km")
+violent_quarter_mandalay_ppp.km = rescale(violent_mandalay_ppp, 1000, "km")
+violent_quarter_magway_ppp.km = rescale(violent_magway_ppp, 1000, "km")
+```
+
+```{r}
+par(mfrow=c(2,3))
+plot(violent_quarter_sagaing_ppp.km, main="Sagaing", frame=FALSE)
+plot(violent_quarter_mandalay_ppp.km, main="Mandalay")
+plot(violent_quarter_magway_ppp.km, main="Magway")
+```
+
+## 10.0 Conclusion and Summary
+
+#### [**Data Wrangling + EDA:**]{.underline}
+
+-   We started off by extracting the necessary columns that we want, as we had too many unwanted columns (31 columns), reducing it down to about (9 columns). This is crucial to perform because it is too computationally intensive and slow for our machines to perform intensive tasks such as Monte Carlo simulations and other analyses. Thus, we need to break down the columns, to speed up the running processes.
+
+-   Since we are only interested in violent events that took place, we filtered only violent events and excluded non-violent events (***others***, etc.) based on the ***sub_event_type*** column description. It is more accurate if we perform NLP on the ***notes*** column to confirm violent events.
+
+-   We were also interested in deriving and plotting the quarterly Spatio-Temporal Pattern Point Analysis and KDE layers. Thus to do so, we made use of the ***datetime*** column, and created a new column based on its quarters and its respective year.
+
+-   It is important to also transform the projection system to Myanmar's global projection system using st_transform and finding out its EPSG code, to correctly geolocate our boundary area and align both our geospatial and aspatial data.
+
+-   We also created the required owin and ppp object forms that are needed for appropriate combination of spatial objects to do our analysis.
+
+-   Through data wrangling and exploratory spatial data analysis, we have discovered and extracted the regions with the highest total count of violent events, coming up with a top 3 regions, displaying the total counts as well and showing the violent events breakdown. Our conclusion of the top 3 regions are ***Sagaing, Mandalay, Magway***.
+
+-   We also wanted to find out the spatial distribution of our violent data points. Hence, we first derived our null and alternate hypothesis, and conducted a Spatial Randomness using ***Clark Evans aggregation index test***. After deriving our appropriate R-value and p-value to be below the threshold, we were then able to conclude that there was clustering and that the violent data points were not randomly distributed. This tells us that:
+
+    -   The respective violent events and armed conflict were situated together and collectively happened together. The geographical areas/regions experienced concentrated violence.
+
+    -   Some underlying factors ties back to:
+
+        -   **Geopolitical Issues**: Certain regions might be more affected by the conflict due to political, ethnic, or economic tensions.
+
+        -   **Resource Scarcity**: Clusters could reflect competition over resources, leading to increased violence in those areas.
+
+        -   **Historical Context**: Areas with a history of conflict might experience higher rates of violence.
+
+#### [**Analysis:**]{.underline}
+
+-   With the appropriate Data Wrangling and EDA, we proceeded to perform our 1st order SPPA and derive KDE layers, using different bandwidths and apply certain smoothing techniques to the bandwidths, switching about our sigma values with automatic, fixed, and adaptive bandwidths. We were then able to plot and compare the graphs, examining the rate of violence. The difference in bandwidths allows a better estimate and accuracy of the distribution of kernel violent data points. We can then see any spikes or dips in the rate of violence in the KDE layers. One example is for automatic bandwidths, we can see that the intensity/density of the gaussian kernel points using kde_scott and kde_CvL, is more intense at certain regions compared to the other automatic bandwidth methods.
+
+-   After which, we performed 2nd Order SPPA. We extracted the top 3 regions with the highest total count of violent events, converted them to their appropriate object forms, and computed the estimates of the G-function, F-function, K-function, and L-function. Additionally, we applied appropriate edge and border corrections to remove bias reduction, because when some points are near the edges of a study area, their density could appear artifically low due to lesser area available for the points. As such, we reduce the bias estimation of the point densities and strive for a more accurate density estimation. After which, we then ran their respective Monte-Carlo simulations to access the spatial randomness.
+
+-   Bringing in the time factor/dimension, we were also able to derive and visualise the Spatio-Temporal KDE layers over quarters across the years. Our conclusion is that from 2021 up till 2024, the intensity of concentrated violence has increased over the years and quarters. For example, we can see that in year 2023 quarter 4 and year 2024 quarter 2, has seen the greatest spike and cluster in violence in the Shan-North region (purple color).
 
 ## References
+
+-   Boundary dataset retrieval: <https://data.humdata.org/dataset/mimu-geonode-myanmar-national-boundary-mimu?>
+-   Myanmar projection code reference: <https://epsg.io/32646>
