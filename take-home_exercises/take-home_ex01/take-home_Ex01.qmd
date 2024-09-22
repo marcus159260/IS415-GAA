@@ -725,11 +725,11 @@ plot(K_violent, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 -   Run Monte Carlo simulation using K-function
 
 ```{r}
-# K_violent.csr <- envelope(violent_sagaing_ppp.km, Kest, nsim = 99, parallel=TRUE, ncore=4)
+K_violent.csr <- envelope(violent_sagaing_ppp.km, Kest, nsim = 99, parallel=TRUE, ncore=4)
 ```
 
 ```{r}
-# plot(K_violent.csr)
+plot(K_violent.csr)
 ```
 
 ### 7.4 Analyse Spatial Point Process using L-function
@@ -749,11 +749,11 @@ plot(L_ck, . -r ~ r,
 -   Run Monte Carlo simulation using G-function
 
 ```{r}
-# L_violent.csr <- envelope(violent_sagaing_ppp.km, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_violent.csr <- envelope(violent_sagaing_ppp.km, Lest, nsim = 99, rank = 1, glocal=TRUE)
 ```
 
 ```{r}
-# plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 
 ## 8.0 Derive Quarterly Spatio-Temporal KDE Layers
@@ -891,22 +891,22 @@ plot(L_ck, . -r ~ r,
     -   using improved method (BOOT.spattemp)
 
     ```{r}
-    # set.seed(1234)
-    # BOOT.spattemp(myanmar_quarter_owin) 
+    set.seed(1234)
+    BOOT.spattemp(violent_quarter_owin)
     ```
 
     ```{r}
-    # kde_quarter <- spattemp.density(
-    #   myanmar_quarter_owin,
-    #   h = 9000,
-    #   lambda = 19)
-    # summary(kde_quarter)
+    kde_quarter <- spattemp.density(
+       violent_quarter_owin,
+       h = 44000,
+       lambda = 2000)
+     summary(kde_quarter)
 
-    #bandwidth (through KDE)
+     # bandwidth (through KDE)
     ```
 
     ```{r}
-    # plot(kde_quarter)
+    plot(kde_quarter)
     ```
 
 ## 9.0 2nd Order Spatio-Temporal PPA

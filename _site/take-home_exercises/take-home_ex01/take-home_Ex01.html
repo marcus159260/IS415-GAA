@@ -4490,8 +4490,8 @@ Window area = 1.65171e+12 square units</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(violent_ppp_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Planar point pattern:  48590 points
-Average intensity 7.243315e-08 points per square unit
+<pre><code>Planar point pattern:  48593 points
+Average intensity 7.243762e-08 points per square unit
 
 Coordinates are given to 10 decimal places
 
@@ -8092,7 +8092,7 @@ Fraction of frame area: 0.344</code></pre>
     Z-test
 
 data:  violent_ppp_owin
-R = 0.16394, p-value &lt; 2.2e-16
+R = 0.16383, p-value &lt; 2.2e-16
 alternative hypothesis: clustered (R &lt; 1)</code></pre>
 </div>
 </div>
@@ -8147,7 +8147,7 @@ alternative hypothesis: clustered (R &lt; 1)</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>violent_ppp_owin_km</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Planar point pattern: 48590 points
+<pre><code>Planar point pattern: 48593 points
 window: polygonal boundary
 enclosing rectangle: [414.0596, 1347.7482] x [1076.097, 3166.186] km</code></pre>
 </div>
@@ -8159,7 +8159,7 @@ enclosing rectangle: [414.0596, 1347.7482] x [1076.097, 3166.186] km</code></pre
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>bw_diggle</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    sigma 
-0.1945928 </code></pre>
+0.1945868 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -8167,7 +8167,7 @@ enclosing rectangle: [414.0596, 1347.7482] x [1076.097, 3166.186] km</code></pre
 <span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>bw_CvL</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   sigma 
-52.82684 </code></pre>
+47.64346 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -8175,7 +8175,7 @@ enclosing rectangle: [414.0596, 1347.7482] x [1076.097, 3166.186] km</code></pre
 <span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>bw_scott</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> sigma.x  sigma.y 
-24.55856 55.98459 </code></pre>
+24.56922 55.99201 </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -8183,7 +8183,7 @@ enclosing rectangle: [414.0596, 1347.7482] x [1076.097, 3166.186] km</code></pre
 <span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>bw_ppl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   sigma 
-2.666553 </code></pre>
+2.168939 </code></pre>
 </div>
 </div>
 </section>
@@ -8380,7 +8380,7 @@ extent     : 414.0596, 1347.748, 1076.097, 3166.186  (xmin, xmax, ymin, ymax)
 crs        : NA 
 source     : memory
 names      : layer 
-values     : -1.760873e-15, 10.67084  (min, max)</code></pre>
+values     : -1.543436e-15, 10.75479  (min, max)</code></pre>
 </div>
 </div>
 <ul>
@@ -8397,7 +8397,7 @@ extent     : 414.0596, 1347.748, 1076.097, 3166.186  (xmin, xmax, ymin, ymax)
 crs        : +proj=utm +zone=46 +datum=WGS84 +units=m +no_defs 
 source     : memory
 names      : layer 
-values     : -1.760873e-15, 10.67084  (min, max)</code></pre>
+values     : -1.543436e-15, 10.75479  (min, max)</code></pre>
 </div>
 </div>
 </section>
@@ -8723,10 +8723,136 @@ Done.</code></pre>
 <li>Run Monte Carlo simulation using K-function</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># K_violent.csr &lt;- envelope(violent_sagaing_ppp.km, Kest, nsim = 99, parallel=TRUE, ncore=4)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>K_violent.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(violent_sagaing_ppp.km, Kest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">parallel=</span><span class="cn">TRUE</span>, <span class="at">ncore=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating 99 simulations of CSR  ...
+1, 2, 
+[18:22 remaining, estimate finish 2024-09-23 01:33:11]
+3, 
+[18:06 remaining, estimate finish 2024-09-23 01:33:06]
+4, 
+[17:25 remaining, estimate finish 2024-09-23 01:32:36]
+5, 
+[17:11 remaining, estimate finish 2024-09-23 01:32:33]
+6, 
+[17:51 remaining, estimate finish 2024-09-23 01:33:25]
+7, 
+[17:14 remaining, estimate finish 2024-09-23 01:32:59]
+8, 
+[17:33 remaining, estimate finish 2024-09-23 01:33:31]
+9, 
+[17:52 remaining, estimate finish 2024-09-23 01:34:05]
+10, 
+[18:04 remaining, estimate finish 2024-09-23 01:34:31]
+11, 
+[18:13 remaining, estimate finish 2024-09-23 01:34:54]
+12, 
+[18:19 remaining, estimate finish 2024-09-23 01:35:15]
+13, 
+[18:16 remaining, estimate finish 2024-09-23 01:35:26]
+14, 
+[18:14 remaining, estimate finish 2024-09-23 01:35:39]
+15, 
+[18:12 remaining, estimate finish 2024-09-23 01:35:51]
+16, 
+[18:04 remaining, estimate finish 2024-09-23 01:35:57]
+17, 
+[18:01 remaining, estimate finish 2024-09-23 01:36:09]
+18, 
+[17:54 remaining, estimate finish 2024-09-23 01:36:17]
+19, 
+[17:45 remaining, estimate finish 2024-09-23 01:36:21]
+20, 
+[17:35 remaining, estimate finish 2024-09-23 01:36:26]
+21, 
+[17:26 remaining, estimate finish 2024-09-23 01:36:31]
+22, 
+[17:14 remaining, estimate finish 2024-09-23 01:36:33]
+23, 
+[17:04 remaining, estimate finish 2024-09-23 01:36:38]
+24, 
+[16:54 remaining, estimate finish 2024-09-23 01:36:42]
+25, 
+[16:32 remaining, estimate finish 2024-09-23 01:36:32]
+26, 
+[16:16 remaining, estimate finish 2024-09-23 01:36:27]
+27, 
+[16:02 remaining, estimate finish 2024-09-23 01:36:27]
+28, 
+[15:53 remaining, estimate finish 2024-09-23 01:36:33]
+29, 
+[15:48 remaining, estimate finish 2024-09-23 01:36:45]
+30, 
+[15:36 remaining, estimate finish 2024-09-23 01:36:47]
+31, 
+[15:28 remaining, estimate finish 2024-09-23 01:36:55]
+32, 
+[15:10 remaining, estimate finish 2024-09-23 01:36:49]
+33, 
+[14:56 remaining, estimate finish 2024-09-23 01:36:47]
+34, 
+[14:44 remaining, estimate finish 2024-09-23 01:36:51]
+35, 
+[14:31 remaining, estimate finish 2024-09-23 01:36:51]
+36, 
+[14:14 remaining, estimate finish 2024-09-23 01:36:45]
+37, 
+[14:02 remaining, estimate finish 2024-09-23 01:36:48]
+38, 
+[13:50 remaining, estimate finish 2024-09-23 01:36:51]
+39, 
+[13:35 remaining, estimate finish 2024-09-23 01:36:49]
+40, 
+[13:25 remaining, estimate finish 2024-09-23 01:36:54]
+41, 
+[13:14 remaining, estimate finish 2024-09-23 01:36:59]
+42, 
+[13:01 remaining, estimate finish 2024-09-23 01:37:01]
+43, 
+[12:51 remaining, estimate finish 2024-09-23 01:37:07]
+44, 
+[12:42 remaining, estimate finish 2024-09-23 01:37:15]
+45, 
+[12:32 remaining, estimate finish 2024-09-23 01:37:22]
+46, 
+[12:21 remaining, estimate finish 2024-09-23 01:37:27]
+47, 
+[12:09 remaining, estimate finish 2024-09-23 01:37:30]
+48, 
+[11:56 remaining, estimate finish 2024-09-23 01:37:33]
+49, 
+[11:40 remaining, estimate finish 2024-09-23 01:37:29]
+50, 
+[11:27 remaining, estimate finish 2024-09-23 01:37:32]
+51, 
+[11:17 remaining, estimate finish 2024-09-23 01:37:39]
+52, 
+[11:06 remaining, estimate finish 2024-09-23 01:37:45]
+53, 
+[10:54 remaining, estimate finish 2024-09-23 01:37:51]
+54, 
+[10:38 remaining, estimate finish 2024-09-23 01:37:46]
+55, 
+[10:24 remaining, estimate finish 2024-09-23 01:37:48]
+56, 
+[10:12 remaining, estimate finish 2024-09-23 01:37:52]
+57,  [9:57 remaining] 58,  [9:44 remaining] 59,  [9:32 remaining] 60,  [9:20 remaining] 61,  [9:05 remaining] 62,  [8:52 remaining] 63,  [8:37 remaining] 64,  [8:23 remaining] 65,  [8:11 remaining] 66,  [7:57 remaining] 67,  [7:44 remaining] 68,  [7:31 remaining] 69,  [7:17 remaining] 70,  [7:04 remaining] 71,  [6:50 remaining] 72,  [6:36 remaining] 73,  [6:22 remaining] 74,  [6:08 remaining] 75,  [5:53 remaining] 76,
+ [5:40 remaining] 77,  [5:26 remaining] 78,  [5:12 remaining] 79,  [4:57 remaining] 80,  [4:42 remaining] 81,  [4:28 remaining] 82,  [4:14 remaining] 83,  [3:59 remaining] 84,  [3:45 remaining] 85,  [3:30 remaining] 86,  [3:16 remaining] 87,  [3:01 remaining] 88,  [2:46 remaining] 89,  [2:31 remaining] 90,  [2:16 remaining] 91,  [2:01 remaining] 92,  [1:46 remaining] 93,  [1:31 remaining] 94,  [1:16 remaining] 95,  [1:01 remaining] 96,
+ [46 sec remaining] 97,  [30 sec remaining] 98,  [15 sec remaining] 
+99.
+
+Done.</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(K_violent.csr)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(K_violent.csr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-79-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 <section id="analyse-spatial-point-process-using-l-function" class="level3">
@@ -8735,12 +8861,12 @@ Done.</code></pre>
 <section id="compute-l-function-estimate" class="level3">
 <h3 class="anchored" data-anchor-id="compute-l-function-estimate">7.4.1 Compute L-function estimate</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>L_ck <span class="ot">=</span> <span class="fu">Lest</span>(violent_sagaing_ppp.km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>L_ck <span class="ot">=</span> <span class="fu">Lest</span>(violent_sagaing_ppp.km)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>number of data points exceeds 3000 - computing border correction estimate only</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(L_ck, . <span class="sc">-</span>r <span class="sc">~</span> r, </span>
-<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"L(d)-r"</span>, <span class="at">xlab =</span> <span class="st">"d(m)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(L_ck, . <span class="sc">-</span>r <span class="sc">~</span> r, </span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab=</span> <span class="st">"L(d)-r"</span>, <span class="at">xlab =</span> <span class="st">"d(m)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -8756,10 +8882,151 @@ Done.</code></pre>
 <li>Run Monte Carlo simulation using G-function</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co"># L_violent.csr &lt;- envelope(violent_sagaing_ppp.km, Lest, nsim = 99, rank = 1, glocal=TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>L_violent.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(violent_sagaing_ppp.km, Lest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">glocal=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating 99 simulations of CSR  ...
+1, 2, 
+[20:21 remaining, estimate finish 2024-09-23 02:01:55]
+3, 
+[22:50 remaining, estimate finish 2024-09-23 02:04:39]
+4, 
+[23:22 remaining, estimate finish 2024-09-23 02:05:27]
+5, 
+[23:20 remaining, estimate finish 2024-09-23 02:05:40]
+6, 
+[23:21 remaining, estimate finish 2024-09-23 02:05:57]
+7, 
+[23:06 remaining, estimate finish 2024-09-23 02:05:57]
+8, 
+[22:53 remaining, estimate finish 2024-09-23 02:05:59]
+9, 
+[22:42 remaining, estimate finish 2024-09-23 02:06:04]
+10, 
+[22:27 remaining, estimate finish 2024-09-23 02:06:04]
+11, 
+[22:16 remaining, estimate finish 2024-09-23 02:06:08]
+12, 
+[22:13 remaining, estimate finish 2024-09-23 02:06:22]
+13, 
+[21:37 remaining, estimate finish 2024-09-23 02:05:59]
+14, 
+[21:03 remaining, estimate finish 2024-09-23 02:05:37]
+15, 
+[20:58 remaining, estimate finish 2024-09-23 02:05:48]
+16, 
+[20:51 remaining, estimate finish 2024-09-23 02:05:58]
+17, 
+[20:43 remaining, estimate finish 2024-09-23 02:06:07]
+18, 
+[20:29 remaining, estimate finish 2024-09-23 02:06:07]
+19, 
+[20:22 remaining, estimate finish 2024-09-23 02:06:18]
+20, 
+[20:17 remaining, estimate finish 2024-09-23 02:06:31]
+21, 
+[19:57 remaining, estimate finish 2024-09-23 02:06:25]
+22, 
+[19:52 remaining, estimate finish 2024-09-23 02:06:38]
+23, 
+[19:44 remaining, estimate finish 2024-09-23 02:06:48]
+24, 
+[19:37 remaining, estimate finish 2024-09-23 02:06:59]
+25, 
+[19:31 remaining, estimate finish 2024-09-23 02:07:11]
+26, 
+[19:25 remaining, estimate finish 2024-09-23 02:07:24]
+27, 
+[19:15 remaining, estimate finish 2024-09-23 02:07:33]
+28, 
+[19:05 remaining, estimate finish 2024-09-23 02:07:42]
+29, 
+[18:49 remaining, estimate finish 2024-09-23 02:07:42]
+30, 
+[18:32 remaining, estimate finish 2024-09-23 02:07:40]
+31, 
+[18:19 remaining, estimate finish 2024-09-23 02:07:45]
+32, 
+[18:03 remaining, estimate finish 2024-09-23 02:07:44]
+33, 
+[17:47 remaining, estimate finish 2024-09-23 02:07:45]
+34, 
+[17:32 remaining, estimate finish 2024-09-23 02:07:47]
+35, 
+[17:17 remaining, estimate finish 2024-09-23 02:07:49]
+36, 
+[17:01 remaining, estimate finish 2024-09-23 02:07:50]
+37, 
+[16:46 remaining, estimate finish 2024-09-23 02:07:51]
+38, 
+[16:32 remaining, estimate finish 2024-09-23 02:07:55]
+39, 
+[16:19 remaining, estimate finish 2024-09-23 02:08:00]
+40, 
+[16:06 remaining, estimate finish 2024-09-23 02:08:05]
+41, 
+[15:51 remaining, estimate finish 2024-09-23 02:08:07]
+42, 
+[15:32 remaining, estimate finish 2024-09-23 02:08:04]
+43, 
+[15:15 remaining, estimate finish 2024-09-23 02:08:02]
+44, 
+[15:00 remaining, estimate finish 2024-09-23 02:08:05]
+45, 
+[14:45 remaining, estimate finish 2024-09-23 02:08:07]
+46, 
+[14:29 remaining, estimate finish 2024-09-23 02:08:07]
+47, 
+[14:13 remaining, estimate finish 2024-09-23 02:08:09]
+48, 
+[13:56 remaining, estimate finish 2024-09-23 02:08:07]
+49, 
+[13:39 remaining, estimate finish 2024-09-23 02:08:05]
+50, 
+[13:22 remaining, estimate finish 2024-09-23 02:08:05]
+51, 
+[13:09 remaining, estimate finish 2024-09-23 02:08:12]
+52, 
+[12:54 remaining, estimate finish 2024-09-23 02:08:14]
+53, 
+[12:36 remaining, estimate finish 2024-09-23 02:08:11]
+54, 
+[12:18 remaining, estimate finish 2024-09-23 02:08:09]
+55, 
+[12:03 remaining, estimate finish 2024-09-23 02:08:11]
+56, 
+[11:47 remaining, estimate finish 2024-09-23 02:08:12]
+57, 
+[11:29 remaining, estimate finish 2024-09-23 02:08:10]
+58, 
+[11:15 remaining, estimate finish 2024-09-23 02:08:13]
+59, 
+[10:58 remaining, estimate finish 2024-09-23 02:08:12]
+60, 
+[10:41 remaining, estimate finish 2024-09-23 02:08:11]
+61, 
+[10:25 remaining, estimate finish 2024-09-23 02:08:12]
+62, 
+[10:09 remaining, estimate finish 2024-09-23 02:08:14]
+63,  [9:53 remaining] 64,  [9:37 remaining] 65,  [9:20 remaining] 66,  [9:04 remaining] 67,  [8:46 remaining] 68,  [8:30 remaining] 69,  [8:13 remaining] 70,  [7:57 remaining] 71,  [7:41 remaining] 72,  [7:24 remaining] 73,  [7:08 remaining] 74,  [6:51 remaining] 75,  [6:35 remaining] 76,  [6:19 remaining] 77,  [6:02 remaining] 78,  [5:46 remaining] 79,  [5:30 remaining] 80,  [5:13 remaining] 81,  [4:58 remaining] 82,
+ [4:41 remaining] 83,  [4:25 remaining] 84,  [4:08 remaining] 85,  [3:51 remaining] 86,  [3:35 remaining] 87,  [3:18 remaining] 88,  [3:02 remaining] 89,  [2:45 remaining] 90,  [2:28 remaining] 91,  [2:12 remaining] 92,  [1:55 remaining] 93,  [1:39 remaining] 94,  [1:22 remaining] 95,  [1:06 remaining] 96,  [49 sec remaining] 97,  [33 sec remaining] 98,  [16 sec remaining] 
+99.
+
+Done.</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(L_violent.csr, . <span class="sc">-</span> r <span class="sc">~</span> r, <span class="at">xlab=</span><span class="st">"d"</span>, <span class="at">ylab=</span><span class="st">"L(d)-r"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-82-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Error in UseMethod("distmap") : 
+  no applicable method for 'distmap' applied to an object of class "im"</code></pre>
+</div>
 </div>
 </section>
 </section>
@@ -8770,10 +9037,10 @@ Done.</code></pre>
 <ul>
 <li><p>Since we have Quarterly data in Q1 (Jan-Mar) , Q2 (April - June), Q3 (July-September), Q4 (October - December), we can then …</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(myanmar_boundary)<span class="sc">+</span></span>
-<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
-<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(violent_sf) <span class="sc">+</span></span>
-<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(myanmar_boundary)<span class="sc">+</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(violent_sf) <span class="sc">+</span></span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -8786,13 +9053,13 @@ Done.</code></pre>
 <li>Plotting the event points quarterly and viewing the distribution across the regions.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(myanmar_boundary)<span class="sc">+</span></span>
-<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
-<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(violent_sf) <span class="sc">+</span></span>
-<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"sub_event_type"</span>, <span class="at">palette =</span> <span class="st">"Reds"</span>, <span class="at">title =</span> <span class="st">"Violent Events"</span>) <span class="sc">+</span></span>
-<span id="cb130-5"><a href="#cb130-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>,</span>
-<span id="cb130-6"><a href="#cb130-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">free.coords=</span><span class="cn">FALSE</span>,</span>
-<span id="cb130-7"><a href="#cb130-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">drop.units =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(myanmar_boundary)<span class="sc">+</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(violent_sf) <span class="sc">+</span></span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"sub_event_type"</span>, <span class="at">palette =</span> <span class="st">"Reds"</span>, <span class="at">title =</span> <span class="st">"Violent Events"</span>) <span class="sc">+</span></span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_facets</span>(<span class="at">by=</span><span class="st">"Quarter"</span>,</span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">free.coords=</span><span class="cn">FALSE</span>,</span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">drop.units =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -8803,19 +9070,19 @@ Done.</code></pre>
 </div></li>
 <li><p>We can see that over the quarters, the amount of violent data points has increased over the years with the escalation of the Myanmar conflict.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(myanmar_boundary) <span class="sc">+</span></span>
-<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span>  </span>
-<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(violent_sf) <span class="sc">+</span></span>
-<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"admin1"</span>, <span class="at">title =</span> <span class="st">"Main Regions"</span>) <span class="sc">+</span> </span>
-<span id="cb131-5"><a href="#cb131-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"Quarter"</span>,</span>
-<span id="cb131-6"><a href="#cb131-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>,</span>
-<span id="cb131-7"><a href="#cb131-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">free.coords =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb131-8"><a href="#cb131-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">drop.units =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb131-9"><a href="#cb131-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(</span>
-<span id="cb131-10"><a href="#cb131-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">outer.margins =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>), </span>
-<span id="cb131-11"><a href="#cb131-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">inner.margins =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>),</span>
-<span id="cb131-12"><a href="#cb131-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">asp =</span> <span class="dv">0</span>  </span>
-<span id="cb131-13"><a href="#cb131-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(myanmar_boundary) <span class="sc">+</span></span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span>  </span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(violent_sf) <span class="sc">+</span></span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">size =</span> <span class="fl">0.1</span>, <span class="at">col =</span> <span class="st">"admin1"</span>, <span class="at">title =</span> <span class="st">"Main Regions"</span>) <span class="sc">+</span> </span>
+<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"Quarter"</span>,</span>
+<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>,</span>
+<span id="cb134-7"><a href="#cb134-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">free.coords =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb134-8"><a href="#cb134-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">drop.units =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb134-9"><a href="#cb134-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_options</span>(</span>
+<span id="cb134-10"><a href="#cb134-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">outer.margins =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>, <span class="fl">0.1</span>), </span>
+<span id="cb134-11"><a href="#cb134-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">inner.margins =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>),</span>
+<span id="cb134-12"><a href="#cb134-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">asp =</span> <span class="dv">0</span>  </span>
+<span id="cb134-13"><a href="#cb134-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -8864,12 +9131,12 @@ Done.</code></pre>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>violent_quarter <span class="ot">&lt;-</span> violent_sf <span class="sc">%&gt;%</span></span>
-<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>violent_quarter <span class="ot">&lt;-</span> violent_sf <span class="sc">%&gt;%</span></span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(violent_quarter)</span>
-<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(violent_quarter)</span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Marked planar point pattern: 48694 points
 marks are numeric, of storage type  'double'
@@ -8877,7 +9144,7 @@ window: rectangle = [415262.5, 1265315.1] x [1108593.6, 3051663.8] units</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(violent_quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(violent_quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    Quarter              geometry    
  Min.   :2021   POINT        :48694  
@@ -8889,7 +9156,7 @@ window: rectangle = [415262.5, 1265315.1] x [1108593.6, 3051663.8] units</code><
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(violent_quarter_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(violent_quarter_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
@@ -8901,16 +9168,16 @@ window: rectangle = [415262.5, 1265315.1] x [1108593.6, 3051663.8] units</code><
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp_jittered <span class="ot">&lt;-</span> <span class="fu">rjitter</span>(violent_quarter_ppp, <span class="at">nsigma =</span> <span class="fl">0.01</span>)</span>
-<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a><span class="co">#check again</span></span>
-<span id="cb142-4"><a href="#cb142-4" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(violent_quarter_ppp_jittered))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp_jittered <span class="ot">&lt;-</span> <span class="fu">rjitter</span>(violent_quarter_ppp, <span class="at">nsigma =</span> <span class="fl">0.01</span>)</span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a><span class="co">#check again</span></span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(violent_quarter_ppp_jittered))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp_jittered</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_ppp_jittered</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Marked planar point pattern: 48694 points
 marks are numeric, of storage type  'double'
@@ -8921,12 +9188,12 @@ window: rectangle = [415262.5, 1265315.1] x [1108593.6, 3051663.8] units</code><
 <li>combine object forms</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co">#use the myanmar_owin object created</span></span>
-<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_owin <span class="ot">&lt;-</span> violent_quarter_ppp_jittered[myanmar_owin]</span>
-<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co">#use the myanmar_owin object created</span></span>
+<span id="cb149-2"><a href="#cb149-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_owin <span class="ot">&lt;-</span> violent_quarter_ppp_jittered[myanmar_owin]</span>
+<span id="cb149-3"><a href="#cb149-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern:  48585 points
-Average intensity 7.242569e-08 points per square unit
+<pre><code>Marked planar point pattern:  48601 points
+Average intensity 7.244954e-08 points per square unit
 
 Coordinates are given to 10 decimal places
 
@@ -12505,7 +12772,7 @@ Fraction of frame area: 0.344</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -12516,22 +12783,22 @@ Fraction of frame area: 0.344</code></pre>
 </div>
 <h3 id="computing-spatio-temporal-kde-stkde-by-quarter" class="anchored">8.2 Computing Spatio-Temporal KDE (STKDE) by Quarter</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a>st_kde_quarter <span class="ot">&lt;-</span> <span class="fu">spattemp.density</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>st_kde_quarter <span class="ot">&lt;-</span> <span class="fu">spattemp.density</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Calculating trivariate smooth...Done.
 Edge-correcting...Done.
 Conditioning on time...Done.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(st_kde_quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(st_kde_quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Spatiotemporal Kernel Density Estimate
 
 Bandwidths
-  h = 43683.68 (spatial)
+  h = 43683.6 (spatial)
   lambda = 4e-04 (temporal)
 
 No. of observations
-  48585 
+  48601 
 
 Spatial bound
   Type: polygonal
@@ -12550,21 +12817,21 @@ Evaluation
 <li>need to readjust the tims by quarters</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>unique_quarters <span class="ot">&lt;-</span> <span class="fu">unique</span>(violent_sf<span class="sc">$</span>Quarter)</span>
-<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(unique_quarters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a>unique_quarters <span class="ot">&lt;-</span> <span class="fu">unique</span>(violent_sf<span class="sc">$</span>Quarter)</span>
+<span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(unique_quarters)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 2021.1 2021.2 2021.3 2021.4 2022.1 2022.2 2022.3 2022.4 2023.1 2023.2
 [11] 2023.3 2023.4 2024.1 2024.2 2024.3</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb155-2"><a href="#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> unique_quarters){</span>
-<span id="cb155-3"><a href="#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(st_kde_quarter, i,</span>
-<span id="cb155-4"><a href="#cb155-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">override.par =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb155-5"><a href="#cb155-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">fix.range =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb155-6"><a href="#cb155-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"KDE for Quarter"</span>, i))</span>
-<span id="cb155-7"><a href="#cb155-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> unique_quarters){</span>
+<span id="cb158-3"><a href="#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(st_kde_quarter, i,</span>
+<span id="cb158-4"><a href="#cb158-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">override.par =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb158-5"><a href="#cb158-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">fix.range =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb158-6"><a href="#cb158-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"KDE for Quarter"</span>, i))</span>
+<span id="cb158-7"><a href="#cb158-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in min(sapply(lst, max)[sapply(lst, max) &gt; 0]): no non-missing
 arguments to min; returning Inf
@@ -12636,20 +12903,167 @@ arguments to min; returning Inf</code></pre>
 <li>using improved method (BOOT.spattemp)</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(1234)</span></span>
-<span id="cb160-2"><a href="#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="co"># BOOT.spattemp(myanmar_quarter_owin) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="fu">BOOT.spattemp</span>(violent_quarter_owin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initialising...Done.
+Optimising...
+h = 43683.6 ; lambda = 0.07889379 
+h = 48051.96 ; lambda = 0.07889379 
+h = 43683.6 ; lambda = 4368.439 
+h = 44775.69 ; lambda = 2184.259 
+h = 45867.78 ; lambda = 0.07889379 
+h = 43683.6 ; lambda = 2184.259 
+h = 44229.64 ; lambda = 1092.169 
+h = 44775.69 ; lambda = 0.07889379 
+h = 43683.6 ; lambda = 1092.169 
+h = 43956.62 ; lambda = 546.1238 
+h = 44229.64 ; lambda = 0.07889379 
+h = 43683.6 ; lambda = 546.1238 
+h = 43820.11 ; lambda = 273.1014 
+h = 43956.62 ; lambda = 0.07889379 
+h = 43683.6 ; lambda = 273.1014 
+h = 43751.85 ; lambda = 136.5901 
+h = 43820.11 ; lambda = 0.07889379 
+h = 43683.6 ; lambda = 136.5901 
+h = 43717.72 ; lambda = 68.33451 
+h = 43734.79 ; lambda = 34.2067 
+h = 43743.32 ; lambda = 17.1428 
+h = 43747.59 ; lambda = 8.610846 
+h = 43749.72 ; lambda = 4.34487 
+h = 43750.79 ; lambda = 2.211882 
+h = 43751.32 ; lambda = 1.145388 
+h = 43751.59 ; lambda = 0.6121408 
+h = 43751.72 ; lambda = 0.3455173 
+h = 43751.79 ; lambda = 0.2122055 
+h = 43751.82 ; lambda = 0.1455497 
+h = 43751.89 ; lambda = 0.01223791 
+h = 43615.37 ; lambda = 0.01223791 
+h = 43683.61 ; lambda = 0.04556585 
+h = 43683.62 ; lambda = 0.02890188 
+h = 43683.63 ; lambda = 0.02056989 
+h = 43683.63 ; lambda = 0.003905925 
+h = 43683.63 ; lambda = 0.0164039 
+h = 43683.63 ; lambda = 0.008071917 
+h = 43683.63 ; lambda = 0.01432091 
+h = 43683.63 ; lambda = 0.01015491 
+h = 43683.63 ; lambda = 0.01119641 
+h = 43547.12 ; lambda = 0.01119641 
+h = 43444.74 ; lambda = 0.01067566 
+h = 43376.48 ; lambda = 0.01171716 
+h = 43222.9 ; lambda = 0.01197754 
+h = 43052.27 ; lambda = 0.01041529 
+h = 42770.71 ; lambda = 0.009503977 
+h = 42548.88 ; lambda = 0.01080585 
+h = 42100.95 ; lambda = 0.01087094 
+h = 41648.76 ; lambda = 0.008397385 
+h = 42042.3 ; lambda = 0.009292423 
+h = 40979 ; lambda = 0.009764352 
+h = 40083.15 ; lambda = 0.009894539 
+h = 40535.34 ; lambda = 0.0123681 
+h = 40813.69 ; lambda = 0.01137542 
+h = 38517.53 ; lambda = 0.01139169 
+h = 36725.82 ; lambda = 0.01165207 
+h = 36273.63 ; lambda = 0.009178509 
+h = 37339.06 ; lambda = 0.009975906 
+h = 32916.31 ; lambda = 0.01093604 
+h = 29332.89 ; lambda = 0.01145679 
+h = 29785.08 ; lambda = 0.01393034 
+h = 26540.8 ; lambda = 0.01630626 
+h = 19147.87 ; lambda = 0.01611098 
+h = 10358.89 ; lambda = 0.01834044 
+h = 16355.78 ; lambda = 0.02096046 
+h = 19600.06 ; lambda = 0.01858454 
+h = 8962.845 ; lambda = 0.02076518 
+h = 22146.31 ; lambda = 0.01742099 
+h = 13357.33 ; lambda = 0.01965045 
+h = 15554.58 ; lambda = 0.01909308 
+h = 18346.66 ; lambda = 0.01424361 
+h = 16853.5 ; lambda = 0.01928124 
+h = 13260.22 ; lambda = 0.02226335 
+h = 17675.95 ; lambda = 0.01764907 
+h = 16377.03 ; lambda = 0.01746091 
+h = 16138.79 ; lambda = 0.01655074 
+h = 14255.66 ; lambda = 0.01890492 
+h = 16820.88 ; lambda = 0.01796303 
+Done.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           h       lambda 
+1.682088e+04 1.796303e-02 </code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="co"># kde_quarter &lt;- spattemp.density(</span></span>
-<span id="cb161-2"><a href="#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   myanmar_quarter_owin,</span></span>
-<span id="cb161-3"><a href="#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   h = 9000,</span></span>
-<span id="cb161-4"><a href="#cb161-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   lambda = 19)</span></span>
-<span id="cb161-5"><a href="#cb161-5" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(kde_quarter)</span></span>
-<span id="cb161-6"><a href="#cb161-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb161-7"><a href="#cb161-7" aria-hidden="true" tabindex="-1"></a><span class="co">#bandwidth (through KDE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb166"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a>kde_quarter <span class="ot">&lt;-</span> <span class="fu">spattemp.density</span>(</span>
+<span id="cb166-2"><a href="#cb166-2" aria-hidden="true" tabindex="-1"></a>   violent_quarter_owin,</span>
+<span id="cb166-3"><a href="#cb166-3" aria-hidden="true" tabindex="-1"></a>   <span class="at">h =</span> <span class="dv">44000</span>,</span>
+<span id="cb166-4"><a href="#cb166-4" aria-hidden="true" tabindex="-1"></a>   <span class="at">lambda =</span> <span class="dv">2000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Calculating trivariate smooth...Done.
+Edge-correcting...Done.
+Conditioning on time...Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb168"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a> <span class="fu">summary</span>(kde_quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spatiotemporal Kernel Density Estimate
+
+Bandwidths
+  h = 44000 (spatial)
+  lambda = 2000 (temporal)
+
+No. of observations
+  48601 
+
+Spatial bound
+  Type: polygonal
+  2D enclosure: [414059.6, 1347748] x [1076097, 3166186]
+
+Temporal bound
+  [2021, 2025]
+
+Evaluation
+  128 x 128 x 5 trivariate lattice
+  Density range: [1.260189e-15, 2.834562e-12]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb170"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># bandwidth (through KDE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(kde_quarter)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb171"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb171-1"><a href="#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(kde_quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-99-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-99-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-99-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-99-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex01_files/figure-html/unnamed-chunk-99-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div></li>
 </ul>
 </section>
@@ -12660,20 +13074,20 @@ arguments to min; returning Inf</code></pre>
 <li>combine jittered ppp object and owin objects</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_sagaing_ppp <span class="ot">=</span> violent_quarter_ppp_jittered[sagaing_owin]</span>
-<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_mandalay_ppp <span class="ot">=</span> violent_quarter_ppp_jittered[mandalay_owin]</span>
-<span id="cb163-3"><a href="#cb163-3" aria-hidden="true" tabindex="-1"></a>violent_quarter_magway_ppp <span class="ot">=</span> violent_quarter_ppp_jittered[magway_owin]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb172"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_sagaing_ppp <span class="ot">=</span> violent_quarter_ppp_jittered[sagaing_owin]</span>
+<span id="cb172-2"><a href="#cb172-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_mandalay_ppp <span class="ot">=</span> violent_quarter_ppp_jittered[mandalay_owin]</span>
+<span id="cb172-3"><a href="#cb172-3" aria-hidden="true" tabindex="-1"></a>violent_quarter_magway_ppp <span class="ot">=</span> violent_quarter_ppp_jittered[magway_owin]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_sagaing_ppp.km <span class="ot">=</span> <span class="fu">rescale</span>(violent_sagaing_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
-<span id="cb164-2"><a href="#cb164-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_mandalay_ppp.km <span class="ot">=</span> <span class="fu">rescale</span>(violent_mandalay_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
-<span id="cb164-3"><a href="#cb164-3" aria-hidden="true" tabindex="-1"></a>violent_quarter_magway_ppp.km <span class="ot">=</span> <span class="fu">rescale</span>(violent_magway_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb173"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb173-1"><a href="#cb173-1" aria-hidden="true" tabindex="-1"></a>violent_quarter_sagaing_ppp.km <span class="ot">=</span> <span class="fu">rescale</span>(violent_sagaing_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb173-2"><a href="#cb173-2" aria-hidden="true" tabindex="-1"></a>violent_quarter_mandalay_ppp.km <span class="ot">=</span> <span class="fu">rescale</span>(violent_mandalay_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb173-3"><a href="#cb173-3" aria-hidden="true" tabindex="-1"></a>violent_quarter_magway_ppp.km <span class="ot">=</span> <span class="fu">rescale</span>(violent_magway_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
-<span id="cb165-2"><a href="#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_sagaing_ppp.km, <span class="at">main=</span><span class="st">"Sagaing"</span>, <span class="at">frame=</span><span class="cn">FALSE</span>)</span>
-<span id="cb165-3"><a href="#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_mandalay_ppp.km, <span class="at">main=</span><span class="st">"Mandalay"</span>)</span>
-<span id="cb165-4"><a href="#cb165-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_magway_ppp.km, <span class="at">main=</span><span class="st">"Magway"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb174"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
+<span id="cb174-2"><a href="#cb174-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_sagaing_ppp.km, <span class="at">main=</span><span class="st">"Sagaing"</span>, <span class="at">frame=</span><span class="cn">FALSE</span>)</span>
+<span id="cb174-3"><a href="#cb174-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_mandalay_ppp.km, <span class="at">main=</span><span class="st">"Mandalay"</span>)</span>
+<span id="cb174-4"><a href="#cb174-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(violent_quarter_magway_ppp.km, <span class="at">main=</span><span class="st">"Magway"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
