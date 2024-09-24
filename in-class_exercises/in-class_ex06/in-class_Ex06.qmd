@@ -1,0 +1,221 @@
+---
+title: "In-class Exercise 6: "
+author: "Marcus Jaeson Yeo"
+date: "September 22, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+## **1.0 Introduction**
+
+## **2.0 Importing Packages**
+
+```{r}
+pacman::p_load(sf, sfdep, spdep, tmap, tidyverse)
+```
+
+## **3.0 Importing Datasets into Environment**
+
+-   geospatial (boundary data)
+
+    ```{r}
+    #| eval: true
+      #dont want to run the code again
+    hunan <- st_read(dsn = "data/geospatial", 
+                     layer = "Hunan")
+    ```
+
+-   aspatial
+
+    ```{r}
+    #| eval: true
+    hunan2012_sf <- read_csv("data/aspatial/Hunan_2012.csv")
+    hunan2012_sf
+    ```
+
+------------------------------------------------------------------------
+
+## 4.0 Data Wrangling
+
+-   Perform Relational Join
+
+    -   left_join (from dplyr package) to join by same column (County)
+
+```{r}
+# | eval: false
+# hunan <- left_join(hunan_sf, hunan2012_sf, join_by(County)) %>%   
+#   select(1:4, 7, 15)  
+
+hunan <- left_join(hunan, hunan2012_sf) %>%
+  select(1:4, 7, 15)
+
+#how do i know to pick column 15? if i were to pick 8 (last column), there will be:   #Error: Fill argument neither colors nor valid variable name(s)  #pick 6 columns (1:4, 7, 15) gives back 7 columns? (GDPPC)
+```
+
+## **5.0 EDA**
+
+-   .before = 1, inserts at the front
+
+```{r}
+wm_q <- hunan %>%
+  mutate(nb=st_contiguity(geometry),
+         wt=st_weights(nb, style="W"),
+         .before = 1)
+```
+
+```{r}
+moranI <- global_moran(wm_q$GDPPC,
+                       wm_q$nb,
+                       wm_q$wt)
+
+glimpse(moranI)
+
+```
+
+-   \$ K -\> average neighbours found
+
+-   95% CI used
+
+```{r}
+global_moran_test(wm_q$GDPPC,
+                  wm_q$nb,
+                  wm_q$wt)
+```
+
+global moran' "I" permutation test
+
+-   permutation method
+
+-   set.seed() -\> always ensure computation is reproducible, need to set a seed value, ensure number get back is always the same
+
+-   try to get 100 trials: have nsim=99
+
+    ```{r}
+    # Convert neighborhood structure to spatial weights list
+    listw <- nb2listw(wm_q$nb, style = "W")
+
+    # Set seed for reproducibility
+    set.seed(1234)
+
+    # Perform the global Moran's I permutation test (Monte Carlo)
+    global_moran_result <- moran.mc(wm_q$GDPPC, listw, nsim = 99)
+
+    ```
+
+```{r}
+global_moran_result
+```
+
+computing local Moran's I
+
+-   if dont have unnest, cannot see output in a table form
+
+-   ii column -\> is what you want, which is your local Moran I
+
+-   p_ii -\> base method
+
+-   p_ii_sim -\> simulation method
+
+-   p_folded_sim -\> Pysal, every trial will take 1 out and put back 1
+
+    -   p-value based on the implementation of Pysal
+
+    -   <https://sfdep.josiahparry.com/reference/local_g>
+
+-   mean -\> for you to label clusters
+
+-   refer to skewness
+
+```{r}
+lisa <- wm_q %>%
+  mutate(local_moran = local_moran(
+    GDPPC, nb, wt, nsim=99),
+    .before = 1) %>%
+      unnest(local_moran)
+```
+
+```{r}
+tmap_mode("plot")
+tm_shape(lisa) +
+  tm_fill("ii") +
+  tm_borders(alpha = 0.5) +
+  tm_view(set.zoom.limits = c(6,8)) + 
+  tm_layout(
+    main.title = "local Moran's I of G", main.title.size = 2
+  )
+```
+
+```{r}
+tmap_mode("plot")
+tm_shape(lisa) +
+  tm_fill("p_ii_sim") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(
+    main.title = "p-value of local Moran's I of G", main.title.size = 2
+  )
+```
+
+```{r}
+# map1 <- 
+```
+
+```{r}
+# map1 <- tm_shape(lisa) +
+
+
+map2 <- tm_shape(lisa) + 
+  tm_fill("p_ii",
+          breaks = c(0, 0.001, 0.01, 0.05, 1),
+          )
+
+map2
+```
+
+```{r}
+lisa_sig <- lisa %>%
+  filter(p_ii < 0.05)
+tmap_mode("plot")
+tm_shape(lisa) + 
+  tm_polygons() + 
+  tm_borders(alpha = 0.5) + 
+tm_shape(lisa_sig) + 
+  tm_fill("mean") +
+  tm_borders(alpha = 0.4)
+```
+
+```{r}
+hunan_GDPPC <- hunan %>%
+  select(GDPPC, geometry)  # Selects both the GDPPC and geometry columns
+```
+
+```{r}
+wm_idw <- hunan_GDPPC %>%
+  mutate(
+    nb=st_contiguity(geometry),
+    wts = st_inverse_distance(nb, geometry, scale = 1, alpha = 1),
+         .before = 1
+    )
+```
+
+```{r}
+HCSA <- wm_idw %>%
+  mutate(local_Gi = local_gstar_perm(
+    GDPPC, nb, wt, nsim=99),
+    .before = 1) %>%
+  unnest(local_Gi)
+HCSA
+```
+
+```{r}
+HCSA_sig <- HCSA %>%
+  filter(p_sim < 0.05)
+tmap_mode("plot")
+tm_shape(HCSA) + 
+  tm_polygons() + 
+  tm_borders(alpha = 0.5) + 
+tm_shape(HCSA_sig) + 
+  tm_fill("gi_star") + 
+  tm_borders(alpha = 0.4)
+```

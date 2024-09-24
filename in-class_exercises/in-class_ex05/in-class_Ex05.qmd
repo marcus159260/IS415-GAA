@@ -158,5 +158,3 @@ tm_shape(hunan_gstat) +
             legend.width = 1.50,
             frame = TRUE)
 ```
-
-
