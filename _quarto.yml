@@ -19,6 +19,8 @@ website:
             href: "in-class_exercises/in-class_ex04/in-class_Ex04.html"
           - text: "Hands-on Exercise 5: Spatial Weights and Applications"
             href: "hands-on-exercises/Hands-on_Ex05/hands-on-ex5.html"
+          - text: "Hands-on Exercise 6: Global and Local Measures of Spatial Autocorrelation"
+            href: "hands-on-exercises/Hands-on_Ex06/hands-on-ex6.html"
       - text: "In-class Exercises"
         menu: 
           - text: "In-class Exercise 1"
@@ -37,6 +39,8 @@ website:
         menu:
           - text: "Take-home Exercise 1"
             href: "take-home_exercises/take-home_ex01/take-home_Ex01.html"
+          - text: "Take-home Exercise 2"
+            href: "take-home_exercises/take-home_ex02/take-home_Ex02.html"
         
     right: 
       - href: index.qmd

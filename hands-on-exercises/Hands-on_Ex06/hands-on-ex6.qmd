@@ -1,0 +1,13 @@
+---
+title: "Hands-on-Exercise 6: Global and Local Measures of Spatial Autocorrelation"
+author: "Marcus Jaeson Yeo"
+date: "September 21, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+```{r}
+
+```
