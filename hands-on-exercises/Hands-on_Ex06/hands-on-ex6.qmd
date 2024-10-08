@@ -254,7 +254,7 @@ ggplot(data, aes(x = simulated_morans_i)) +
 geary.test(hunan$GDPPC, listw=rswm_q)
 ```
 
-### 9.2 **Computing Monte Carlo Geary’s C** 
+### 9.2 **Computing Monte Carlo Geary’s C**
 
 simulations = 1000
 
