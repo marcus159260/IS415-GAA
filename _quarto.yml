@@ -19,8 +19,11 @@ website:
             href: "in-class_exercises/in-class_ex04/in-class_Ex04.html"
           - text: "Hands-on Exercise 5: Spatial Weights and Applications"
             href: "hands-on-exercises/Hands-on_Ex05/hands-on-ex5.html"
-          - text: "Hands-on Exercise 6: Global and Local Measures of Spatial Autocorrelation"
-            href: "hands-on-exercises/Hands-on_Ex06/hands-on-ex6.html"
+          - text: "Hands-on Exercise 6: Global Measures of Spatial Autocorrelation"
+            href: "hands-on-exercises/Hands-on_Ex06/hands-on-ex6_global/hands-on-ex6_global.html"
+          - text: "Hands-on Exercise 6: Local Measures of Spatial Autocorrelation"
+            href: "hands-on-exercises/Hands-on_Ex06/hands-on-ex6_local/hands-on-ex6_local.html"
+          
       - text: "In-class Exercises"
         menu: 
           - text: "In-class Exercise 1"
