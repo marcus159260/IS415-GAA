@@ -1,0 +1,203 @@
+---
+title: "Take-home Exercise 2: Application of Geospatial Analysis Methods to Discover Thailand Drug Abuse at the Province Level"
+author: "Marcus Jaeson Yeo"
+date: "September 26, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+## 1.0 Introduction
+
+#### Context:
+
+Drug abuse is associated with significant negative health, financial and social consequences. Yet, illicit drug consumption remains highly prevalent and continues to be a growing problem worldwide. In 2021, 1 in 17 people, aged 15–64 in the world had used a drug in the past 12 months. Notwithstanding population growth, the estimated number of drug users grew from 240 million in 2011 to 296 million in 2021.
+
+The geopolitics of Thailand which is near the [Golden Triangle](https://en.wikipedia.org/wiki/Golden_Triangle_(Southeast_Asia)) of Indochina, the largest drug production site in Asia, and the constant transportation infrastructure development made Thailand became market and transit routes for drug trafficking to the third countries.
+
+In Thailand, drug abuse is one of the major social issue. There are about 2.7 million youths using drugs in Thailand. Among youths aged between 15 and 19 years, there are about 300,000 who have needs for drug treatment. Most of Thai youths involved with drugs are vocational-school students, which nearly doubles in number compared to secondary-school students.
+
+Figure below shows geographic distribution of drug use cases by province and by year.
+
+#### Objectives:
+
+-   if the key indicators of drug abuse of Thailand are independent from space. (spatial independent, randomly distributed) (spatial weights and applications)
+
+-   If the indicators of drug abuse is indeed spatial dependent, then, you would like to detect where are the clusters and outliers, and the hotspots. (no need for emerging hotspots)
+
+-   Last but not least, you are also interested to investigate how the observation above evolve over time. (no need for spatial-temporal)
+
+------------------------------------------------------------------------
+
+## 2.0 Importing Packages
+
+```{r}
+pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel)
+```
+
+------------------------------------------------------------------------
+
+## 3.0 Importing Datasets into Environment
+
+-   geospatial (admin1 (province level))
+
+    ```{r}
+    thailand_boundary = st_read(dsn="data/geospatial/",
+            layer="tha_admbnda_adm1_rtsd_20220121")
+
+    dim(thailand_boundary)
+    ```
+
+    ```{r}
+    # plot(thailand_boundary, max.plot=16)
+    ```
+
+-   aspatial
+
+    ```{r}
+    thailand_sf <- read_csv("data/aspatial/thai_drug_offenses_2017_2022.csv")
+
+    dim(thailand_sf)
+    ```
+
+    ```{r}
+    # plot(thailand_sf)
+    ```
+
+------------------------------------------------------------------------
+
+## 4.0 Data Wrangling + necessary Projection Transformation
+
+### 4.1 Dropping Redundant Columns
+
+-   Dropping columns with NA and columns that do not give us valuable information
+
+```{r}
+thailand_boundary <- thailand_boundary %>%
+  select(1:3, 14:17)
+
+thailand_sf <- thailand_sf %>%
+  select(1:3, 5)
+```
+
+#### 4.2 Projection Transformation
+
+-   We need to further understand a bit more about the common identifier (province), hence printing the unique provinces, which is both [76]{.underline} unique provinces for both boundary and sf.
+
+```{r}
+unique_provinces_boundary <- unique(thailand_boundary$ADM1_EN)
+unique_provinces_boundary
+```
+
+```{r}
+unique_provinces_sf <- unique(thailand_sf$province_en)
+unique_provinces_sf
+```
+
+-   After studying the columns of both the geospatial and aspatial data, we see that the aspatial data (thailand_sf) lacks geometrical data (such as the latitude and longitude spatial features). We need to join both boundary and working data with its common columns: **ADM1_EN** (thailand_boundary) and **province_en** (thailand_sf).
+
+    -   First, we need to mutate to get the common identifier
+
+```{r}
+thailand_boundary <- thailand_boundary %>%
+  mutate(ADM1_EN = str_to_lower(ADM1_EN),  # Convert to lowercase
+         ADM1_EN = str_trim(ADM1_EN))
+
+thailand_sf <- thailand_sf %>%
+  mutate(province_en = str_to_lower(province_en),  # Convert to lowercase
+         province_en = str_trim(province_en))
+         
+```
+
+-   Second, we perform a left join
+
+```{r}
+thailand <- thailand_boundary %>%
+  left_join(thailand_sf, by = c("ADM1_EN" = "province_en"))
+```
+
+Since the EPSG code is 4326, which is the global code. We want to change both the EPSG code of the boundary data and working data to Thailand's global projection system. Acquiring the code from <https://epsg.io/32647>
+
+-   Third, we transform the it to Thailand's projected coordinate system (UTM Zone 47N) with the EPSG code: 32647
+
+```{r}
+thailand <- thailand %>%
+  st_transform(crs=32647)
+```
+
+```{r}
+st_crs(thailand)
+```
+
+#### 4.3 Plotting the object to visualise structure
+
+```{r}
+thailand_shp = st_read("data/geospatial/tha_admbnda_adm1_rtsd_20220121.shp")
+```
+
+```{r}
+#| eval: false
+boundary_plot <- tmap_mode("plot")
+tm_shape(thailand_shp)+
+  tm_fill(col="white")+
+  tm_borders(col = "black", lwd=0.3, alpha=0.6)+
+  tm_layout(
+    main.title = "Provinces",
+    main.title.size = 1,
+    main.title.position = "center",
+    legend.show = FALSE,
+     frame = FALSE)
+```
+
+```{r}
+#| eval: false
+# basemap <- tm_shape(thailand) +
+#   tm_polygons() +
+#   tm_text("ADM1_EN", size=0.5)
+# 
+# drug_cases <- qtm(thailand, "no_cases")
+# tmap_arrange(basemap, drug_cases, asp=1, ncol=2)
+```
+
+#### 4.4 Writing and Reading into RDS format
+
+```{r}
+#| eval: false
+
+#thailand combined dataframe
+write_rds(thailand, "data/rds/thailand.rds")
+
+#plot
+write_rds(boundary_plot, "data/rds/boundary_plot.rds")
+write_rds(basemap, "data/rds/basemap.rds")
+write_rds(drug_cases, "data/rds/drug_cases.rds")
+```
+
+```{r}
+#| echo: false
+thailand <- read_rds("data/rds/thailand.rds")
+```
+
+------------------------------------------------------------------------
+
+## 5.0 Exploratory Spatial Data Analysis
+
+-   Cases by week
+-   Overall Cases
+
+------------------------------------------------------------------------
+
+## 6.0 Spatial Weights and Applications
+
+------------------------------------------------------------------------
+
+## 7.0 Global and Local measures of spatial autocorrelation
+
+------------------------------------------------------------------------
+
+## 10.0 Conclusion
+
+------------------------------------------------------------------------
+
+## References
