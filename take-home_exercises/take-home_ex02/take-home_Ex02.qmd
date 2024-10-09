@@ -33,7 +33,7 @@ Figure below shows geographic distribution of drug use cases by province and by 
 ## 2.0 Importing Packages
 
 ```{r}
-pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel)
+pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, spdep, sfdep, leaflet, smoothr)
 ```
 
 ------------------------------------------------------------------------
@@ -100,6 +100,7 @@ unique_provinces_sf
     -   First, we need to mutate to get the common identifier
 
 ```{r}
+#| eval: false
 thailand_boundary <- thailand_boundary %>%
   mutate(ADM1_EN = str_to_lower(ADM1_EN),  # Convert to lowercase
          ADM1_EN = str_trim(ADM1_EN))
@@ -113,8 +114,10 @@ thailand_sf <- thailand_sf %>%
 -   Second, we perform a left join
 
 ```{r}
+#| eval: false
 thailand <- thailand_boundary %>%
-  left_join(thailand_sf, by = c("ADM1_EN" = "province_en"))
+  left_join(thailand_sf, by = c("ADM1_EN" = "province_en")) %>%
+  select(3:4, 7:10)
 ```
 
 Since the EPSG code is 4326, which is the global code. We want to change both the EPSG code of the boundary data and working data to Thailand's global projection system. Acquiring the code from <https://epsg.io/32647>
@@ -122,17 +125,20 @@ Since the EPSG code is 4326, which is the global code. We want to change both th
 -   Third, we transform the it to Thailand's projected coordinate system (UTM Zone 47N) with the EPSG code: 32647
 
 ```{r}
+#| eval: false
 thailand <- thailand %>%
   st_transform(crs=32647)
 ```
 
 ```{r}
+#| eval: false
 st_crs(thailand)
 ```
 
 #### 4.3 Plotting the object to visualise structure
 
 ```{r}
+#| eval: false
 thailand_shp = st_read("data/geospatial/tha_admbnda_adm1_rtsd_20220121.shp")
 ```
 
@@ -170,12 +176,12 @@ write_rds(thailand, "data/rds/thailand.rds")
 
 #plot
 write_rds(boundary_plot, "data/rds/boundary_plot.rds")
-write_rds(basemap, "data/rds/basemap.rds")
-write_rds(drug_cases, "data/rds/drug_cases.rds")
+# write_rds(basemap, "data/rds/basemap.rds")
+# write_rds(drug_cases, "data/rds/drug_cases.rds")
 ```
 
 ```{r}
-#| echo: false
+
 thailand <- read_rds("data/rds/thailand.rds")
 ```
 
@@ -183,8 +189,195 @@ thailand <- read_rds("data/rds/thailand.rds")
 
 ## 5.0 Exploratory Spatial Data Analysis
 
--   Cases by week
--   Overall Cases
+### 5.1 Further data wrangling and shortening
+
+### 5.1.1 Dropping and summing total number of drug cases
+
+-   Lets drop both date and types_of_drug_offenses column
+
+```{r}
+colnames(thailand)
+```
+
+```{r}
+thailand <- thailand %>%
+  select("ADM1_EN", "fiscal_year", "no_cases", "geometry")
+
+thailand
+```
+
+-   Sum all the no_cases by each year and province and sort them ascending, drop rows where the total_cases are 0
+
+```{r}
+thailand <- thailand %>%
+  group_by(fiscal_year, ADM1_EN) %>%
+  summarize(total_cases = sum(no_cases, na.rm = TRUE)) %>%
+  filter(total_cases > 0)  # Drop rows where total_cases = 0
+```
+
+### 5.1.2 Understanding our data
+
+-   unique years
+
+```{r}
+unique_years = unique(thailand$fiscal_year)
+unique_provinces = unique(thailand$ADM1_EN)
+
+unique_years
+cat('\n')
+unique_provinces
+```
+
+-   min and max total no of drug cases
+
+```{r}
+min_cases = min(thailand$no_cases, na.rm = FALSE)
+max_cases = max(thailand$no_cases, na.rm = FALSE)
+
+min_cases
+cat("\n")
+max_cases
+```
+
+### 5.2 Plotting
+
+```{r}
+# Ensure geometry is retained for mapping
+thailand_summary <- st_as_sf(thailand)
+```
+
+### 5.2.1 Total number of cases by each year and each province
+
+```{r}
+# Create the faceted plot for all years with desired layout
+faceted_plot <- tm_shape(thailand_summary) +
+  tm_fill("total_cases", 
+          n = 5, 
+          style = "equal", 
+          palette = "Blues", 
+          title = "Drug use cases") +
+  tm_borders(alpha = 0.5) +
+  tm_facets(by = "fiscal_year", 
+            ncol = 2,               # Ensure side-by-side layout with 2 columns
+            drop.empty.facets = TRUE) +  # Drop missing facets (empty years)
+  tm_layout(main.title = "Drug Use Cases by Year", 
+            title.size = 1.2,
+            legend.outside = TRUE,   # Legend outside the map area
+            asp = 1,                 # Control the aspect ratio for larger map
+            frame = FALSE,           # Removes white border frame around maps
+            inner.margins = c(0.02, 0.02, 0.02, 0.02))  # Reduce white space
+
+# Print the faceted plot
+faceted_plot
+```
+
+### 5.2.2 Side by side view of province and total no of drug cases in year 2017
+
+```{r}
+
+provinces <- tm_shape(thailand_summary %>% filter(fiscal_year == 2017)) +
+  tm_polygons() +
+  tm_text("ADM1_EN", size=0.5)
+
+custom_breaks <- c(0, 5000, 10000, 15000, 20000)  # Customize as necessary
+
+# total_cases <- qtm(thailand_summary, "total_cases")
+total_cases <- tm_shape(thailand_summary) +
+  tm_polygons("total_cases", 
+              breaks = custom_breaks,  # Apply the custom breaks
+              palette = "Blues",        # Color palette
+              title = "Total Cases")    # Title for the legend
+tmap_arrange(provinces, total_cases, asp=1, ncol=2)
+
+```
+
+### 5.2.3 Top 5 Provinces with the highest number of drug cases in year 2017
+
+```{r}
+# Step 1: Find the top 5 provinces with the highest total cases
+top_5_provinces <- thailand_summary %>%
+  filter(fiscal_year == 2017) %>%
+  arrange(desc(total_cases)) %>%
+  slice_head(n = 5)  # Select the top 5 rows
+
+# Step 2: Highlight the top 5 provinces
+provinces <- tm_shape(thailand_summary %>% filter(fiscal_year == 2017)) +
+  tm_polygons() +
+  tm_text("ADM1_EN", size = 0.5)
+
+# Apply custom breaks to the total_cases plot
+total_cases <- tm_shape(thailand_summary %>% filter(fiscal_year == 2017)) +
+  tm_polygons("total_cases", 
+              breaks = custom_breaks,  # Apply the custom breaks
+              palette = "Blues",        # Color palette
+              title = "Total Cases") +
+  tm_borders(alpha = 0.5)
+
+# Step 3: Highlight the top 5 provinces on the same plot
+highlight_top_5 <- tm_shape(top_5_provinces) +
+  tm_borders(col = "red", lwd = 3) +  # Use red borders to highlight
+  tm_text("ADM1_EN", size = 0.7, col = "red", fontface = "bold")  # Optional: Label them
+
+# Step 4: Arrange the plots
+tmap_arrange(provinces, total_cases + highlight_top_5, asp = 1, ncol = 2)
+```
+
+```{r}
+#|eval: false
+# plot_2018 <- tm_shape(thailand_summary %>% filter(fiscal_year == 2018)) + 
+#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2018")
+# 
+# plot_2019 <- tm_shape(thailand_summary %>% filter(fiscal_year == 2019)) + 
+#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2019")
+# 
+# plot_2020 <- tm_shape(thailand_summary %>% filter(fiscal_year == 2020)) + 
+#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2020")
+# 
+# plot_2021 <- tm_shape(thailand_summary %>% filter(fiscal_year == 2021)) + 
+#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2021")
+# 
+# plot_2022 <- tm_shape(thailand_summary %>% filter(fiscal_year == 2022)) + 
+#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2022")
+# 
+# # Arrange them
+# tmap_arrange(plot_2017, plot_2018, plot_2019, plot_2020, plot_2021, plot_2022, ncol = 2)
+```
+
+### 5.3 Visualising Equal and Quantile in year 2017
+
+```{r}
+equal <- tm_shape(thailand_summary %>% filter(fiscal_year == 2017)) + 
+  tm_polygons("total_cases",
+          palette = "Blues",
+          style="equal", n=10) + 
+  tm_borders(alpha = 0.5) + 
+  tm_layout(main.title = "Equal interval classification (year 2017)", title.size = 2)
+
+# quantile <- tm_shape(thailand_summary %>% filter(fiscal_year == 2017)) +
+#   tm_fill("total_cases",
+#           n = 5,
+#           style = "quantile") +
+#   tm_borders(alpha = 0.5) +
+#   tm_layout(main.title = "Equal quantile classification")
+
+quantile <- tm_shape(thailand_summary %>% filter(fiscal_year == 2017)) +
+  tm_polygons("total_cases",
+          palette = "Blues",
+          style="quantile", n=10) +
+  tm_layout(main.title = "Quantile interval classification (year 2017)", title.size = 2)
+
+tmap_arrange(equal, 
+             quantile, 
+             asp=1, 
+             ncol=2)
+```
+
+```{r}
+write_rds(thailand, "data/rds/thailand.rds")
+write_rds(equal, "data/rds/equal.rds")
+
+write_rds(quantile, "data/rds/quantile.rds")
+```
 
 ------------------------------------------------------------------------
 
@@ -192,7 +385,114 @@ thailand <- read_rds("data/rds/thailand.rds")
 
 ------------------------------------------------------------------------
 
-## 7.0 Global and Local measures of spatial autocorrelation
+## 7.0 Global Measures of Spatial Autocorrelation
+
+```{r}
+#| eval: false
+wm_q <- poly2nb(thailand, 
+                queen = TRUE)
+
+summary(wm_q)
+```
+
+```{r}
+#| eval: false
+write_rds(wm_q, "data/rds/wm_q.rds")
+```
+
+```{r}
+wm_q <- read_rds("data/rds/wm_q.rds")
+```
+
+### 7.1 Calculating the neighbours and weights
+
+```{r}
+# wm_q.nb <- st_contiguity(thailand, queen=TRUE)
+# wm_q.wt <- st_weights(wm_q.nb, style = "W")
+# wm_q.count <- thailand$count
+```
+
+### 7.2 Construct spatial contiguity matrices (weights) and row-standardised weight matrices
+
+```{r}
+rswm_q <- nb2listw(wm_q, 
+                   style="W", 
+                   zero.policy = TRUE)
+rswm_q
+```
+
+### 7.3 Global Measures of Spatial Autocorrelation: Moran's I test
+
+### 7.3.1 Moran's I Test
+
+```{r}
+moran.test(thailand$total_cases, 
+           listw=rswm_q, 
+           zero.policy = TRUE, 
+           na.action=na.omit)
+```
+
+### 7.3.2 Computing Monte Carlo Moran's I
+
+-   set a seed of 1234
+
+-   number of simulations = 1000
+
+```{r}
+set.seed(1234)
+bperm_thailand= moran.mc(thailand$total_cases, 
+                listw=rswm_q, 
+                nsim=999, 
+                zero.policy = TRUE, 
+                na.action=na.omit)
+bperm_thailand
+```
+
+### 7.3.3 Visualising Monte Carlo Moran's I
+
+-   Computing some basic statistics
+
+```{r}
+#compute mean
+mean(bperm_thailand$res[1:999])
+cat('\n')
+
+#compute variance
+var(bperm_thailand$res[1:999])
+cat('\n')
+
+#summary bperm
+summary(bperm_thailand$res[1:999])
+```
+
+-   plot basic histogram using base graph
+
+```{r}
+hist(bperm_thailand$res, #x
+     freq=TRUE, #y
+     breaks=20, 
+     xlab="Simulated Moran's I")
+abline(v=0, 
+       col="red") 
+```
+
+-   plotting histogram using ggplot2
+
+```{r}
+data <- data.frame(simulated_morans_i = bperm_thailand$res[1:999])
+
+ggplot(data, aes(x = simulated_morans_i)) +
+  geom_histogram(binwidth = (max(data$simulated_morans_i) - min(data$simulated_morans_i)) / 20, 
+                 color = "black", fill = "pink") +  # Histogram
+  geom_vline(xintercept = 0, color = "red", linetype = "solid") +  # Vertical line at x=0
+  labs(x = "Simulated Moran's I", y = "Frequency") +  # Labels for x and y axis
+  theme_minimal()  # Clean minimal theme
+
+```
+
+------------------------------------------------------------------------
+
+## 8.0 Local Measures of Spatial Autocorrelation
 
 ------------------------------------------------------------------------
 
