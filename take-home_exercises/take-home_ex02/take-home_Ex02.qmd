@@ -409,7 +409,7 @@ tmap_arrange(plot_2017, plot_2018, asp=1, ncol=2)
 -   If we attempt to use contiguity-based spatial weights to find neighbours, and use the queen method, we come up with a region that is not linked to any neighbours, which is incorrect. Hence, we need to swap to using distance-based method to find neighbours.
 
 ```{r}
-
+#| eval: false
 wm_q <- poly2nb(thailand, 
                 queen = TRUE)
 
