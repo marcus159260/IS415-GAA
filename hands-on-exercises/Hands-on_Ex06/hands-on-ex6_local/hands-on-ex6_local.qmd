@@ -160,7 +160,7 @@ To compute local Moran’s I, the [*localmoran()*](https://r-spatial.github.io/s
 
 The code chunks below are used to compute local Moran’s I of *GDPPC2012* at the county level.
 
-### 8.1 Computing local Moran's I 
+### 8.1 Computing local Moran's I
 
 ```{r}
 fips <- order(hunan$County)
@@ -547,6 +547,8 @@ Gimap <-tm_shape(hunan.gi) +
 tmap_arrange(gdppc, Gimap, asp=1, ncol=2)
 ```
 
+From this plot, we can see that there is a particularly hot spot in the north east, but also 4 particularly cold spots elsewhere that were not previously visible when using a distance weight matrix derived with a fixed bandwidth of 62KM.
+
 ### **10.3.3 Gi statistics using adaptive distance**
 
 The code chunk below are used to compute the Gi values for GDPPC2012 by using an adaptive distance weight matrix (i.e *knb_lw*).
@@ -579,3 +581,5 @@ tmap_arrange(gdppc,
              asp=1, 
              ncol=2)
 ```
+
+From this plot, we can see a hotspot in the north east, but the cold spots are focused in a small south-western region. This visualisation is different from the fixed weighting scheme because we used an adaptive weighting scheme, which may have helped overcome the issue of unevenly sized polygons.
