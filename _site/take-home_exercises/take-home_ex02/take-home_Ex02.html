@@ -154,8 +154,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Hands-on Exercise 5: Spatial Weights and Applications</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex06/hands-on-ex6.html">
- <span class="dropdown-text">Hands-on Exercise 6: Global and Local Measures of Spatial Autocorrelation</span></a>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex06/hands-on-ex6_global/hands-on-ex6_global.html">
+ <span class="dropdown-text">Hands-on Exercise 6: Global Measures of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex06/hands-on-ex6_local/hands-on-ex6_local.html">
+ <span class="dropdown-text">Hands-on Exercise 6: Local Measures of Spatial Autocorrelation</span></a>
   </li>  
     </ul>
   </li>
@@ -236,12 +240,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#importing-datasets-into-environment" id="toc-importing-datasets-into-environment" class="nav-link" data-scroll-target="#importing-datasets-into-environment">3.0 Importing Datasets into Environment</a></li>
   <li><a href="#data-wrangling-necessary-projection-transformation" id="toc-data-wrangling-necessary-projection-transformation" class="nav-link" data-scroll-target="#data-wrangling-necessary-projection-transformation">4.0 Data Wrangling + necessary Projection Transformation</a>
   <ul class="collapse">
-  <li><a href="#dropping-redundant-columns" id="toc-dropping-redundant-columns" class="nav-link" data-scroll-target="#dropping-redundant-columns">4.1 Dropping Redundant Columns</a></li>
+  <li><a href="#dropping-redundant-columns-left-join" id="toc-dropping-redundant-columns-left-join" class="nav-link" data-scroll-target="#dropping-redundant-columns-left-join">4.1 Dropping redundant columns + Left Join</a></li>
+  <li><a href="#dropping-and-summing-total-number-of-drug-cases" id="toc-dropping-and-summing-total-number-of-drug-cases" class="nav-link" data-scroll-target="#dropping-and-summing-total-number-of-drug-cases">4.2 Dropping and summing total number of drug cases</a></li>
+  <li><a href="#projection-transformation" id="toc-projection-transformation" class="nav-link" data-scroll-target="#projection-transformation">4.3 Projection Transformation</a></li>
   </ul></li>
-  <li><a href="#exploratory-spatial-data-analysis" id="toc-exploratory-spatial-data-analysis" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis">5.0 Exploratory Spatial Data Analysis</a></li>
-  <li><a href="#spatial-weights-and-applications" id="toc-spatial-weights-and-applications" class="nav-link" data-scroll-target="#spatial-weights-and-applications">6.0 Spatial Weights and Applications</a></li>
-  <li><a href="#global-and-local-measures-of-spatial-autocorrelation" id="toc-global-and-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#global-and-local-measures-of-spatial-autocorrelation">7.0 Global and Local measures of spatial autocorrelation</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">10.0 Conclusion</a></li>
+  <li><a href="#exploratory-spatial-data-analysis" id="toc-exploratory-spatial-data-analysis" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis">5.0 Exploratory Spatial Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#plotting" id="toc-plotting" class="nav-link" data-scroll-target="#plotting">5.1 Plotting</a></li>
+  <li><a href="#total-number-of-cases-by-each-year-and-each-province" id="toc-total-number-of-cases-by-each-year-and-each-province" class="nav-link" data-scroll-target="#total-number-of-cases-by-each-year-and-each-province">5.1.1 Total number of cases by each year and each province</a></li>
+  <li><a href="#side-by-side-view-of-province-and-total-no-of-drug-cases-in-year-2017" id="toc-side-by-side-view-of-province-and-total-no-of-drug-cases-in-year-2017" class="nav-link" data-scroll-target="#side-by-side-view-of-province-and-total-no-of-drug-cases-in-year-2017">5.1.2 Side by side view of province and total no of drug cases in year 2017</a></li>
+  <li><a href="#top-5-provinces-with-the-highest-number-of-drug-cases-in-year-2017" id="toc-top-5-provinces-with-the-highest-number-of-drug-cases-in-year-2017" class="nav-link" data-scroll-target="#top-5-provinces-with-the-highest-number-of-drug-cases-in-year-2017">5.1.3 Top 5 Provinces with the highest number of drug cases in year 2017</a></li>
+  <li><a href="#visualising-equal-and-quantile-in-year-2017" id="toc-visualising-equal-and-quantile-in-year-2017" class="nav-link" data-scroll-target="#visualising-equal-and-quantile-in-year-2017">5.2 Visualising Equal and Quantile in year 2017</a></li>
+  </ul></li>
+  <li><a href="#global-measures-of-spatial-autocorrelation" id="toc-global-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation">6.0 Global Measures of Spatial Autocorrelation</a>
+  <ul class="collapse">
+  <li><a href="#configuring-and-binding-coordinates" id="toc-configuring-and-binding-coordinates" class="nav-link" data-scroll-target="#configuring-and-binding-coordinates">6.1 Configuring and Binding coordinates</a></li>
+  <li><a href="#computing-distance-based-neighbours" id="toc-computing-distance-based-neighbours" class="nav-link" data-scroll-target="#computing-distance-based-neighbours">6.2 Computing distance-based neighbours</a></li>
+  <li><a href="#fixed-distance" id="toc-fixed-distance" class="nav-link" data-scroll-target="#fixed-distance">6.2.1 Fixed Distance</a></li>
+  <li><a href="#adaptive-distance" id="toc-adaptive-distance" class="nav-link" data-scroll-target="#adaptive-distance">6.2.2 Adaptive Distance</a></li>
+  <li><a href="#global-moran-i-access-spatial-autocorrelation-using-adaptive-distance" id="toc-global-moran-i-access-spatial-autocorrelation-using-adaptive-distance" class="nav-link" data-scroll-target="#global-moran-i-access-spatial-autocorrelation-using-adaptive-distance">6.2.3 Global Moran I: Access Spatial Autocorrelation using Adaptive Distance</a></li>
+  <li><a href="#spatial-correlogram" id="toc-spatial-correlogram" class="nav-link" data-scroll-target="#spatial-correlogram">6.3 Spatial Correlogram</a></li>
+  </ul></li>
+  <li><a href="#local-measures-of-spatial-autocorrelation" id="toc-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#local-measures-of-spatial-autocorrelation">7.0 Local Measures of Spatial Autocorrelation</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">9.0 Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -275,7 +296,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 5, 2024</p>
+      <p class="date-modified">October 11, 2024</p>
     </div>
   </div>
     
@@ -308,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="importing-packages" class="level2">
 <h2 class="anchored" data-anchor-id="importing-packages">2.0 Importing Packages</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, lubridate, tmap, tidyverse, spdep, sfdep, smoothr, dplyr, tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <hr>
 </section>
@@ -354,35 +375,30 @@ dbl (2): fiscal_year, no_cases
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7392    5</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(thailand_sf)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></li>
 </ul>
 <hr>
 </section>
 <section id="data-wrangling-necessary-projection-transformation" class="level2">
 <h2 class="anchored" data-anchor-id="data-wrangling-necessary-projection-transformation">4.0 Data Wrangling + necessary Projection Transformation</h2>
-<section id="dropping-redundant-columns" class="level3">
-<h3 class="anchored" data-anchor-id="dropping-redundant-columns">4.1 Dropping Redundant Columns</h3>
+<section id="dropping-redundant-columns-left-join" class="level3">
+<h3 class="anchored" data-anchor-id="dropping-redundant-columns-left-join">4.1 Dropping redundant columns + Left Join</h3>
 <ul>
 <li>Dropping columns with NA and columns that do not give us valuable information</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>thailand_boundary <span class="ot">&lt;-</span> thailand_boundary <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">14</span><span class="sc">:</span><span class="dv">17</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>thailand_sf <span class="ot">&lt;-</span> thailand_sf <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>thailand_boundary <span class="ot">&lt;-</span> thailand_boundary <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">14</span><span class="sc">:</span><span class="dv">17</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>thailand_sf <span class="ot">&lt;-</span> thailand_sf <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="projection-transformation" class="level4">
-<h4 class="anchored" data-anchor-id="projection-transformation">4.2 Projection Transformation</h4>
 <ul>
 <li>We need to further understand a bit more about the common identifier (province), hence printing the unique provinces, which is both <u>76</u> unique provinces for both boundary and sf.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>unique_provinces_boundary <span class="ot">&lt;-</span> <span class="fu">unique</span>(thailand_boundary<span class="sc">$</span>ADM1_EN)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>unique_provinces_boundary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>unique_provinces_boundary <span class="ot">&lt;-</span> <span class="fu">unique</span>(thailand_boundary<span class="sc">$</span>ADM1_EN)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>unique_provinces_boundary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Bangkok"                  "Samut Prakan"            
  [3] "Nonthaburi"               "Pathum Thani"            
@@ -426,8 +442,8 @@ dbl (2): fiscal_year, no_cases
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>unique_provinces_sf <span class="ot">&lt;-</span> <span class="fu">unique</span>(thailand_sf<span class="sc">$</span>province_en)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>unique_provinces_sf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>unique_provinces_sf <span class="ot">&lt;-</span> <span class="fu">unique</span>(thailand_sf<span class="sc">$</span>province_en)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>unique_provinces_sf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Bangkok"                  "Chai Nat"                
  [3] "Nonthaburi"               "Pathum Thani"            
@@ -477,130 +493,238 @@ dbl (2): fiscal_year, no_cases
 </ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>thailand_boundary <span class="ot">&lt;-</span> thailand_boundary <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ADM1_EN =</span> <span class="fu">str_to_lower</span>(ADM1_EN),  <span class="co"># Convert to lowercase</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">ADM1_EN =</span> <span class="fu">str_trim</span>(ADM1_EN))</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>thailand_sf <span class="ot">&lt;-</span> thailand_sf <span class="sc">%&gt;%</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">province_en =</span> <span class="fu">str_to_lower</span>(province_en),  <span class="co"># Convert to lowercase</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">province_en =</span> <span class="fu">str_trim</span>(province_en))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>thailand_boundary <span class="ot">&lt;-</span> thailand_boundary <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ADM1_EN =</span> <span class="fu">str_to_lower</span>(ADM1_EN),  <span class="co"># Convert to lowercase</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">ADM1_EN =</span> <span class="fu">str_trim</span>(ADM1_EN))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>thailand_sf <span class="ot">&lt;-</span> thailand_sf <span class="sc">%&gt;%</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">province_en =</span> <span class="fu">str_to_lower</span>(province_en),  <span class="co"># Convert to lowercase</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">province_en =</span> <span class="fu">str_trim</span>(province_en))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>Second, we perform a left join</li>
+<li>Second, we perform a left join. After left join, impute the 2 province rows with missing values with the mean values.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> thailand_boundary <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(thailand_sf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ADM1_EN"</span> <span class="ot">=</span> <span class="st">"province_en"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Since the EPSG code is 4326, which is the global code. We want to change both the EPSG code of the boundary data and working data to Thailand’s global projection system. Acquiring the code from <a href="https://epsg.io/32647" class="uri">https://epsg.io/32647</a></p>
-<ul>
-<li>Third, we transform the it to Thailand’s projected coordinate system (UTM Zone 47N) with the EPSG code: 32647</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> thailand <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>thailand_left_join <span class="ot">&lt;-</span> thailand_boundary <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(thailand_sf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ADM1_EN"</span> <span class="ot">=</span> <span class="st">"province_en"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(thailand)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>missing_provinces <span class="ot">&lt;-</span> thailand_left_join <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(no_cases)) <span class="sc">%&gt;%</span>  <span class="co"># Check for NA in the case column</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ADM1_EN)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(missing_provinces)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Coordinate Reference System:
-  User input: EPSG:32647 
-  wkt:
-PROJCRS["WGS 84 / UTM zone 47N",
-    BASEGEOGCRS["WGS 84",
-        ENSEMBLE["World Geodetic System 1984 ensemble",
-            MEMBER["World Geodetic System 1984 (Transit)"],
-            MEMBER["World Geodetic System 1984 (G730)"],
-            MEMBER["World Geodetic System 1984 (G873)"],
-            MEMBER["World Geodetic System 1984 (G1150)"],
-            MEMBER["World Geodetic System 1984 (G1674)"],
-            MEMBER["World Geodetic System 1984 (G1762)"],
-            MEMBER["World Geodetic System 1984 (G2139)"],
-            ELLIPSOID["WGS 84",6378137,298.257223563,
-                LENGTHUNIT["metre",1]],
-            ENSEMBLEACCURACY[2.0]],
-        PRIMEM["Greenwich",0,
-            ANGLEUNIT["degree",0.0174532925199433]],
-        ID["EPSG",4326]],
-    CONVERSION["UTM zone 47N",
-        METHOD["Transverse Mercator",
-            ID["EPSG",9807]],
-        PARAMETER["Latitude of natural origin",0,
-            ANGLEUNIT["degree",0.0174532925199433],
-            ID["EPSG",8801]],
-        PARAMETER["Longitude of natural origin",99,
-            ANGLEUNIT["degree",0.0174532925199433],
-            ID["EPSG",8802]],
-        PARAMETER["Scale factor at natural origin",0.9996,
-            SCALEUNIT["unity",1],
-            ID["EPSG",8805]],
-        PARAMETER["False easting",500000,
-            LENGTHUNIT["metre",1],
-            ID["EPSG",8806]],
-        PARAMETER["False northing",0,
-            LENGTHUNIT["metre",1],
-            ID["EPSG",8807]]],
-    CS[Cartesian,2],
-        AXIS["(E)",east,
-            ORDER[1],
-            LENGTHUNIT["metre",1]],
-        AXIS["(N)",north,
-            ORDER[2],
-            LENGTHUNIT["metre",1]],
-    USAGE[
-        SCOPE["Navigation and medium accuracy spatial referencing."],
-        AREA["Between 96°E and 102°E, northern hemisphere between equator and 84°N, onshore and offshore. China. Indonesia. Laos. Malaysia - West Malaysia. Mongolia. Myanmar (Burma). Russian Federation. Thailand."],
-        BBOX[0,96,84,102]],
-    ID["EPSG",32647]]</code></pre>
+<pre><code>Simple feature collection with 2 features and 1 field
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 100.42 ymin: 14.64684 xmax: 104.19 ymax: 18.44898
+Geodetic CRS:  WGS 84
+    ADM1_EN                       geometry
+1  Lop Buri MULTIPOLYGON (((101.3453 15...
+2 Bueng Kan MULTIPOLYGON (((103.405 18....</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>thailand_left_join_filtered <span class="ot">&lt;-</span> thailand_left_join <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(no_cases))  <span class="co"># Exclude rows where no_cases is NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dropping-and-summing-total-number-of-drug-cases" class="level3">
+<h3 class="anchored" data-anchor-id="dropping-and-summing-total-number-of-drug-cases">4.2 Dropping and summing total number of drug cases</h3>
+<section id="understanding-our-data" class="level4">
+<h4 class="anchored" data-anchor-id="understanding-our-data">Understanding our data</h4>
+<ul>
+<li>unique years, provinces, and types of drug offenses</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>unique_years <span class="ot">=</span> <span class="fu">unique</span>(thailand_left_join_filtered<span class="sc">$</span>fiscal_year)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>unique_provinces <span class="ot">=</span> <span class="fu">unique</span>(thailand_left_join_filtered<span class="sc">$</span>ADM1_EN)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>unique_types <span class="ot">=</span> <span class="fu">unique</span>(thailand_left_join_filtered<span class="sc">$</span>types_of_drug_offenses)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>unique_years</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2017 2018 2019 2020 2021 2022</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>unique_provinces</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Bangkok"                  "Samut Prakan"            
+ [3] "Nonthaburi"               "Pathum Thani"            
+ [5] "Phra Nakhon Si Ayutthaya" "Ang Thong"               
+ [7] "Sing Buri"                "Chai Nat"                
+ [9] "Saraburi"                 "Chon Buri"               
+[11] "Rayong"                   "Chanthaburi"             
+[13] "Trat"                     "Chachoengsao"            
+[15] "Prachin Buri"             "Nakhon Nayok"            
+[17] "Sa Kaeo"                  "Nakhon Ratchasima"       
+[19] "Buri Ram"                 "Surin"                   
+[21] "Si Sa Ket"                "Ubon Ratchathani"        
+[23] "Yasothon"                 "Chaiyaphum"              
+[25] "Amnat Charoen"            "Nong Bua Lam Phu"        
+[27] "Khon Kaen"                "Udon Thani"              
+[29] "Loei"                     "Nong Khai"               
+[31] "Maha Sarakham"            "Roi Et"                  
+[33] "Kalasin"                  "Sakon Nakhon"            
+[35] "Nakhon Phanom"            "Mukdahan"                
+[37] "Chiang Mai"               "Lamphun"                 
+[39] "Lampang"                  "Uttaradit"               
+[41] "Phrae"                    "Nan"                     
+[43] "Phayao"                   "Chiang Rai"              
+[45] "Mae Hong Son"             "Nakhon Sawan"            
+[47] "Uthai Thani"              "Kamphaeng Phet"          
+[49] "Tak"                      "Sukhothai"               
+[51] "Phitsanulok"              "Phichit"                 
+[53] "Phetchabun"               "Ratchaburi"              
+[55] "Kanchanaburi"             "Suphan Buri"             
+[57] "Nakhon Pathom"            "Samut Sakhon"            
+[59] "Samut Songkhram"          "Phetchaburi"             
+[61] "Prachuap Khiri Khan"      "Nakhon Si Thammarat"     
+[63] "Krabi"                    "Phangnga"                
+[65] "Phuket"                   "Surat Thani"             
+[67] "Ranong"                   "Chumphon"                
+[69] "Songkhla"                 "Satun"                   
+[71] "Trang"                    "Phatthalung"             
+[73] "Pattani"                  "Yala"                    
+[75] "Narathiwat"              </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>unique_types</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "drug_use_cases"                                        
+ [2] "suspects_in_drug_use_cases"                            
+ [3] "possession_cases"                                      
+ [4] "suspects_in_possession_cases"                          
+ [5] "possession_with_intent_to_distribute_cases"            
+ [6] "suspects_in_possession_with_intent_to_distribute_cases"
+ [7] "trafficking_cases"                                     
+ [8] "suspects_in_trafficking_cases"                         
+ [9] "production_cases"                                      
+[10] "suspects_in_production_cases"                          
+[11] "import_cases"                                          
+[12] "suspects_in_import_cases"                              
+[13] "export_cases"                                          
+[14] "suspects_in_export_cases"                              
+[15] "conspiracy_cases"                                      
+[16] "suspects_in_conspiracy_cases"                          </code></pre>
 </div>
 </div>
 </section>
-<section id="plotting-the-object-to-visualise-structure" class="level4">
-<h4 class="anchored" data-anchor-id="plotting-the-object-to-visualise-structure">4.3 Plotting the object to visualise structure</h4>
+<section id="filtering-and-data-wrangling" class="level4">
+<h4 class="anchored" data-anchor-id="filtering-and-data-wrangling">Filtering and Data Wrangling</h4>
+<ul>
+<li><p>As we are only interested in drug_cases under the types_of_drug_offenses, we need to filter based on that.</p></li>
+<li><p>Lets drop both date and types_of_drug_offenses column, Sum all the no_cases by each year and province and sort them ascending, drop rows where the total_cases are 0.</p></li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>thailand_shp <span class="ot">=</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/tha_admbnda_adm1_rtsd_20220121.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> thailand_left_join_filtered <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">"ADM1_EN"</span>, <span class="st">"fiscal_year"</span>, <span class="st">"types_of_drug_offenses"</span>, <span class="st">"no_cases"</span>, <span class="st">"geometry"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(types_of_drug_offenses <span class="sc">==</span> <span class="st">"drug_use_cases"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(no_cases <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(fiscal_year)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>thailand</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
-  `C:\marcus159260\IS415-GAA\take-home_exercises\take-home_ex02\data\geospatial\tha_admbnda_adm1_rtsd_20220121.shp' 
-  using driver `ESRI Shapefile'
-Simple feature collection with 77 features and 16 fields
+<pre><code>Simple feature collection with 450 features and 4 fields
 Geometry type: MULTIPOLYGON
 Dimension:     XY
 Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
-Geodetic CRS:  WGS 84</code></pre>
+Geodetic CRS:  WGS 84
+First 10 features:
+                    ADM1_EN fiscal_year types_of_drug_offenses no_cases
+1                   Bangkok        2017         drug_use_cases    11871
+2              Samut Prakan        2017         drug_use_cases      820
+3                Nonthaburi        2017         drug_use_cases      553
+4              Pathum Thani        2017         drug_use_cases      450
+5  Phra Nakhon Si Ayutthaya        2017         drug_use_cases      378
+6                 Ang Thong        2017         drug_use_cases      208
+7                 Sing Buri        2017         drug_use_cases      127
+8                  Chai Nat        2017         drug_use_cases      200
+9                  Saraburi        2017         drug_use_cases       69
+10                Chon Buri        2017         drug_use_cases     4180
+                         geometry
+1  MULTIPOLYGON (((100.6139 13...
+2  MULTIPOLYGON (((100.7306 13...
+3  MULTIPOLYGON (((100.3415 14...
+4  MULTIPOLYGON (((100.8916 14...
+5  MULTIPOLYGON (((100.5131 14...
+6  MULTIPOLYGON (((100.3332 14...
+7  MULTIPOLYGON (((100.3691 15...
+8  MULTIPOLYGON (((100.1199 15...
+9  MULTIPOLYGON (((101.3994 15...
+10 MULTIPOLYGON (((100.9719 12...</code></pre>
 </div>
+</div>
+</section>
+<section id="pivoting-the-fiscal-years-to-get-unique-polygons" class="level4">
+<h4 class="anchored" data-anchor-id="pivoting-the-fiscal-years-to-get-unique-polygons">Pivoting the fiscal years to get unique Polygons</h4>
+<ul>
+<li>We do this because when we do polygonal rendering, there are 6 copies (years 2017-2022) of the same polygons, which will slow down the time it takes to execute the process such as the poly2nb() spatial weights when we attempt to find the neighbours of regions. Hence, we need to <strong>reshape</strong> the dataframe using pivot_wider() to <u>reduce the number of rows</u> (450/6 = 75), and make the <u>geometry polygons unique</u>, while keeping our provinces unique as well. This is done by transposing the fiscal_year and no_cases to more columns by the number of cases in each year (no_cases_&lt;year&gt;).</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pivoting data to widen fiscal_year into separate no_cases columns by year</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> thailand <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, geometry) <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> fiscal_year, </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">values_from =</span> no_cases,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">names_prefix =</span> <span class="st">"no_cases_"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="projection-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="projection-transformation">4.3 Projection Transformation</h3>
+<p>Since the EPSG code is 4326, which is the global code. We want to change both the EPSG code of the boundary data and working data to Thailand’s global projection system. Acquiring the code from <a href="https://epsg.io/32647" class="uri">https://epsg.io/32647</a></p>
+<ul>
+<li>We will transform the it to Thailand’s projected coordinate system (UTM Zone 47N) with the EPSG code: 32647</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> thailand <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>boundary_plot <span class="ot">&lt;-</span> <span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(thailand_shp)<span class="sc">+</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col=</span><span class="st">"white"</span>)<span class="sc">+</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd=</span><span class="fl">0.3</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Provinces"</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.show =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(thailand)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="plotting-the-shapefile-object-to-visualise-structure" class="level4">
+<h4 class="anchored" data-anchor-id="plotting-the-shapefile-object-to-visualise-structure">4.3 Plotting the shapefile object to visualise structure</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>thailand_shp <span class="ot">=</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/tha_admbnda_adm1_rtsd_20220121.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># basemap &lt;- tm_shape(thailand) +</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons() +</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_text("ADM1_EN", size=0.5)</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># drug_cases &lt;- qtm(thailand, "no_cases")</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(basemap, drug_cases, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>boundary_plot <span class="ot">&lt;-</span> <span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(thailand_shp)<span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col=</span><span class="st">"white"</span>)<span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd=</span><span class="fl">0.3</span>, <span class="at">alpha=</span><span class="fl">0.6</span>)<span class="sc">+</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title =</span> <span class="st">"Provinces"</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.show =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># basemap &lt;- tm_shape(thailand) +</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons() +</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_text("ADM1_EN", size=0.5)</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># drug_cases &lt;- qtm(thailand, "no_cases")</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(basemap, drug_cases, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="writing-and-reading-into-rds-format" class="level4">
 <h4 class="anchored" data-anchor-id="writing-and-reading-into-rds-format">4.4 Writing and Reading into RDS format</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#thailand combined dataframe</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(thailand, <span class="st">"data/rds/thailand.rds"</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#plot</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(boundary_plot, <span class="st">"data/rds/boundary_plot.rds"</span>)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(basemap, <span class="st">"data/rds/basemap.rds"</span>)</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(drug_cases, <span class="st">"data/rds/drug_cases.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#thailand combined dataframe</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(thailand, <span class="st">"data/rds/thailand.rds"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#plot</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(boundary_plot, "data/rds/boundary_plot.rds")</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(basemap, "data/rds/basemap.rds")</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(drug_cases, "data/rds/drug_cases.rds")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>thailand <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/thailand.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <hr>
 </section>
@@ -609,21 +733,863 @@ Geodetic CRS:  WGS 84</code></pre>
 <section id="exploratory-spatial-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-spatial-data-analysis">5.0 Exploratory Spatial Data Analysis</h2>
 <ul>
-<li>Cases by week</li>
-<li>Overall Cases</li>
+<li>min and max total no of drug cases</li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>min_cases <span class="ot">=</span> <span class="fu">min</span>(thailand<span class="sc">$</span>no_cases, <span class="at">na.rm =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Unknown or uninitialised column: `no_cases`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in min(thailand$no_cases, na.rm = FALSE): no non-missing arguments to
+min; returning Inf</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>max_cases <span class="ot">=</span> <span class="fu">max</span>(thailand<span class="sc">$</span>no_cases, <span class="at">na.rm =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Unknown or uninitialised column: `no_cases`.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in max(thailand$no_cases, na.rm = FALSE): no non-missing arguments to
+max; returning -Inf</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>min_cases</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] Inf</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>max_cases</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -Inf</code></pre>
+</div>
+</div>
+<section id="plotting" class="level3">
+<h3 class="anchored" data-anchor-id="plotting">5.1 Plotting</h3>
+</section>
+<section id="total-number-of-cases-by-each-year-and-each-province" class="level3">
+<h3 class="anchored" data-anchor-id="total-number-of-cases-by-each-year-and-each-province">5.1.1 Total number of cases by each year and each province</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>min_cases <span class="ot">&lt;-</span> <span class="fu">min</span>(thailand<span class="sc">$</span>no_cases_2017, thailand<span class="sc">$</span>no_cases_2018, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>max_cases <span class="ot">&lt;-</span> <span class="fu">max</span>(thailand<span class="sc">$</span>no_cases_2017, thailand<span class="sc">$</span>no_cases_2018, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define custom breaks based on the range</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>custom_breaks <span class="ot">&lt;-</span> <span class="fu">seq</span>(min_cases, max_cases, <span class="at">length.out =</span> <span class="dv">5</span>)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>plot_2017 <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand) <span class="sc">+</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="st">"no_cases_2017"</span>,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks =</span> custom_breaks, </span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Drug Cases (2017)"</span>) <span class="sc">+</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Drug Use Cases in Thailand (2017)"</span>,  <span class="co"># Main title for the plot</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">title.size =</span> <span class="fl">1.5</span>,</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.outside =</span> <span class="cn">TRUE</span>,  <span class="co"># Legend outside the map area</span></span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">asp =</span> <span class="fl">0.8</span>,              <span class="co"># Control aspect ratio</span></span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">frame =</span> <span class="cn">TRUE</span>)          <span class="co"># Remove the frame around the plot</span></span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>plot_2018 <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(thailand) <span class="sc">+</span></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="st">"no_cases_2018"</span>,</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks =</span> custom_breaks, </span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Drug Cases (2018)"</span>) <span class="sc">+</span></span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Drug Use Cases in Thailand (2017)"</span>,  <span class="co"># Main title for the plot</span></span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">title.size =</span> <span class="fl">1.5</span>,</span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.outside =</span> <span class="cn">TRUE</span>,  <span class="co"># Legend outside the map area</span></span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">asp =</span> <span class="fl">0.8</span>,              <span class="co"># Control aspect ratio</span></span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">frame =</span> <span class="cn">TRUE</span>)          <span class="co"># Remove the frame around the plot</span></span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2017</span></span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2018</span></span>
+<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(plot_2017, plot_2018, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: One tm layer group has duplicated layer types, which are omitted. To
+draw multiple layers of the same type, use multiple layer groups (i.e. specify
+tm_shape prior to each of them).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some legend labels were too wide. These labels have been resized to 0.59, 0.54, 0.50. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: One tm layer group has duplicated layer types, which are omitted. To
+draw multiple layers of the same type, use multiple layer groups (i.e. specify
+tm_shape prior to each of them).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some legend labels were too wide. These labels have been resized to 0.59, 0.54, 0.50. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex02_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="side-by-side-view-of-province-and-total-no-of-drug-cases-in-year-2017" class="level3">
+<h3 class="anchored" data-anchor-id="side-by-side-view-of-province-and-total-no-of-drug-cases-in-year-2017">5.1.2 Side by side view of province and total no of drug cases in year 2017</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># provinces &lt;- tm_shape(thailand %&gt;% filter(fiscal_year == 2017)) +</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons() +</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_text("ADM1_EN", size=0.5)</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co"># custom_breaks &lt;- c(0, 5000, 10000, 15000, 20000)  # Customize as necessary</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # total_cases &lt;- qtm(thailand_summary, "total_cases")</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co"># no_cases &lt;- tm_shape(thailand) +</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons("no_cases", </span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co">#               breaks = custom_breaks,  # Apply the custom breaks</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a><span class="co">#               palette = "Blues",        # Color palette</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="co">#               title = "Number of Cases")    # Title for the legend</span></span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(provinces, no_cases, asp=1, ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="top-5-provinces-with-the-highest-number-of-drug-cases-in-year-2017" class="level3">
+<h3 class="anchored" data-anchor-id="top-5-provinces-with-the-highest-number-of-drug-cases-in-year-2017">5.1.3 Top 5 Provinces with the highest number of drug cases in year 2017</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Find the top 5 provinces with the highest total cases</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># top_5_provinces &lt;- thailand %&gt;%</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(fiscal_year == 2017) %&gt;%</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   arrange(desc(no_cases)) %&gt;%</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   slice_head(n = 5)  # Select the top 5 rows</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # Step 2: Highlight the top 5 provinces</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="co"># provinces &lt;- tm_shape(thailand %&gt;% filter(fiscal_year == 2017)) +</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons() +</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_text("ADM1_EN", size = 0.5)</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a><span class="co"># # Apply custom breaks to the total_cases plot</span></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a><span class="co"># no_cases &lt;- tm_shape(thailand %&gt;% filter(fiscal_year == 2017)) +</span></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons("no_cases", </span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a><span class="co">#               breaks = custom_breaks,  # Apply the custom breaks</span></span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a><span class="co">#               palette = "Blues",        # Color palette</span></span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a><span class="co">#               title = "Total Cases") +</span></span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_borders(alpha = 0.5)</span></span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a><span class="co"># # Step 3: Highlight the top 5 provinces on the same plot</span></span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a><span class="co"># highlight_top_5 &lt;- tm_shape(top_5_provinces) +</span></span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_borders(col = "red", lwd = 3) +  # Use red borders to highlight</span></span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_text("ADM1_EN", size = 0.7, col = "red", fontface = "bold")  # Optional: Label them</span></span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a><span class="co"># # Step 4: Arrange the plots</span></span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(provinces, no_cases + highlight_top_5, asp = 1, ncol = 2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#|eval: false</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2018 &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2018)) + </span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2018")</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2019 &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2019)) + </span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2019")</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2020 &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2020)) + </span></span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2020")</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2021 &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2021)) + </span></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2021")</span></span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_2022 &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2022)) + </span></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_fill("total_cases", n = 5, style = "equal") + tm_borders() + tm_layout(main.title = "2022")</span></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a><span class="co"># # Arrange them</span></span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(plot_2017, plot_2018, plot_2019, plot_2020, plot_2021, plot_2022, ncol = 2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualising-equal-and-quantile-in-year-2017" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-equal-and-quantile-in-year-2017">5.2 Visualising Equal and Quantile in year 2017</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># equal &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2017)) + </span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons("total_cases",</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co">#           palette = "Blues",</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co">#           style="equal", n=10) + </span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_borders(alpha = 0.5) + </span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_layout(main.title = "Equal interval classification (year 2017)", title.size = 2)</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="co"># quantile &lt;- tm_shape(thailand_summary %&gt;% filter(fiscal_year == 2017)) +</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_polygons("total_cases",</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co">#           palette = "Blues",</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="co">#           style="quantile", n=10) +</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   tm_layout(main.title = "Quantile interval classification (year 2017)", title.size = 2)</span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a><span class="co"># tmap_arrange(equal, </span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a><span class="co">#              quantile, </span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="co">#              asp=1, </span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="co">#              ncol=2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(equal, "data/rds/equal.rds")</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co"># write_rds(quantile, "data/rds/quantile.rds")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <hr>
 </section>
-<section id="spatial-weights-and-applications" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-weights-and-applications">6.0 Spatial Weights and Applications</h2>
+</section>
+<section id="global-measures-of-spatial-autocorrelation" class="level2">
+<h2 class="anchored" data-anchor-id="global-measures-of-spatial-autocorrelation">6.0 Global Measures of Spatial Autocorrelation</h2>
+<ul>
+<li>If we attempt to use contiguity-based spatial weights to find neighbours, and use the queen method, we come up with a region that is not linked to any neighbours, which is incorrect. Hence, we need to swap to using distance-based method to find neighbours.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(thailand, </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">queen =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in poly2nb(thailand, queen = TRUE): some observations have no neighbours;
+if this seems unexpected, try increasing the snap argument.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in poly2nb(thailand, queen = TRUE): neighbour object has 2 sub-graphs;
+if this sub-graph count seems unexpected, try increasing the snap argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 75 
+Number of nonzero links: 330 
+Percentage nonzero weights: 5.866667 
+Average number of links: 4.4 
+1 region with no links:
+65
+2 disjoint connected subgraphs
+Link number distribution:
+
+ 0  1  2  3  4  5  6  7  8  9 
+ 1  1  6 18 14 16 11  5  1  2 
+1 least connected region:
+13 with 1 link
+2 most connected regions:
+27 49 with 9 links</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(wm_q, <span class="st">"data/rds/wm_q.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/wm_q.rds"</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 75 
+Number of nonzero links: 330 
+Percentage nonzero weights: 5.866667 
+Average number of links: 4.4 
+1 region with no links:
+65
+2 disjoint connected subgraphs
+Link number distribution:
+
+ 0  1  2  3  4  5  6  7  8  9 
+ 1  1  6 18 14 16 11  5  1  2 
+1 least connected region:
+13 with 1 link
+2 most connected regions:
+27 49 with 9 links</code></pre>
+</div>
+</div>
+<section id="configuring-and-binding-coordinates" class="level3">
+<h3 class="anchored" data-anchor-id="configuring-and-binding-coordinates">6.1 Configuring and Binding coordinates</h3>
+<section id="computing-longitude-and-latitude-to-achieve-coordinates" class="level4">
+<h4 class="anchored" data-anchor-id="computing-longitude-and-latitude-to-achieve-coordinates">Computing longitude and latitude to achieve coordinates</h4>
+<ul>
+<li>longitude</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(thailand<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>latitude</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>latitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(thailand<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">2</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>bind the coordinates</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coords)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     longitude latitude
+[1,]  675514.6  1523087
+[2,]  685033.7  1503755
+[3,]  650477.2  1539777
+[4,]  681656.0  1555581
+[5,]  664627.1  1586462
+[6,]  645239.0  1617118</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="computing-distance-based-neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="computing-distance-based-neighbours">6.2 Computing distance-based neighbours</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in knn2nb(knearneigh(coords)): neighbour object has 19 sub-graphs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>k1dists <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords, <span class="at">longlat =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(k1dists)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  21548   50601   64530   63106   76823  110987 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+This summary report shows that the largest first nearest neighbour distance is 110987 meters (UTM). As dnearneigh accepts meters and we need specify longlat = FALSE, lets round it up to 111000 meters and use this as our upper threshold will ensure us that all regions will at least have 1 neighbour.
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</section>
+<section id="fixed-distance" class="level3">
+<h3 class="anchored" data-anchor-id="fixed-distance">6.2.1 Fixed Distance</h3>
+<ul>
+<li>within 111000 meters radius</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>wm_d111000 <span class="ot">&lt;-</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">111000</span>, <span class="at">longlat =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in dnearneigh(coords, 0, 111000, longlat = FALSE): neighbour object has
+2 sub-graphs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>wm_d111000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 75 
+Number of nonzero links: 332 
+Percentage nonzero weights: 5.902222 
+Average number of links: 4.426667 
+2 disjoint connected subgraphs</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(thailand<span class="sc">$</span>ADM1_EN, <span class="fu">card</span>(wm_d111000))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                          
+                           1 2 3 4 5 6 8 9 10 12 13 14
+  amnat charoen            0 0 0 1 0 0 0 0  0  0  0  0
+  ang thong                0 0 0 0 0 0 0 0  1  0  0  0
+  bangkok                  0 0 0 0 0 0 0 0  0  1  0  0
+  buri ram                 0 1 0 0 0 0 0 0  0  0  0  0
+  chachoengsao             0 0 0 0 0 0 0 1  0  0  0  0
+  chai nat                 0 0 0 0 0 1 0 0  0  0  0  0
+  chaiyaphum               0 1 0 0 0 0 0 0  0  0  0  0
+  chanthaburi              0 0 0 0 1 0 0 0  0  0  0  0
+  chiang mai               0 0 1 0 0 0 0 0  0  0  0  0
+  chiang rai               1 0 0 0 0 0 0 0  0  0  0  0
+  chon buri                0 0 0 0 0 1 0 0  0  0  0  0
+  chumphon                 1 0 0 0 0 0 0 0  0  0  0  0
+  kalasin                  0 0 0 1 0 0 0 0  0  0  0  0
+  kamphaeng phet           0 0 0 0 1 0 0 0  0  0  0  0
+  kanchanaburi             0 1 0 0 0 0 0 0  0  0  0  0
+  khon kaen                0 0 1 0 0 0 0 0  0  0  0  0
+  krabi                    0 0 0 0 1 0 0 0  0  0  0  0
+  lampang                  0 0 1 0 0 0 0 0  0  0  0  0
+  lamphun                  0 1 0 0 0 0 0 0  0  0  0  0
+  loei                     1 0 0 0 0 0 0 0  0  0  0  0
+  mae hong son             1 0 0 0 0 0 0 0  0  0  0  0
+  maha sarakham            0 0 1 0 0 0 0 0  0  0  0  0
+  mukdahan                 0 0 0 0 1 0 0 0  0  0  0  0
+  nakhon nayok             0 0 0 0 0 0 0 1  0  0  0  0
+  nakhon pathom            0 0 0 0 0 0 0 0  1  0  0  0
+  nakhon phanom            0 1 0 0 0 0 0 0  0  0  0  0
+  nakhon ratchasima        1 0 0 0 0 0 0 0  0  0  0  0
+  nakhon sawan             0 0 0 0 1 0 0 0  0  0  0  0
+  nakhon si thammarat      0 0 0 1 0 0 0 0  0  0  0  0
+  nan                      0 1 0 0 0 0 0 0  0  0  0  0
+  narathiwat               0 1 0 0 0 0 0 0  0  0  0  0
+  nong bua lam phu         0 0 0 1 0 0 0 0  0  0  0  0
+  nong khai                0 1 0 0 0 0 0 0  0  0  0  0
+  nonthaburi               0 0 0 0 0 0 0 0  0  0  1  0
+  pathum thani             0 0 0 0 0 0 0 0  0  0  0  1
+  pattani                  0 0 1 0 0 0 0 0  0  0  0  0
+  phangnga                 0 0 1 0 0 0 0 0  0  0  0  0
+  phatthalung              0 0 0 1 0 0 0 0  0  0  0  0
+  phayao                   0 1 0 0 0 0 0 0  0  0  0  0
+  phetchabun               0 0 1 0 0 0 0 0  0  0  0  0
+  phetchaburi              0 0 0 1 0 0 0 0  0  0  0  0
+  phichit                  0 0 0 1 0 0 0 0  0  0  0  0
+  phitsanulok              0 0 0 1 0 0 0 0  0  0  0  0
+  phra nakhon si ayutthaya 0 0 0 0 0 0 0 0  0  1  0  0
+  phrae                    0 0 0 1 0 0 0 0  0  0  0  0
+  phuket                   0 1 0 0 0 0 0 0  0  0  0  0
+  prachin buri             0 0 0 0 0 1 0 0  0  0  0  0
+  prachuap khiri khan      1 0 0 0 0 0 0 0  0  0  0  0
+  ranong                   0 1 0 0 0 0 0 0  0  0  0  0
+  ratchaburi               0 0 0 0 1 0 0 0  0  0  0  0
+  rayong                   0 0 1 0 0 0 0 0  0  0  0  0
+  roi et                   0 0 0 0 1 0 0 0  0  0  0  0
+  sa kaeo                  0 0 1 0 0 0 0 0  0  0  0  0
+  sakon nakhon             0 0 1 0 0 0 0 0  0  0  0  0
+  samut prakan             0 0 0 0 0 0 0 0  1  0  0  0
+  samut sakhon             0 0 0 0 0 0 0 1  0  0  0  0
+  samut songkhram          0 0 0 0 0 0 1 0  0  0  0  0
+  saraburi                 0 0 0 0 0 0 1 0  0  0  0  0
+  satun                    0 0 1 0 0 0 0 0  0  0  0  0
+  si sa ket                0 1 0 0 0 0 0 0  0  0  0  0
+  sing buri                0 0 0 0 0 0 0 1  0  0  0  0
+  songkhla                 0 0 1 0 0 0 0 0  0  0  0  0
+  sukhothai                0 0 0 1 0 0 0 0  0  0  0  0
+  suphan buri              0 0 0 0 0 0 0 1  0  0  0  0
+  surat thani              0 0 0 1 0 0 0 0  0  0  0  0
+  surin                    0 1 0 0 0 0 0 0  0  0  0  0
+  tak                      1 0 0 0 0 0 0 0  0  0  0  0
+  trang                    0 0 0 1 0 0 0 0  0  0  0  0
+  trat                     1 0 0 0 0 0 0 0  0  0  0  0
+  ubon ratchathani         0 1 0 0 0 0 0 0  0  0  0  0
+  udon thani               0 0 1 0 0 0 0 0  0  0  0  0
+  uthai thani              0 0 0 0 0 1 0 0  0  0  0  0
+  uttaradit                0 0 1 0 0 0 0 0  0  0  0  0
+  yala                     0 1 0 0 0 0 0 0  0  0  0  0
+  yasothon                 0 0 1 0 0 0 0 0  0  0  0  0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>n_comp <span class="ot">&lt;-</span> <span class="fu">n.comp.nb</span>(wm_d111000)</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>n_comp<span class="sc">$</span>nc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+</div>
+<ul>
+<li>This shows that there are 2 different clusters, meaning that some regions are connected to each other, while others are not, leading to two distinct groups. Below shows that the first cluster contains 61 regions, while the second cluster contains 14 regions.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(n_comp<span class="sc">$</span>comp.id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 1  2 
+61 14 </code></pre>
+</div>
+</div>
+<section id="plotting-fixed-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="plotting-fixed-distance-weight-matrix">Plotting fixed distance weight matrix</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>x_limits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">min</span>(longitude) <span class="sc">-</span> <span class="dv">1000</span>, <span class="fu">max</span>(longitude) <span class="sc">+</span> <span class="dv">1000</span>)  <span class="co"># Adjust these values as needed</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>y_limits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">min</span>(latitude) <span class="sc">-</span> <span class="dv">1000</span>, <span class="fu">max</span>(latitude) <span class="sc">+</span> <span class="dv">1000</span>)   <span class="co"># Adjust these values as needed</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the boundary and neighborhood structures with adjusted limits</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(thailand<span class="sc">$</span>geometry, <span class="at">border=</span><span class="st">"lightgrey"</span>, <span class="at">xlim =</span> x_limits, <span class="at">ylim =</span> y_limits)</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wm_d111000, coords, <span class="at">add=</span><span class="cn">TRUE</span>)</span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(k1, coords, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">length=</span><span class="fl">0.08</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex02_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Plot 1st nearest neighbours (red lines) vs Distance link of neighbours within the cut-off distance of 111000 meters (black lines)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(thailand<span class="sc">$</span>geometry, <span class="at">border=</span><span class="st">"lightgrey"</span>, <span class="at">main=</span><span class="st">"1st nearest neighbours"</span>)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(k1, coords, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">length=</span><span class="fl">0.08</span>)</span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(thailand<span class="sc">$</span>geometry, <span class="at">border=</span><span class="st">"lightgrey"</span>, <span class="at">main=</span><span class="st">"Distance link"</span>)</span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wm_d111000, coords, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex02_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="adaptive-distance" class="level3">
+<h3 class="anchored" data-anchor-id="adaptive-distance">6.2.2 Adaptive Distance</h3>
+<section id="computing-adaptive-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="computing-adaptive-distance-weight-matrix">Computing Adaptive Distance Weight matrix</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>knn6 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">6</span>))</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>knn6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 75 
+Number of nonzero links: 450 
+Percentage nonzero weights: 8 
+Average number of links: 6 
+Non-symmetric neighbours list</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(knn6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 75
+ $ : int [1:6] 2 3 4 5 57 58
+ $ : int [1:6] 1 3 4 10 57 58
+ $ : int [1:6] 1 2 4 5 57 58
+ $ : int [1:6] 1 2 3 5 16 57
+ $ : int [1:6] 1 3 4 6 9 57
+ $ : int [1:6] 4 5 7 8 9 56
+ $ : int [1:6] 5 6 8 9 46 56
+ $ : int [1:6] 5 6 7 46 47 56
+ $ : int [1:6] 4 5 6 7 15 16
+ $ : int [1:6] 1 2 11 12 14 15
+ $ : int [1:6] 1 2 10 12 13 14
+ $ : int [1:6] 10 11 13 14 15 17
+ $ : int [1:6] 10 11 12 14 15 17
+ $ : int [1:6] 1 2 10 11 15 16
+ $ : int [1:6] 4 9 10 14 16 17
+ $ : int [1:6] 1 4 5 9 14 15
+ $ : int [1:6] 12 14 15 16 18 19
+ $ : int [1:6] 9 15 16 17 19 24
+ $ : int [1:6] 17 18 20 21 31 32
+ $ : int [1:6] 19 21 22 23 31 32
+ $ : int [1:6] 19 20 22 23 25 32
+ $ : int [1:6] 20 21 23 25 32 36
+ $ : int [1:6] 21 22 25 32 33 36
+ $ : int [1:6] 18 26 27 29 31 53
+ $ : int [1:6] 21 22 23 32 33 36
+ $ : int [1:6] 24 27 28 29 30 33
+ $ : int [1:6] 24 26 28 31 32 33
+ $ : int [1:6] 26 27 29 30 33 34
+ $ : int [1:6] 26 28 30 40 51 53
+ $ : int [1:6] 26 27 28 29 33 34
+ $ : int [1:6] 19 20 23 27 32 33
+ $ : int [1:6] 20 23 25 31 33 36
+ $ : int [1:6] 23 27 31 32 34 36
+ $ : int [1:6] 28 30 32 33 35 36
+ $ : int [1:6] 23 25 28 33 34 36
+ $ : int [1:6] 23 25 32 33 34 35
+ $ : int [1:6] 38 39 41 43 44 45
+ $ : int [1:6] 37 39 41 45 49 50
+ $ : int [1:6] 37 38 40 41 43 50
+ $ : int [1:6] 29 39 41 42 50 51
+ $ : int [1:6] 38 39 40 42 43 50
+ $ : int [1:6] 29 39 40 41 43 44
+ $ : int [1:6] 37 39 40 41 42 44
+ $ : int [1:6] 37 38 39 41 42 43
+ $ : int [1:6] 37 38 39 41 43 44
+ $ : int [1:6] 6 7 8 47 48 52
+ $ : int [1:6] 7 8 46 48 55 56
+ $ : int [1:6] 46 47 49 50 51 52
+ $ : int [1:6] 38 46 47 48 50 52
+ $ : int [1:6] 39 40 41 48 49 51
+ $ : int [1:6] 29 40 48 50 52 53
+ $ : int [1:6] 8 46 48 50 51 53
+ $ : int [1:6] 24 27 29 46 51 52
+ $ : int [1:6] 1 3 57 58 59 60
+ $ : int [1:6] 6 8 47 54 56 57
+ $ : int [1:6] 5 6 7 8 55 57
+ $ : int [1:6] 1 3 4 5 58 59
+ $ : int [1:6] 1 2 3 54 57 59
+ $ : int [1:6] 1 3 54 57 58 60
+ $ : int [1:6] 3 54 57 58 59 61
+ $ : int [1:6] 2 54 58 59 60 68
+ $ : int [1:6] 63 64 65 66 71 72
+ $ : int [1:6] 62 64 65 66 71 72
+ $ : int [1:6] 62 63 65 66 67 71
+ $ : int [1:6] 62 63 64 66 71 72
+ $ : int [1:6] 62 63 64 65 67 68
+ $ : int [1:6] 62 63 64 65 66 68
+ $ : int [1:6] 61 62 63 64 66 67
+ $ : int [1:6] 70 71 72 73 74 75
+ $ : int [1:6] 62 69 71 72 73 74
+ $ : int [1:6] 62 63 65 69 70 72
+ $ : int [1:6] 62 63 69 70 71 73
+ $ : int [1:6] 69 70 71 72 74 75
+ $ : int [1:6] 69 70 71 72 73 75
+ $ : int [1:6] 69 70 71 72 73 74
+ - attr(*, "region.id")= chr [1:75] "1" "2" "3" "4" ...
+ - attr(*, "call")= language knearneigh(x = coords, k = 6)
+ - attr(*, "sym")= logi FALSE
+ - attr(*, "type")= chr "knn"
+ - attr(*, "knn-k")= num 6
+ - attr(*, "class")= chr "nb"
+ - attr(*, "ncomp")=List of 2
+  ..$ nc     : int 1
+  ..$ comp.id: int [1:75] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(thailand<span class="sc">$</span>ADM1_EN, <span class="fu">card</span>(knn6))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                          
+                           6
+  amnat charoen            1
+  ang thong                1
+  bangkok                  1
+  buri ram                 1
+  chachoengsao             1
+  chai nat                 1
+  chaiyaphum               1
+  chanthaburi              1
+  chiang mai               1
+  chiang rai               1
+  chon buri                1
+  chumphon                 1
+  kalasin                  1
+  kamphaeng phet           1
+  kanchanaburi             1
+  khon kaen                1
+  krabi                    1
+  lampang                  1
+  lamphun                  1
+  loei                     1
+  mae hong son             1
+  maha sarakham            1
+  mukdahan                 1
+  nakhon nayok             1
+  nakhon pathom            1
+  nakhon phanom            1
+  nakhon ratchasima        1
+  nakhon sawan             1
+  nakhon si thammarat      1
+  nan                      1
+  narathiwat               1
+  nong bua lam phu         1
+  nong khai                1
+  nonthaburi               1
+  pathum thani             1
+  pattani                  1
+  phangnga                 1
+  phatthalung              1
+  phayao                   1
+  phetchabun               1
+  phetchaburi              1
+  phichit                  1
+  phitsanulok              1
+  phra nakhon si ayutthaya 1
+  phrae                    1
+  phuket                   1
+  prachin buri             1
+  prachuap khiri khan      1
+  ranong                   1
+  ratchaburi               1
+  rayong                   1
+  roi et                   1
+  sa kaeo                  1
+  sakon nakhon             1
+  samut prakan             1
+  samut sakhon             1
+  samut songkhram          1
+  saraburi                 1
+  satun                    1
+  si sa ket                1
+  sing buri                1
+  songkhla                 1
+  sukhothai                1
+  suphan buri              1
+  surat thani              1
+  surin                    1
+  tak                      1
+  trang                    1
+  trat                     1
+  ubon ratchathani         1
+  udon thani               1
+  uthai thani              1
+  uttaradit                1
+  yala                     1
+  yasothon                 1</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-adaptive-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="plotting-adaptive-distance-weight-matrix">Plotting adaptive distance weight matrix</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(thailand<span class="sc">$</span>geometry, <span class="at">border=</span><span class="st">"lightgrey"</span>)</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(knn6, coords, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex02_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="global-moran-i-access-spatial-autocorrelation-using-adaptive-distance" class="level3">
+<h3 class="anchored" data-anchor-id="global-moran-i-access-spatial-autocorrelation-using-adaptive-distance">6.2.3 Global Moran I: Access Spatial Autocorrelation using Adaptive Distance</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>rsknn6 <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(knn6, </span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">style=</span><span class="st">"W"</span>, </span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>rsknn6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 75 
+Number of nonzero links: 450 
+Percentage nonzero weights: 8 
+Average number of links: 6 
+Non-symmetric neighbours list
+
+Weights style: W 
+Weights constants summary:
+   n   nn S0       S1       S2
+W 75 5625 75 22.27778 311.6667</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>thailand_total_cases <span class="ot">&lt;-</span> thailand <span class="sc">%&gt;%</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_cases =</span> no_cases_2017 <span class="sc">+</span> no_cases_2018 <span class="sc">+</span> </span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>                     no_cases_2019 <span class="sc">+</span> no_cases_2020 <span class="sc">+</span> </span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>                     no_cases_2021 <span class="sc">+</span> no_cases_2022)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="morans-i-test" class="level4">
+<h4 class="anchored" data-anchor-id="morans-i-test">1. Moran’s I Test</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(thailand_total_cases<span class="sc">$</span>total_cases, </span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rsknn6, </span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  thailand_total_cases$total_cases  
+weights: rsknn6    
+
+Moran I statistic standard deviate = 1.4928, p-value = 0.06774
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+       0.07005720       -0.01351351        0.00313397 </code></pre>
+</div>
+</div>
+</section>
+<section id="computing-monte-carlo-morans-i" class="level4">
+<h4 class="anchored" data-anchor-id="computing-monte-carlo-morans-i">2. .Computing Monte Carlo Moran’s I</h4>
+<ul>
+<li><p>set a seed of 1234</p></li>
+<li><p>number of simulations = 1000</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>bperm_moran<span class="ot">=</span> <span class="fu">moran.mc</span>(thailand_total_cases<span class="sc">$</span>total_cases, </span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rsknn6, </span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>bperm_moran</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  thailand_total_cases$total_cases 
+weights: rsknn6  
+number of simulations + 1: 1000 
+
+statistic = 0.070057, observed rank = 909, p-value = 0.091
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<ul>
+<li><p>moran I statistic: 0.070057 &gt; 0 show signs of clustering</p></li>
+<li><p>p-value = 0.091 &gt; 0.05, 95% confident to accept null hypothesis (h0)</p></li>
+</ul>
+</section>
+<section id="visualising-monte-carlo-morans-i" class="level4">
+<h4 class="anchored" data-anchor-id="visualising-monte-carlo-morans-i">3. Visualising Monte Carlo Moran’s I</h4>
+<ul>
+<li>Computing some basic statistics</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co">#compute mean</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bperm_moran<span class="sc">$</span>res[<span class="dv">1</span><span class="sc">:</span><span class="dv">999</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.01000913</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co">#compute variance</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(bperm_moran<span class="sc">$</span>res[<span class="dv">1</span><span class="sc">:</span><span class="dv">999</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.00319814</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'</span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co">#summary bperm</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bperm_moran<span class="sc">$</span>res[<span class="dv">1</span><span class="sc">:</span><span class="dv">999</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+-0.15423 -0.05047 -0.01599 -0.01001  0.02541  0.22929 </code></pre>
+</div>
+</div>
+<ul>
+<li>plotting histogram using ggplot2</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">simulated_morans_i =</span> bperm_moran<span class="sc">$</span>res[<span class="dv">1</span><span class="sc">:</span><span class="dv">999</span>])</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> simulated_morans_i)) <span class="sc">+</span></span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> (<span class="fu">max</span>(data<span class="sc">$</span>simulated_morans_i) <span class="sc">-</span> <span class="fu">min</span>(data<span class="sc">$</span>simulated_morans_i)) <span class="sc">/</span> <span class="dv">20</span>, </span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"pink"</span>) <span class="sc">+</span>  <span class="co"># Histogram</span></span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>) <span class="sc">+</span>  <span class="co"># Vertical line at x=0</span></span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Simulated Moran's I"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>) <span class="sc">+</span>  <span class="co"># Labels for x and y axis</span></span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()  <span class="co"># Clean minimal theme</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex02_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="spatial-correlogram" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-correlogram">6.3 Spatial Correlogram</h3>
+<section id="compute-morans-i-spatial-correlogram" class="level4">
+<h4 class="anchored" data-anchor-id="compute-morans-i-spatial-correlogram">Compute Moran’s I Spatial Correlogram</h4>
+<p>In the code chunk below,&nbsp;<a href="https://r-spatial.github.io/spdep/reference/sp.correlogram.html"><code>sp.correlogram()</code></a>&nbsp;of&nbsp;<strong>spdep</strong>&nbsp;package is used to compute a <u><strong>6-lag</strong></u> spatial correlogram of GDPPC. The global spatial autocorrelation used in Moran’s I. The&nbsp;<strong>plot()</strong>&nbsp;of base Graph is then used to plot the output.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>MI_corr <span class="ot">&lt;-</span> <span class="fu">sp.correlogram</span>(knn6,                            </span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>                          thailand_total_cases<span class="sc">$</span>total_cases,</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">order=</span><span class="dv">6</span>,  <span class="co">#lag-value: 6                           </span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>                          <span class="at">method=</span><span class="st">"I"</span>,                            </span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>                          <span class="at">style=</span><span class="st">"W"</span>,</span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">zero.policy =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(MI_corr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex02_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Looking at the first lag, it is positive, showing signs of clustering. This suggests that the the key indicators of drug abuse of Thailand have positive spatial dependence. The following lags after shows negative Moran I, showing signs of regular patterns amongst 2nd order neighbours and below.</li>
+</ul>
+<p>By plotting the output might not allow us to provide complete interpretation. This is because not all autocorrelation values are statistically significant. Hence, it is important for us to examine the full analysis report by printing out the analysis results as in the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(MI_corr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spatial correlogram for thailand_total_cases$total_cases 
+method: Moran's I
+         estimate expectation   variance standard deviate Pr(I) two sided  
+1 (75)  0.0700572  -0.0135135  0.0031340           1.4928         0.13548  
+2 (75) -0.0540624  -0.0135135  0.0023706          -0.8328         0.40494  
+3 (75) -0.0060335  -0.0135135  0.0022208           0.1587         0.87388  
+4 (75) -0.0500771  -0.0135135  0.0020147          -0.8146         0.41530  
+5 (75)  0.0242813  -0.0135135  0.0019363           0.8589         0.39039  
+6 (75) -0.1007630  -0.0135135  0.0019960          -1.9529         0.05083 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
 <hr>
 </section>
-<section id="global-and-local-measures-of-spatial-autocorrelation" class="level2">
-<h2 class="anchored" data-anchor-id="global-and-local-measures-of-spatial-autocorrelation">7.0 Global and Local measures of spatial autocorrelation</h2>
+</section>
+</section>
+<section id="local-measures-of-spatial-autocorrelation" class="level2">
+<h2 class="anchored" data-anchor-id="local-measures-of-spatial-autocorrelation">7.0 Local Measures of Spatial Autocorrelation</h2>
 <hr>
 </section>
 <section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">10.0 Conclusion</h2>
+<h2 class="anchored" data-anchor-id="conclusion">9.0 Conclusion</h2>
 <hr>
 </section>
 <section id="references" class="level2">
