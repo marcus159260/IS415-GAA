@@ -32,8 +32,22 @@ Figure below shows geographic distribution of drug use cases by province and by 
 
 ## 2.0 Importing Packages
 
+-   sf
+
+-   tmap
+
+-   tidyverse
+
+-   spdep
+
+-   sfdep
+
+-   dplyr
+
+-   tidyr
+
 ```{r}
-pacman::p_load(sf, lubridate, tmap, tidyverse, spdep, sfdep, smoothr, dplyr, tidyr)
+pacman::p_load(sf, tmap, tidyverse, spdep, sfdep, dplyr, tidyr)
 ```
 
 ------------------------------------------------------------------------
@@ -47,10 +61,6 @@ pacman::p_load(sf, lubridate, tmap, tidyverse, spdep, sfdep, smoothr, dplyr, tid
             layer="tha_admbnda_adm1_rtsd_20220121")
 
     dim(thailand_boundary)
-    ```
-
-    ```{r}
-    # plot(thailand_boundary, max.plot=16)
     ```
 
 -   aspatial
@@ -69,51 +79,45 @@ pacman::p_load(sf, lubridate, tmap, tidyverse, spdep, sfdep, smoothr, dplyr, tid
 
 ### 4.1 Dropping redundant columns + Left Join
 
--   Dropping columns with NA and columns that do not give us valuable information
+-   We want to check for missing values, and spelling errors within the provinces. So we print out the unique provinces in the thailand_boundary and thailand_sf.
 
 ```{r}
-thailand_boundary <- thailand_boundary %>%
-  select(1:3, 14:17)
-
-thailand_sf <- thailand_sf %>%
-  select(1:3, 5)
+print(unique(thailand_boundary$ADM1_EN))
+cat('\n---------------------\n')
+print(unique(thailand_sf$province_en))
 ```
 
--   We need to further understand a bit more about the common identifier (province), hence printing the unique provinces, which is both [76]{.underline} unique provinces for both boundary and sf.
+Here we notice that in thailand_sf, we have the provinces: 'Lop Buri' and 'Bueng Kan' spelled wrongly, as ''Loburi' and 'buogkan'. Hence, we need to perform data transformation (renaming of the provinces) and do necessary trimming and conversion to lowercase. After which, we will perform a left join using the common identifier (province) and remove the missing values.
+
+-   First, we need to mutate to do the necessary data transformation
 
 ```{r}
-unique_provinces_boundary <- unique(thailand_boundary$ADM1_EN)
-unique_provinces_boundary
-```
 
-```{r}
-unique_provinces_sf <- unique(thailand_sf$province_en)
-unique_provinces_sf
-```
-
--   After studying the columns of both the geospatial and aspatial data, we see that the aspatial data (thailand_sf) lacks geometrical data (such as the latitude and longitude spatial features). We need to join both boundary and working data with its common columns: **ADM1_EN** (thailand_boundary) and **province_en** (thailand_sf).
-
-    -   First, we need to mutate to get the common identifier
-
-```{r}
-#| eval: false
 thailand_boundary <- thailand_boundary %>%
   mutate(ADM1_EN = str_to_lower(ADM1_EN),  # Convert to lowercase
          ADM1_EN = str_trim(ADM1_EN))
 
 thailand_sf <- thailand_sf %>%
   mutate(province_en = str_to_lower(province_en),  # Convert to lowercase
-         province_en = str_trim(province_en))
-         
+         province_en = str_trim(province_en),
+         province_en = gsub("^loburi$", "lop buri", province_en),  # Rename 'loburi' to 'lop buri'
+         province_en = gsub("^buogkan$", "bueng kan", province_en)) 
 ```
 
--   Second, we perform a left join. After left join, impute the 2 province rows with missing values with the mean values.
+```{r}
+print(unique(thailand_sf$province_en))
+```
+
+By printing the unique thailand_sf provinces again, we get the correct names of the 2 provinces.
+
+-   Second, we perform a left join.
 
 ```{r}
 
 thailand_left_join <- thailand_boundary %>%
   left_join(thailand_sf, by = c("ADM1_EN" = "province_en")) %>%
-  select(3:4, 7:10)
+  select(3, 17:19, 21)
+  
 ```
 
 ```{r}
@@ -124,39 +128,29 @@ missing_provinces <- thailand_left_join %>%
 print(missing_provinces)
 ```
 
-```{r}
-thailand_left_join_filtered <- thailand_left_join %>%
-  filter(!is.na(no_cases))  # Exclude rows where no_cases is NA
-
-```
+We see that there are no rows with missing values.
 
 ### 4.2 Dropping and summing total number of drug cases
 
 #### Understanding our data
 
--   unique years, provinces, and types of drug offenses
+-   unique years, types of drug offenses
 
 ```{r}
-unique_years = unique(thailand_left_join_filtered$fiscal_year)
-unique_provinces = unique(thailand_left_join_filtered$ADM1_EN)
-unique_types = unique(thailand_left_join_filtered$types_of_drug_offenses)
+unique_years = unique(thailand_left_join$fiscal_year)
+unique_types = unique(thailand_left_join$types_of_drug_offenses)
 
 unique_years
-cat('\n')
-unique_provinces
 cat('\n')
 unique_types
 ```
 
 #### Filtering and Data Wrangling
 
--   As we are only interested in drug_cases under the types_of_drug_offenses, we need to filter based on that.
-
--   Lets drop both date and types_of_drug_offenses column, Sum all the no_cases by each year and province and sort them ascending, drop rows where the total_cases are 0.
+-   As we are only interested in drug_cases under the types_of_drug_offenses, we need to filter based on that. We need to also filter the rows where the total_cases are 0 and sort the years in ascending (2017-2022).
 
 ```{r}
-thailand <- thailand_left_join_filtered %>%
-  select("ADM1_EN", "fiscal_year", "types_of_drug_offenses", "no_cases", "geometry") %>%
+thailand <- thailand_left_join %>%
   filter(types_of_drug_offenses == "drug_use_cases") %>%
   filter(no_cases > 0) %>%
   arrange(fiscal_year)
@@ -166,7 +160,7 @@ thailand
 
 #### Pivoting the fiscal years to get unique Polygons
 
--   We do this because when we do polygonal rendering, there are 6 copies (years 2017-2022) of the same polygons, which will slow down the time it takes to execute the process such as the poly2nb() spatial weights when we attempt to find the neighbours of regions. Hence, we need to **reshape** the dataframe using pivot_wider() to [reduce the number of rows]{.underline} (450/6 = 75), and make the [geometry polygons unique]{.underline}, while keeping our provinces unique as well. This is done by transposing the fiscal_year and no_cases to more columns by the number of cases in each year (no_cases\_\<year\>).
+-   We do this because when we do polygonal rendering, there are 6 copies (years 2017-2022) of the same polygons, which will slow down the time it takes to execute the process such as the poly2nb() spatial weights when we attempt to find the neighbours of regions. Hence, we need to **reshape** the dataframe using pivot_wider() to [reduce the number of rows]{.underline}, approximately (462/6 = 77 rows), and make the [geometry polygons unique]{.underline}, while keeping our provinces unique as well. This is done by transposing the fiscal_year and no_cases to more columns by the number of cases in each year (no_cases\_\<year\>).
 
 ```{r}
 # Pivoting data to widen fiscal_year into separate no_cases columns by year
@@ -202,35 +196,23 @@ thailand <- thailand %>%
 st_crs(thailand)
 ```
 
-#### 4.3 Plotting the shapefile object to visualise structure
+#### 4.3 Plotting the basemap object to visualise structure with provinces
 
 ```{r}
-#| eval: false
-thailand_shp = st_read("data/geospatial/tha_admbnda_adm1_rtsd_20220121.shp")
-```
-
-```{r}
-#| eval: false
-boundary_plot <- tmap_mode("plot")
-tm_shape(thailand_shp)+
-  tm_fill(col="white")+
-  tm_borders(col = "black", lwd=0.3, alpha=0.6)+
+#|fig-width: 12
+#|fig-height: 10
+#|
+basemap <- tm_shape(thailand) +
+  tm_borders(alpha = 0.5) +
+  tm_text("ADM1_EN", size=0.4) + 
   tm_layout(
-    main.title = "Provinces",
+    main.title = "Basemap with provinces",
     main.title.size = 1,
     main.title.position = "center",
     legend.show = FALSE,
      frame = FALSE)
-```
 
-```{r}
-#| eval: false
-# basemap <- tm_shape(thailand) +
-#   tm_polygons() +
-#   tm_text("ADM1_EN", size=0.5)
-# 
-# drug_cases <- qtm(thailand, "no_cases")
-# tmap_arrange(basemap, drug_cases, asp=1, ncol=2)
+basemap
 ```
 
 #### 4.4 Writing and Reading into RDS format
@@ -240,11 +222,6 @@ tm_shape(thailand_shp)+
 
 #thailand combined dataframe
 write_rds(thailand, "data/rds/thailand.rds")
-
-#plot
-# write_rds(boundary_plot, "data/rds/boundary_plot.rds")
-# write_rds(basemap, "data/rds/basemap.rds")
-# write_rds(drug_cases, "data/rds/drug_cases.rds")
 ```
 
 ```{r}
@@ -259,8 +236,8 @@ thailand <- read_rds("data/rds/thailand.rds")
 -   min and max total no of drug cases
 
 ```{r}
-min_cases = min(thailand$no_cases, na.rm = FALSE)
-max_cases = max(thailand$no_cases, na.rm = FALSE)
+min_cases = min(thailand$total_cases, na.rm = FALSE)
+max_cases = max(thailand$total_cases, na.rm = FALSE)
 
 min_cases
 cat("\n")
@@ -272,6 +249,8 @@ max_cases
 ### 5.1.1 Total number of cases by each year and each province
 
 ```{r}
+#| fig-width: 12 
+#| fig-height: 10  
 
 min_cases <- min(thailand$no_cases_2017, thailand$no_cases_2018, thailand$no_cases_2019, 
                  thailand$no_cases_2020, thailand$no_cases_2021, thailand$no_cases_2022, na.rm = TRUE)
@@ -367,27 +346,7 @@ tmap_arrange(plot_2017, plot_2018, plot_2019, plot_2020, plot_2021, plot_2022, a
 
 ```
 
-### 5.1.2 Side by side view of province and total no of drug cases in year 2017
-
-```{r}
-
-# provinces <- tm_shape(thailand %>% filter(fiscal_year == 2017)) +
-#   tm_polygons() +
-#   tm_text("ADM1_EN", size=0.5)
-# 
-# custom_breaks <- c(0, 5000, 10000, 15000, 20000)  # Customize as necessary
-# 
-# # total_cases <- qtm(thailand_summary, "total_cases")
-# no_cases <- tm_shape(thailand) +
-#   tm_polygons("no_cases", 
-#               breaks = custom_breaks,  # Apply the custom breaks
-#               palette = "Blues",        # Color palette
-#               title = "Number of Cases")    # Title for the legend
-# tmap_arrange(provinces, no_cases, asp=1, ncol=2)
-
-```
-
-### 5.1.3 Top 5 Provinces with the highest number of drug cases over all the years
+### 5.1.2 Top 5 Provinces with the highest number of drug cases over all the years
 
 ```{r}
 # Step 1: Find the top 5 provinces with the highest total cases
@@ -417,33 +376,38 @@ highlight_top_5 <- tm_shape(top_5_provinces) +
 tmap_arrange(provinces, total_cases + highlight_top_5, asp = 1, ncol = 2)
 ```
 
-### 5.2 Visualising Equal and Quantile over all the years
+### 5.1.3 Visualising Quantile Interval Classification over all the years
 
 ```{r}
-equal <- tm_shape(thailand) +
-  tm_polygons("total_cases",
-          palette = "Blues",
-          style="equal", n=10) +
-  tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Equal interval classification", title.size = 2)
+#|fig-width: 15
+#|fig-height: 12
 
 quantile <- tm_shape(thailand) +
   tm_polygons("total_cases",
           palette = "Blues",
-          style="quantile", n=10) +
-  tm_layout(main.title = "Quantile interval classification", title.size = 2)
+          style="quantile", 
+          n=10) +
+  tm_layout(main.title = "Quantile interval classification", 
+            main.title.size = 1, 
+            main.title.position = "Center",
+            frame = FALSE,
+            legend.title.size = 0.8,  # Reduce the title size
+            legend.text.size = 0.5,   # Reduce the text size
+            legend.width = 0.3,
+            legend.position = c("right", "bottom"))
 
-tmap_arrange(equal,
-             quantile,
-             asp=1,
-             ncol=2)
+
+
+quantile
+
+
 ```
 
 ------------------------------------------------------------------------
 
 ## 6.0 Global Measures of Spatial Autocorrelation
 
--   If we attempt to use contiguity-based spatial weights to find neighbours, and use the queen method, we come up with a region that is not linked to any neighbours, which is incorrect. Hence, we need to swap to using distance-based method to find neighbours.
+-   If we attempt to use contiguity-based spatial weights to find neighbours, and use the queen method, we come up with a region that is not linked to any neighbours, which is incorrect.
 
 ```{r}
 
@@ -451,26 +415,16 @@ wm_q <- poly2nb(thailand,
                 queen = TRUE)
 
 summary(wm_q)
+
 ```
+
+Lets print out the region with the 0 link. It turns out to be "Phuket".
 
 ```{r}
-
-write_rds(wm_q, "data/rds/wm_q.rds")
+thailand$ADM1_EN[65]
 ```
 
-```{r}
-wm_q <- read_rds("data/rds/wm_q.rds")
-summary(wm_q)
-```
-
-*nb2listw()* is used to convert the nb object into spatial weights object.
-
-```{r}
-rswm_q <- nb2listw(wm_q, 
-                   style="W", 
-                   zero.policy = TRUE)
-rswm_q
-```
+Hence, instead of using contiguity-based methods to find neighbours, we need to swap to using distance-based methods instead to find neighbours and do our global spatial autocorrelation.
 
 ### 6.1 Configuring and Binding coordinates
 
@@ -511,7 +465,7 @@ summary(k1dists)
 ## This summary report shows that the largest first nearest neighbour distance is 110987 meters (UTM). As dnearneigh accepts meters and we need specify longlat = FALSE, lets round it up to 111000 meters and use this as our upper threshold will ensure us that all regions will at least have 1 neighbour.
 :::
 
-### 6.2.1 Fixed Distance
+### 6.2.1 Attempting Fixed Distance
 
 -   within 111000 meters radius
 
@@ -529,7 +483,7 @@ n_comp <- n.comp.nb(wm_d111000)
 n_comp$nc
 ```
 
--   This shows that there are 2 different clusters, meaning that some regions are connected to each other, while others are not, leading to two distinct groups. Below shows that the first cluster contains 61 regions, while the second cluster contains 14 regions.
+-   This shows that there are 2 disjoined subgraphs, meaning that there are two distinct groups that are not connected each other. Below shows that the first subgraph contains 61 regions, while the second subgraph contains 14 regions.
 
 ```{r}
 table(n_comp$comp.id)
@@ -538,11 +492,11 @@ table(n_comp$comp.id)
 #### Plotting fixed distance weight matrix
 
 ```{r}
-x_limits <- c(min(longitude) - 1000, max(longitude) + 1000)  # Adjust these values as needed
-y_limits <- c(min(latitude) - 1000, max(latitude) + 1000)   # Adjust these values as needed
+#| fig-width: 12
+#| fig-height: 10
 
 # Plot the boundary and neighborhood structures with adjusted limits
-plot(thailand$geometry, border="lightgrey", xlim = x_limits, ylim = y_limits)
+plot(thailand$geometry, border="lightgrey")
 plot(wm_d111000, coords, add=TRUE)
 plot(k1, coords, add=TRUE, col="red", length=0.08)
 ```
@@ -550,6 +504,9 @@ plot(k1, coords, add=TRUE, col="red", length=0.08)
 -   Plot 1st nearest neighbours (red lines) vs Distance link of neighbours within the cut-off distance of 111000 meters (black lines)
 
 ```{r}
+#| fig-width: 12
+#| fig-height: 10
+
 par(mfrow=c(1,2))
 plot(thailand$geometry, border="lightgrey", main="1st nearest neighbours")
 plot(k1, coords, add=TRUE, col="red", length=0.08)
@@ -557,9 +514,11 @@ plot(thailand$geometry, border="lightgrey", main="Distance link")
 plot(wm_d111000, coords, add=TRUE, pch = 19, cex = 0.6)
 ```
 
-### 6.2.2 Adaptive Distance
+### 6.2.2 Attempting Adaptive Distance
 
 #### Computing Adaptive Distance Weight matrix
+
+-   Lets fix k=6, and no go too far ahead as greater the k, the further the search of neighbours would be.
 
 ```{r}
 knn6 <- knn2nb(knearneigh(coords, k=6))
@@ -577,13 +536,22 @@ table(thailand$ADM1_EN, card(knn6))
 #### Plotting adaptive distance weight matrix
 
 ```{r}
+#| fig-width: 12
+#| fig-height: 10
+
 plot(thailand$geometry, border="lightgrey")
 plot(knn6, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
 ```
 
+[**Decision:**]{.underline}
+
+We find that due to the result of 2 disjointed subgraphs in fixed distance, fixed distance method is not very good because the regions should have at least a link to each other, not separation or disjoint. From the adaptive distance plot, we can see that there is no disjoint in the neighbour links, deeming adaptive distance the more suitable method to use. We shall use adaptive distance for the rest, even for local spatial autocorrelation.
+
 ### 6.2.3 Global Moran I: Access Spatial Autocorrelation using Adaptive Distance
 
 Next, *nb2listw()* is used to convert the nb object into spatial weights object.
+
+We should also fix our style="w".
 
 ```{r}
 rsknn6 <- nb2listw(knn6, 
@@ -617,9 +585,11 @@ bperm_moran= moran.mc(thailand$total_cases,
 bperm_moran
 ```
 
--   moran I statistic: 0.070057 \> 0 show signs of clustering
+-   moran I statistic: \~0.073698 \> 0 show signs of clustering, but very weak clustering due to the value being close to 0
 
--   p-value = 0.091 \> 0.05, 95% confident to accept null hypothesis (h0)
+-   p-value = 0.071 \> 0.05, at the 95% confidence interval, we fail to reject the null hypothesis (which assumes spatial randomness), meaning to say that we do not have enough evidence to conclude that there is significant spatial autocorrelation and clustering.
+
+Hence, we accept null hypothesis (h0), and conclude that the result is not statistically significant, suggesting that the observed spatial pattern could be due to spatial randomness.
 
 #### 3. Visualising Monte Carlo Moran's I
 
@@ -681,11 +651,11 @@ print(MI_corr)
 
 ## 7.0 Local Measures of Spatial Autocorrelation
 
-Because of non-linked regions such as Phuket, we cannot use Queen and Rook methods to access local spatial autocorrelation, as it may lead to inaccuracies in the analysis. We need to use fixed-distance and adaptive-distance based methods for more reliable results.
+Simiarly, due to the non-linked region (i.e Phuket), we cannot use Queen and Rook methods to access local spatial autocorrelation, as it may lead to inaccuracies in the analysis. We need to use fixed-distance and adaptive-distance based methods for more reliable results.
 
 We will detect the clusters, outliers, and hotspots using
 
--   *Getis-Ord G (Gi) Statistics:* Detect hotspots and clusters
+-   *Getis-Ord G (Gi) Statistics:* Detect hotspots
 
     -   Deriving spatial weight matrix
 
@@ -695,142 +665,468 @@ We will detect the clusters, outliers, and hotspots using
 
 -   Local Moran's I: Detect local clusters (high-high and low-low) and local outliers (high-low, low-high)
 
-### 7.1 Fixed Distance Weight Matrix
+### 7.1 Adaptive Distance Weight Matrix
+
+-   stick to k=6, style='W'
 
 ```{r}
-wm_d111000
-```
-
-```{r}
-wm_d111000_lw <- nb2listw(wm_d111000, style = 'B')
-summary(wm_d111000_lw)
-```
-
-### 7.2 Adaptive Distance Weight Matrix
-
-```{r}
-knn8 <- knn2nb(knearneigh(coords, k=8))
+knn8 <- knn2nb(knearneigh(coords, k=6))
 knn8
 ```
 
 Next, *nb2listw()* is used to convert the nb object into spatial weights object.
 
 ```{r}
-knn8_lw <- nb2listw(knn8, style = 'B')
+knn8_lw <- nb2listw(knn8, style = 'W')
 summary(knn8_lw)
 ```
 
-Here, we can see that all 75 provinces have exactly 8 links, and province like Phuket are not left behind.
+Here, we can see that all 77 provinces have exactly 6 links, and province like Phuket are not left behind.
 
-### 7.3 Computing Gi Statistics
+### 7.2 LISA
+
+### 7.2.1 Computing Local Moran's I
+
+```{r}
+fips <- order(thailand$ADM1_EN)
+localMI <- localmoran(thailand$total_cases, knn8_lw)
+head(localMI)
+```
+
+```{r}
+printCoefmat(data.frame(
+  localMI[fips,], 
+  row.names=thailand$ADM1_EN[fips]),
+  check.names=FALSE)
+```
+
+### 7.2.2 Mapping local Moran's I
+
+#### Append to local Moran's I dataframe
+
+```{r}
+thailand.localMI <- cbind(thailand,localMI) %>%
+  rename(Pr.Ii = Pr.z....E.Ii..)
+```
+
+#### Visualising local Moran's I statistic values and p-values
+
+```{r}
+#| fig-width: 12
+#| fig-height: 10
+
+localMI_statistic.map <- tm_shape(thailand.localMI) +
+  tm_fill(col = "Ii", 
+          style = "pretty", 
+          title = "local Moran's I statistic") +
+  tm_borders(alpha = 0.5) + 
+  tm_layout(
+    main.title = "local Moran's I statistic",
+    main.title.size = 1,
+    main.title.position = "center")
+
+localMI_pvalues.map <- tm_shape(thailand.localMI) +
+  tm_fill(col = "Pr.Ii", 
+          breaks=c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+          palette="-Blues", 
+          title = "local Moran's I p-values") +
+  tm_borders(alpha = 0.5) + 
+  tm_layout(
+    main.title = "local Moran's I p-values",
+    main.title.size = 1,
+    main.title.position = "center")
+
+tmap_arrange(localMI_statistic.map, localMI_pvalues.map, asp=1, ncol=2)
+```
+
+### 7.3 Creating LISA Cluster Map
+
+### 7.3.1 Plotting Moran scatterplot
+
+```{r}
+nci <- moran.plot(thailand$total_cases, knn8_lw,                   
+                  labels=as.character(thailand$ADM1_EN),                    
+                  xlab="Total Cases over all years",                    
+                  ylab="Spatially Lag Total Cases over all years")
+```
+
+What can infer from this plot?
+
+-   Provinces in the high-high quadrant: Chachoengsao, Chon Buri, Ubon ratchathani. This suggests that there is positive autocorrelation and there is a high cluster among high neighbours.
+
+-   Provinces in the High-Low quadrant: Chiang Mai, Nakhon si thammarat, and Bangkok. Meaning that there is negative autocorrelation and these provinces are the high outliers among the low neighbours.
+
+### 7.3.2 Plotting Moran scatterplot with standardized variable
+
+```{r}
+thailand$Z.total_cases<- scale(thailand$total_cases) %>% 
+  as.vector 
+```
+
+```{r}
+nci2 <- moran.plot(thailand$total_cases, knn8_lw,                   
+                  labels=as.character(thailand$ADM1_EN),                    
+                  xlab="z- Total Cases over all years",                    
+                  ylab="Spatially Lag z- Total Cases over all years")
+```
+
+### 7.3.3 LISA map classes
+
+```{r}
+quadrant <- vector(mode="numeric",length=nrow(localMI))
+thailand$lag_total_cases <- lag.listw(knn8_lw, thailand$total_cases)
+DV <- thailand$lag_total_cases - mean(thailand$lag_total_cases)    
+LM_I <- localMI[,1] - mean(localMI[,1])    
+signif <- 0.05       
+quadrant[DV <0 & LM_I>0] <- 1
+quadrant[DV >0 & LM_I<0] <- 2
+quadrant[DV <0 & LM_I<0] <- 3  
+quadrant[DV >0 & LM_I>0] <- 4     
+quadrant[localMI[,5]>signif] <- 0
+```
+
+### 7.3.4 **Plotting LISA map**
+
+```{r}
+#|fig-width: 12
+#|fig-height: 10
+
+total_cases <- qtm(thailand, "total_cases")
+
+
+thailand.localMI$quadrant <- quadrant
+colors <- c("#ffffff", "#2c7bb6", "#abd9e9", "#fdae61", "#d7191c")
+clusters <- c("insignificant", "low-low", "low-high", "high-low", "high-high")
+
+LISAmap <- tm_shape(thailand.localMI) +
+  tm_fill(col = "quadrant", 
+          style = "cat", 
+          palette = colors[c(sort(unique(quadrant)))+1], 
+          labels = clusters[c(sort(unique(quadrant)))+1],
+          popup.vars = c("")) +
+  tm_view(set.zoom.limits = c(11,17)) +
+  tm_borders(alpha=0.5)
+
+tmap_arrange(total_cases, LISAmap, 
+             asp=1, ncol=2)
+```
+
+```{r}
+outliers_hotspots <- thailand.localMI %>%
+  filter(quadrant %in% c(1, 2, 3, 4)) %>%
+  mutate(cluster = case_when(
+    quadrant == 1 ~ "Low-Low (Hotspot)",
+    quadrant == 2 ~ "Low-High (Outlier)",
+    quadrant == 3 ~ "High-Low (Outlier)",
+    quadrant == 4 ~ "High-High (Hotspot)",
+    TRUE ~ "Insignificant"  # Just a fallback, should not occur
+  ))
+
+# Print the results
+print(outliers_hotspots[, c("ADM1_EN", "quadrant", "cluster")])
+```
+
+We can infer that the outliers lie in the low-high quadrant and high-low quadrants, but there are high-low provinces which are considered outliers, but there are no high-low provinces that are considered significant. However, for the low-high quadrants, the provinces that are the outliers are: Pathum Thani, and Samut Sakhon.
+
+### 7.4 Computing Gi Statistics (total cases over the years)
 
 Next, we need to perform Gi Statistics, for each fixed distance and adaptive distances. The computed Gi statistic will give us a representation of a Z-score. Greater [**local Gi**]{.underline} represent a greater intensity of **clustering** and the direction (positive or negative) indicates **high or low clusters.**
 
-### 7.3.1 Gi statistics for fixed distance
+### 7.4.1 Gi statistics for adaptive distance
 
 ```{r}
-fips <- order(thailand$ADM1_EN)
-gi.fixed <- localG(thailand$total_cases, wm_d111000_lw)
-gi.fixed
-```
+fips <- order(thailand$ADM1_EN) 
+gi.adaptive <- localG(thailand$total_cases, knn8_lw) 
+thailand.gi <- cbind(thailand, as.matrix(gi.adaptive)) %>%   
+  rename(gstat_adaptive = as.matrix.gi.adaptive.)  
 
-Now, we join the Gi values to the thailand sf data frame
-
-```{r}
-thailand.gi <- cbind(thailand, as.matrix(gi.fixed)) %>%
-  rename(gstat_fixed = as.matrix.gi.fixed.)
-
-# Find the threshold for hotspot areas (e.g., top 5% of Gi scores)
-threshold <- quantile(thailand.gi$gstat_fixed, 0.95)  
-
-hotspots <- thailand.gi %>%
-  filter(gstat_fixed >= threshold)
-
-```
-
-```{r}
-hotspots_province_gstatscore <- hotspots %>%
-  select(ADM1_EN, gstat_fixed) %>%
-  arrange(desc(gstat_fixed))
-
-
-print(hotspots_province_gstatscore)
-```
-
-#### Plotting and Mapping Gi values with fixed distance weights
-
-```{r}
-gi_total_cases <- qtm(thailand, "total_cases")
-
-Gimap <-tm_shape(thailand.gi) +
-  tm_fill(col = "gstat_fixed", 
-          style = "pretty",
-          palette="-RdBu",
-          title = "local Gi") +
-  tm_borders(alpha = 0.5) + 
-  tm_shape(hotspots) + 
-  tm_text("ADM1_EN", size = 2/3, col="black")
-
-tmap_arrange(gi_total_cases, Gimap, asp=1, ncol=2)
-```
-
--   What can we infer from this plot?
-
-    -   There are two hotspots (red), with one hotspot found around the center of thailand comprising of 3 provinces (chon buri , chachoengsao, samut prakan) and another hotspot found near the north-west area of thailand (mae hong son), accounting for the top 5% of gstat_fixed scores.
-
-    -   Although, outside the scope of this take-home exercise 2, it can be greatly inferred that there is one huge coldspot and a small cold spot that are situated near the center but more towards the north-west area.
-
-### 7.3.2 Gi statistics for adaptive distance
-
-```{r}
-fips <- order(thailand$ADM1_EN)
-gi.adaptive <- localG(thailand$total_cases, knn8_lw)
-thailand.gi <- cbind(thailand, as.matrix(gi.adaptive)) %>%
-  rename(gstat_adaptive = as.matrix.gi.adaptive.)
-
-# Find the threshold for hotspot areas (e.g., top 5% of Gi scores)
-threshold <- quantile(thailand.gi$gstat_adaptive, 0.95)  
-
-hotspots <- thailand.gi %>%
+# Find the threshold for hotspot areas (e.g., top 5% of Gi scores) 
+threshold <- quantile(thailand.gi$gstat_adaptive, 0.95)    
+hotspots <- thailand.gi %>%   
   filter(gstat_adaptive >= threshold)
 ```
 
 ```{r}
-hotspots_province_gstatscore <- hotspots %>%
-  select(ADM1_EN, gstat_adaptive) %>%
-  arrange(desc(gstat_adaptive))
-
+hotspots_province_gstatscore <- hotspots %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
 
 print(hotspots_province_gstatscore)
 ```
 
-#### Plotting and Mapping Gi values with adaptive distance weights
+### 7.4.2 Plotting and Mapping Gi values with adaptive distance weights
 
 ```{r}
-gi_total_cases<- qtm(thailand, "total_cases")
+#| fig-width: 12 
+#| fig-height: 10  
 
-Gimap <- tm_shape(thailand.gi) + 
-  tm_fill(col = "gstat_adaptive", 
-          style = "pretty", 
-          palette="-RdBu", 
-          title = "local Gi") + 
-  tm_borders(alpha = 0.5) +
-  tm_shape(hotspots) + 
-  tm_text("ADM1_EN", size = 2/3, col="black")
+Gimap <- tm_shape(thailand.gi) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette="-RdBu",            
+          title = "local Gi") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots) +    
+  tm_text("ADM1_EN", size = 0.7, col="blue") +    
+  tm_layout(     
+    main.title = "Gi map showing hotspots",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,   # Reduce the text size     
+    frame = FALSE)     
 
-tmap_arrange(gi_total_cases, Gimap, asp=1, ncol=2)
+Gimap 
 ```
 
 -   Similarly, what inference can we draw from the adaptive-based plot?
 
-    -   There are two hotspots (red), with both hotspots found around the center of thailand comprising of 4 provinces (chon buri , chachoengsao, samut prakan, and rayong), with about gstat_adaptive score of about 2.37 to 3.14.
+    -   There are two hotspots (red), with both hotspots found around the center of thailand comprising of 4 provinces (chachoengsao, rayong, chon buri, and samut prakan), with about gstat_adaptive score of about 2.74 to 3.82.
 
-    -   Although, outside the scope of this take-home exercise 2, it can be greatly inferred that there is one huge coldspot situated near the north-west area.
+    -   Although, outside the scope of this take-home exercise 2, it can be greatly inferred that there is 3 clusters of coldspots, one huge coldspot situated near the north-west area, one in the center, and one in the south.
 
-------------------------------------------------------------------------
+### 7.5 Computing Gi Statistics (total cases across the years)
 
-## 9.0 Conclusion
+### 7.5.1 Gi statistics for adaptive distance (year 2017)
 
-------------------------------------------------------------------------
+```{r}
+#| fig-width: 12 
+#| fig-height: 10  
 
-## References
+# Year 2017
+total_cases_2017 <- "no_cases_2017"
+gi.adaptive_2017 <- localG(thailand$no_cases_2017, knn8_lw) 
+
+# Combine the results and create a new column for gstat_adaptive
+thailand.gi_2017 <- thailand %>% 
+  mutate(gstat_adaptive = gi.adaptive_2017)
+
+# Find the threshold for hotspot areas (e.g., top 5% of Gi scores) 
+threshold_2017 <- quantile(thailand.gi_2017$gstat_adaptive, 0.95)    
+hotspots_2017 <- thailand.gi_2017 %>%   
+  filter(gstat_adaptive >= threshold_2017)
+
+hotspots_province_gstatscore_2017 <- hotspots_2017 %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
+
+print(hotspots_province_gstatscore_2017)
+
+# Create the map for 2017
+Gimap_2017 <- tm_shape(thailand.gi_2017) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette = "-RdBu",            
+          title = "Local Gi - 2017") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots_2017) +    
+  tm_text("ADM1_EN", size = 0.7, col = "blue") +    
+  tm_layout(     
+    main.title = "Gi Map Showing Hotspots - 2017",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,     
+    frame = FALSE)
+
+Gimap_2017
+
+
+```
+
+### 7.5.2 Gi statistics for adaptive distance (year 2018)
+
+```{r}
+#| fig-width: 12 
+#| fig-height: 10  
+# Year 2018
+total_cases_2018 <- "no_cases_2018"
+gi.adaptive_2018 <- localG(thailand[[total_cases_2018]], knn8_lw) 
+thailand.gi_2018 <- thailand %>% 
+  mutate(gstat_adaptive = gi.adaptive_2018)
+threshold_2018 <- quantile(thailand.gi_2018$gstat_adaptive, 0.95)    
+hotspots_2018 <- thailand.gi_2018 %>% filter(gstat_adaptive >= threshold_2018)
+
+hotspots_province_gstatscore_2018 <- hotspots_2018 %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
+
+print(hotspots_province_gstatscore_2018)
+
+# Create the map for 2018
+Gimap_2018 <- tm_shape(thailand.gi_2018) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette = "-RdBu",            
+          title = "Local Gi - 2018") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots_2018) +    
+  tm_text("ADM1_EN", size = 0.7, col = "blue") +    
+  tm_layout(     
+    main.title = "Gi map showing hotspots",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,   # Reduce the text size     
+    frame = FALSE)
+
+Gimap_2018
+```
+
+### 7.5.3 Gi statistics for adaptive distance (year 2019)
+
+```{r}
+#| fig-width: 12 
+#| fig-height: 10  
+# Year 2019
+total_cases_2019 <- "no_cases_2019"
+gi.adaptive_2019 <- localG(thailand[[total_cases_2019]], knn8_lw) 
+thailand.gi_2019 <- thailand %>% 
+  mutate(gstat_adaptive = gi.adaptive_2019)
+threshold_2019 <- quantile(thailand.gi_2019$gstat_adaptive, 0.95)    
+hotspots_2019 <- thailand.gi_2019 %>% filter(gstat_adaptive >= threshold_2019)
+
+hotspots_province_gstatscore_2019 <- hotspots_2019 %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
+
+print(hotspots_province_gstatscore_2019)
+
+# Create the map for 2019
+Gimap_2019 <- tm_shape(thailand.gi_2019) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette = "-RdBu",            
+          title = "Local Gi - 2019") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots_2019) +    
+  tm_text("ADM1_EN", size = 0.7, col = "blue") +    
+  tm_layout(     
+    main.title = "Gi Map Showing Hotspots - 2019",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,     
+    frame = FALSE)
+
+Gimap_2019
+```
+
+### 7.5.4 Gi statistics for adaptive distance (year 2020)
+
+```{r}
+# Year 2020
+total_cases_2020 <- "no_cases_2020"
+gi.adaptive_2020 <- localG(thailand[[total_cases_2020]], knn8_lw) 
+thailand.gi_2020 <- thailand %>% 
+  mutate(gstat_adaptive = gi.adaptive_2020)
+threshold_2020 <- quantile(thailand.gi_2020$gstat_adaptive, 0.95)    
+hotspots_2020 <- thailand.gi_2020 %>% filter(gstat_adaptive >= threshold_2020)
+
+hotspots_province_gstatscore_2020 <- hotspots_2020 %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
+
+print(hotspots_province_gstatscore_2020)
+
+# Create the map for 2020
+Gimap_2020 <- tm_shape(thailand.gi_2020) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette = "-RdBu",            
+          title = "Local Gi - 2020") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots_2020) +    
+  tm_text("ADM1_EN", size = 0.7, col = "blue") +    
+  tm_layout(     
+    main.title = "Gi Map Showing Hotspots - 2020",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,     
+    frame = FALSE)
+
+Gimap_2020
+```
+
+### 7.5.5 Gi statistics for adaptive distance (year 2021)
+
+```{r}
+#| fig-width: 12 
+#| fig-height: 10  
+# Year 2021
+total_cases_2021 <- "no_cases_2021"
+gi.adaptive_2021 <- localG(thailand[[total_cases_2021]], knn8_lw) 
+thailand.gi_2021 <- thailand %>% 
+  mutate(gstat_adaptive = gi.adaptive_2021)
+threshold_2021 <- quantile(thailand.gi_2021$gstat_adaptive, 0.95)    
+hotspots_2021 <- thailand.gi_2021 %>% filter(gstat_adaptive >= threshold_2021)
+
+hotspots_province_gstatscore_2021 <- hotspots_2021 %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
+
+print(hotspots_province_gstatscore_2021)
+
+# Create the map for 2021
+Gimap_2021 <- tm_shape(thailand.gi_2021) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette = "-RdBu",            
+          title = "Local Gi - 2021") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots_2021) +    
+  tm_text("ADM1_EN", size = 0.7, col = "blue") +    
+  tm_layout(     
+    main.title = "Gi Map Showing Hotspots - 2021",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,     
+    frame = FALSE)
+
+Gimap_2021
+```
+
+### 7.5.6 Gi statistics for adaptive distance (year 2022)
+
+```{r}
+#| fig-width: 12 
+#| fig-height: 10  
+# Year 2022
+total_cases_2022 <- "no_cases_2022"
+gi.adaptive_2022 <- localG(thailand[[total_cases_2022]], knn8_lw) 
+thailand.gi_2022 <- thailand %>% 
+  mutate(gstat_adaptive = gi.adaptive_2022)
+threshold_2022 <- quantile(thailand.gi_2022$gstat_adaptive, 0.95)    
+hotspots_2022 <- thailand.gi_2022 %>% filter(gstat_adaptive >= threshold_2022)
+
+hotspots_province_gstatscore_2022 <- hotspots_2022 %>%   
+  select(ADM1_EN, gstat_adaptive) %>%   
+  arrange(desc(gstat_adaptive))   
+
+print(hotspots_province_gstatscore_2022)
+
+# Create the map for 2022
+Gimap_2022 <- tm_shape(thailand.gi_2022) +    
+  tm_fill(col = "gstat_adaptive",            
+          style = "pretty",            
+          palette = "-RdBu",            
+          title = "Local Gi - 2022") +    
+  tm_borders(alpha = 0.5) +   
+  tm_shape(hotspots_2022) +    
+  tm_text("ADM1_EN", size = 0.7, col = "blue") +    
+  tm_layout(     
+    main.title = "Gi Map Showing Hotspots - 2022",     
+    main.title.size = 1,     
+    main.title.position = "center",     
+    legend.show = TRUE,     
+    legend.text.size = 1,     
+    frame = FALSE)
+
+Gimap_2022
+```
+
+### 7.5.7 Interpretation of results
+
+We can see the hotspots remain around the same area (around the center) from 2017-2020, but changes towards the north-east area (2022: nong bua lam phu, sakon nakhon, amnat charoen, khon kaen). This shows that the hotspots depicting the highest drug cases changed from the center area to north-east area.
