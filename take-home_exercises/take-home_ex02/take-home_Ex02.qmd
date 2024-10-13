@@ -295,7 +295,7 @@ faceted_plot
 
 ```
 
-The plots show that the highest drug use cases shift towards the north-east area in 2021
+The plots show that the one of the highest drug use cases in 2021 is in the east, north-west, south area, while in 2018 and 2019, the highest drug use case is spotted in the center area.
 
 ### 5.1.2 Top 5 Provinces with the highest number of drug cases over all the years
 
