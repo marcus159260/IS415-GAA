@@ -246,105 +246,56 @@ max_cases
 
 ### 5.1 Plotting
 
-### 5.1.1 Total number of cases by each year and each province
+### 5.1.1 Total number of cases across the years
+
+-   This plot depicts the total number of drug cases for each year and observe where are the highest drug cases found in which area of provinces.
 
 ```{r}
-#| fig-width: 12 
-#| fig-height: 10  
+# Pivot data back to long format for faceting
+thailand_long <- thailand %>%
+  pivot_longer(
+    cols = starts_with("no_cases_"),  # Pivot all case columns
+    names_to = "fiscal_year",
+    values_to = "no_cases",
+    names_prefix = "no_cases_"
+  )
+```
 
-min_cases <- min(thailand$no_cases_2017, thailand$no_cases_2018, thailand$no_cases_2019, 
-                 thailand$no_cases_2020, thailand$no_cases_2021, thailand$no_cases_2022, na.rm = TRUE)
+```{r}
+#|fig-width: 12
+#|fig-height: 10
 
-max_cases <- max(thailand$no_cases_2017, thailand$no_cases_2018, thailand$no_cases_2019, 
-                 thailand$no_cases_2020, thailand$no_cases_2021, thailand$no_cases_2022, na.rm = TRUE)
-
-# Define custom breaks based on the range
+# Define custom breaks based on the range of all years
+min_cases <- min(thailand_long$no_cases, na.rm = TRUE)
+max_cases <- max(thailand_long$no_cases, na.rm = TRUE)
 custom_breaks <- seq(min_cases, max_cases, length.out = 5)
 
-# Plot for 2017
-plot_2017 <- tm_shape(thailand) +
-  tm_polygons("no_cases_2017",
-          palette = "Blues",
-          breaks = custom_breaks, 
-          title = "Drug Cases (2017)") +
-  tm_borders(alpha = 0.5) + 
-  tm_layout(main.title = "2017",  
-            title.size = 0.8,     # Smaller title size
-            legend.outside = TRUE,  # Legend outside the map area
-            asp = 0.8,              
-            frame = TRUE,
-            legend.show = TRUE)  # Show legend for only this plot
+# Create the faceted plot using tm_facets()
+faceted_plot <- tm_shape(thailand_long) +
+  tm_polygons(
+    col = "no_cases",
+    palette = "Blues",
+    breaks = custom_breaks,
+    title = "Drug Cases"
+  ) +
+  tm_borders(alpha = 0.5) +
+  tm_facets(
+    by = "fiscal_year",  # Facet by fiscal year
+    free.coords = FALSE  # Keep the same coordinates for all plots
+  ) +
+  tm_layout(
+    main.title = "Drug Cases Across Fiscal Years",
+    legend.outside = TRUE,  # Single legend outside
+    legend.text.size = 0.8
+  )
 
-# Plot for 2018
-plot_2018 <- tm_shape(thailand) +
-  tm_polygons("no_cases_2018",
-          palette = "Blues",
-          breaks = custom_breaks, 
-          title = "Drug Cases (2018)") +
-  tm_borders(alpha = 0.5) + 
-  tm_layout(main.title = "2018",  
-            title.size = 0.8,    
-            asp = 0.8,              
-            frame = TRUE,
-            legend.show = FALSE)  # Hide legend
-
-# Plot for 2019
-plot_2019 <- tm_shape(thailand) +
-  tm_polygons("no_cases_2019",
-          palette = "Blues",
-          breaks = custom_breaks, 
-          title = "Drug Cases (2019)") +
-  tm_borders(alpha = 0.5) + 
-  tm_layout(main.title = "2019",  
-            title.size = 0.8,     
-            asp = 0.8,              
-            frame = TRUE,
-            legend.show = FALSE)  # Hide legend
-
-# Plot for 2020
-plot_2020 <- tm_shape(thailand) +
-  tm_polygons("no_cases_2020",
-          palette = "Blues",
-          breaks = custom_breaks, 
-          title = "Drug Cases (2020)") +
-  tm_borders(alpha = 0.5) + 
-  tm_layout(main.title = "2020",  
-            title.size = 0.8,     
-            asp = 0.8,              
-            frame = TRUE,
-            legend.show = FALSE)  # Hide legend
-
-# Plot for 2021
-plot_2021 <- tm_shape(thailand) +
-  tm_polygons("no_cases_2021",
-          palette = "Blues",
-          breaks = custom_breaks, 
-          title = "Drug Cases (2021)") +
-  tm_borders(alpha = 0.5) + 
-  tm_layout(main.title = "2021",  
-            title.size = 0.8,     
-            asp = 0.8,              
-            frame = TRUE,
-            legend.show = FALSE)  # Hide legend
-
-# Plot for 2022
-plot_2022 <- tm_shape(thailand) +
-  tm_polygons("no_cases_2022",
-          palette = "Blues",
-          breaks = custom_breaks, 
-          title = "Drug Cases (2022)") +
-  tm_borders(alpha = 0.5) + 
-  tm_layout(main.title = "2022",  
-            title.size = 0.8,     
-            asp = 0.8,              
-            frame = TRUE,
-            legend.show = FALSE)  # Hide legend
-
-# Arrange all plots side by side in a grid with one legend
-tmap_arrange(plot_2017, plot_2018, plot_2019, plot_2020, plot_2021, plot_2022, asp = 1, ncol = 6)
+# Show the faceted plot
+faceted_plot
 
 
 ```
+
+The plots show that the highest drug use cases shift towards the north-east area in 2021
 
 ### 5.1.2 Top 5 Provinces with the highest number of drug cases over all the years
 
