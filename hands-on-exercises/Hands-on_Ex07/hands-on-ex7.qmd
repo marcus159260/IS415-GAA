@@ -253,7 +253,7 @@ internet <- ggplot(data=ict_derived,
 ```{r}
 ggarrange(radio, tv, llphone, mphone, computer, internet, 
           ncol = 3, 
-          nrow = 2)s
+          nrow = 2)
 ```
 
 ### **12.5.2 EDA using choropleth map**
