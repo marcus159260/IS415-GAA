@@ -283,7 +283,7 @@ shan_sf <- read_rds("data/rds/shan_sf.rds")
 
 To have a quick look at the distribution of Radio penetration rate of Shan State at township level, a choropleth map will be prepared.
 
-The code chunks below are used to prepare the choroplethby using the *qtm()* function of **tmap** package.
+The code chunks below are used to prepare the choropleth by using the *qtm()* function of **tmap** package.
 
 ```{r}
 qtm(shan_sf, "RADIO_PR")
@@ -312,7 +312,7 @@ tmap_arrange(TT_HOUSEHOLDS.map, RADIO.map,
 
 Notice that the choropleth maps above clearly show that townships with relatively larger number ot households are also showing relatively higher number of radio ownership.
 
-Now let us plot the choropleth maps showing the dsitribution of total number of households and Radio penetration rate by using the code chunk below.
+Now let us plot the choropleth maps showing the distribution of total number of households and Radio penetration rate by using the code chunk below.
 
 ```{r}
 tm_shape(shan_sf) +
