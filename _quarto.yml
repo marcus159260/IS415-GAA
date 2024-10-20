@@ -25,8 +25,6 @@ website:
             href: "hands-on-exercises/Hands-on_Ex06/hands-on-ex6_local/hands-on-ex6_local.html"
           - text: "Hands-on Exercise 7 & 8: Geographical Segmentation with Spatially Constrained Clustering Techniques"
             href: "hands-on-exercises/Hands-on_Ex07n8/hands-on-ex7n8.html"
-            
-          
       - text: "In-class Exercises"
         menu: 
           - text: "In-class Exercise 1"
