@@ -257,6 +257,19 @@ step 3: visualising the clustGeo map
 qtm(shan_sf_clustGeo, "clustGeo")
 ```
 
+step 4: characterising the clusters
+
+```{r}
+ggparcoord(data = shan_sf_clustGeo,
+           columns = c(17:21),
+           scale = "globalminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE,
+           title = "Multiple Parallel Coordinates Plots of ICT Variables by Cluster") + 
+  facet_grid(~ clustGeo) +
+  theme(axis.text.x = element_text(angle = 30))
+```
+
 ## **6.0 Measuring Dispersion??**
 
 ## **7.0 First Order/Second Order SPPA**
