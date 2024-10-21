@@ -54,6 +54,8 @@ class(hclust_ward)
 
 -   cbind -\> append, different from left_join (left_join performs joining based on common identifier) but cbind does not do so on common identifier
 
+    -   column binding (column bind function is used for merging two data frames, given that the number of rows in both the data frames are equal.)
+
 ```{r}
 shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
   rename('CLUSTER' = 'as.matrix.groups.') %>%
@@ -169,6 +171,69 @@ plot.mst(shan.mst,
          cex.lab=0.7,
          cex.circles=0.005,
          add=TRUE)
+```
+
+step 4: plotting the skater tree
+
+```{r}
+skater.clust6 <- skater(edges = shan.mst[,1:2],
+                        data = shan_ict,
+                        method = 'euclidean',
+                        ncuts = 5)
+```
+
+-   border=gray(0(opaque) -\> 1(transparent))
+
+```{r}
+#|fig-width: 12
+#|fig-height: 10
+plot(st_geometry(shan_sf),
+     border=gray(.5))
+plot(skater.clust6,
+     pts,
+     cex.lab=.7,
+     groups.colors=c("red", "green", "blue", "brown", "pink"),
+     cex.circles = 0.005,
+     add = TRUE)
+```
+
+step 5: visualising clusters in chloropleth map
+
+-   as.factor -\> instead of categorical, will automatically give you as ordinal (numerical) and sort by ascending (either numerical: 1,2,3, or categorical: a,b,c)
+
+```{r}
+groups_mat <- as.matrix(skater.clust6$groups)
+shan_sf_spatialcluster <- cbind(shan_sf_cluster, as.factor(groups_mat)) %>%
+  rename('skater_CLUSTER' = 'as.factor.groups_mat.')
+
+qtm(shan_sf_spatialcluster, "skater_CLUSTER")
+```
+
+#### [ClustGeo Method]{.underline}
+
+-   soft classification method -\> how many proportion of the attribute and spatial you want to use
+
+-   look for -\> the point where D0 and D1 are the closest
+
+step 1: compute distance matrix (centroid)
+
+-   st_distance used to compute the distance matrix
+
+-   distmat -\> convert distance matrix (origins and destinations)
+
+```{r}
+dist <- st_distance(shan_sf, shan_sf) 
+distmat <- as.dist(dist)
+```
+
+step 2:
+
+-   0.1 -\> interval/break
+
+```{r}
+cr <-choicealpha(proxmat, distmat,
+                 range.alpha= seq(0, 1, 0.1),
+                 K=6, graph = TRUE)
 ```
 
 ## **6.0 Measuring Dispersion??**
