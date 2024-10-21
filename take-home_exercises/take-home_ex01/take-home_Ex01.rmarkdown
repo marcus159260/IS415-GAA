@@ -9,6 +9,7 @@ execute:
   freeze: true
 ---
 
+
 ## 1.0 Introduction
 
 ### 1.1 Overview
@@ -53,15 +54,18 @@ This take home exercise investigates the violent events that took place during t
 
 -   parallel
 
+
 ```{r}
 pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel)
 ```
+
 
 ## 3.0 Importing Datasets into Environment + necessary Projection Transformation
 
 -   geospatial
 
     -   retrieving the boundary data of Myanmar:
+
 
     ```{r}
     myanmar_boundary = st_read(dsn="data/geospatial/regions_only",
@@ -78,8 +82,10 @@ pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel
     st_crs(myanmar_boundary)
     ```
 
+
     -   transformation to myanmar geographic projection code
         -   should display the armed
+
 
     ```{r}
 
@@ -96,11 +102,13 @@ pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel
     st_crs(myanmar_boundary)
     ```
 
+
 -   aspatial (csv)
 
     -   tibble data frame
     -   31 variables (consist of latitude and longitude)
         -   intend to combine to a new geometry column and drop latitude and longitude columns
+
 
     ```{r}
     myanmar_sf <- read_csv("data/aspatial/2021-01-01-2024-06-30-Myanmar.csv")
@@ -125,6 +133,7 @@ pacman::p_load(sf, lubridate, raster, spatstat, sparr, tmap, tidyverse, parallel
   myanmar_sf
 ```
 
+
 ```{{r}}
 st_crs(myanmar_sf)
 ```
@@ -135,6 +144,7 @@ Now that both geospatial boundary and aspatial armed conflict data is in the cor
 
 -   classes
 
+
     ```{r}
     class(myanmar_boundary)
     ```
@@ -143,25 +153,31 @@ Now that both geospatial boundary and aspatial armed conflict data is in the cor
     class(myanmar_sf)
     ```
 
+
     ------------------------------------------------------------------------
+
 
     ```{r}
     typeof(myanmar_sf$timestamp)
     ```
 
+
     ### 4.1 Timestamp
 
     -   noticing that timestamp is a double in myanmar_sf, we need to change it into datetime format, so as to derive meaningful temporal insights. Use as_datetime() function (lubridate package).
+
 
     ```{r}
     myanmar_sf$timestamp <- as_datetime(myanmar_sf$timestamp)
     myanmar_sf
     ```
 
+
     -   extract temporal data values from dataset
 
         -   we want to convert datetime to valuable columns to produce quarterly data such as quarterly spatio-temporal KDE layers and quarterly KDE. Using functions from lubridate package, we can do so, followed by adding the new columns to the dataset, and dropping the redundant columns.
         -   we create the quarter column with the argument with_year=TRUE, so that we can uniquely differentiate between the year and quarter.
+
 
     ```{r}
             myanmar_sf <- myanmar_sf %>%
@@ -173,12 +189,15 @@ Now that both geospatial boundary and aspatial armed conflict data is in the cor
 
     ```
 
+
     ------------------------------------------------------------------------
+
 
     ```{r}
     par(mar = c(0,0,0,0))
     plot(st_geometry(myanmar_boundary))
     ```
+
 
     ### 4.2 Extracting event_type, region (admin1)
 
@@ -186,6 +205,7 @@ Now that both geospatial boundary and aspatial armed conflict data is in the cor
     -   As such, we will retrieve the sub_event_type, which is a more accurate representation of violence that took place, instead of picking events_type. We will extract only the negative/violent events and conflicts that took place.
     -   We will exclude non-negative/violent events that took place based on the values that is represented by the sub_event_type, such as "Peaceful protest" and "Non-violent transfer of territory". We will also exclude "Others".
     -   Additionally, if we want to dive deeper into separating violent/non-violent keywords more accurately, we can also utilise the power of NLP (Natural Language Processing) (using grepl) and look into the ***notes*** column of dataframe. But we will not be doing this in this Take-home exercise.
+
 
     ```{r}
     unique_sub_event_types <- unique(myanmar_sf$sub_event_type)
@@ -237,7 +257,9 @@ Now that both geospatial boundary and aspatial armed conflict data is in the cor
     # violent_events
     ```
 
+
 ### 4.3 Create Owin Object
+
 
 ```{r}
 st_geometry_type(myanmar_boundary)
@@ -257,7 +279,9 @@ myanmar_owin
 summary(myanmar_owin)
 ```
 
+
 #### 4.4 Convert to ppp object form
+
 
 ```{r}
 violent_ppp <- as.ppp(st_coordinates(violent_sf), st_bbox(violent_sf))
@@ -265,7 +289,9 @@ par(mar = c(0,0,1,0))
 plot(violent_ppp)
 ```
 
+
 -   Error Handling for ppp object form
+
 
 ```{r}
 summary(violent_ppp)
@@ -275,7 +301,9 @@ summary(violent_ppp)
 any(duplicated(violent_ppp))
 ```
 
+
 -   Theres duplication in points appearing in the same location, so we perform jitter, using rjitter()
+
 
 ```{r}
 violent_ppp_jit <- rjitter(violent_ppp, 
@@ -284,21 +312,27 @@ violent_ppp_jit <- rjitter(violent_ppp,
                              drop=TRUE)
 ```
 
+
 check again for duplicates:
 
 -   result is FALSE
+
 
 ```{r}
 any(duplicated(violent_ppp_jit))
 ```
 
+
 Also, we have the myanmar_owin object from **4.2**. Lets plot it!
+
 
 ```{r}
 plot.owin(myanmar_owin)
 ```
 
+
 #### 4.3 Combine ppp object and owin object
+
 
 ```{r}
 violent_ppp_owin = violent_ppp_jit[myanmar_owin]
@@ -310,6 +344,7 @@ plot(violent_ppp_owin)
 ```{r}
 summary(violent_ppp_owin)
 ```
+
 
 ## 5.0 Exploratory Spatial Data Analysis
 
@@ -327,6 +362,7 @@ We need to define our test hypotheses: - h0: The distribution of violent data po
 
 Furthermore, 95% CI will be used.
 
+
 ```{r}
 clarkevans.test(violent_ppp_owin,
                 correction="none",
@@ -335,6 +371,7 @@ clarkevans.test(violent_ppp_owin,
                 nsim=99)
 
 ```
+
 
 So what insights did we get?
 
@@ -349,6 +386,7 @@ So what insights did we get?
 -   new window method: to create default KDE layer
 
 -   we need to rescale from meters to kilometers if not the density values remain way too small to comprehend. We need to allow the density values to be in "number of points per square kilometers".
+
 
 ```{r}
 # Extract x and y coordinates
@@ -382,7 +420,9 @@ contour(kde_violent_km, add = TRUE)
 violent_ppp_owin_km
 ```
 
+
 ### 6.2 Creating KDE Layers using Automatic Bandwidth
+
 
 ```{r}
 bw_diggle <- bw.diggle(violent_ppp_owin_km)
@@ -404,7 +444,9 @@ bw_ppl <- bw.ppl(violent_ppp_owin_km)
 bw_ppl
 ```
 
+
 ### 6.2 Plotting the KDE layers using automatic bandwidth
+
 
 ```{r}
 
@@ -452,9 +494,11 @@ plot(kde_ppl, main = "kde_ppl")
 contour(kde_ppl, add = TRUE)
 ```
 
+
 ### 6.3 Compute KDE using fixed bandwidth
 
 -   Fixed bandwidth to 0.6km
+
 
 ```{r}
 kde_diggle_600 <- density(violent_ppp_owin_km,
@@ -500,16 +544,20 @@ plot(kde_ppl_600, main = "kde_ppl_600")
 contour(kde_ppl_600, add = TRUE)
 ```
 
+
 ### 6.3 Computing KDE layer using adaptive bandwidth
 
 -   using adaptive.density() from spatstat package, method is kernel
+
 
 ```{r}
 kde_violent_adaptive <- adaptive.density(violent_ppp_owin_km, method="kernel")
 plot(kde_violent_adaptive)
 ```
 
+
 -   compare automatic bandwidth (diggle) vs adaptive bandwidth
+
 
 ```{r}
 par(mfrow=c(1,2))
@@ -517,7 +565,9 @@ plot(kde_diggle, main = "Fixed bandwidth")
 plot(kde_violent_adaptive, main = "Adaptive bandwidth")
 ```
 
+
 ### 6.4 **Converting KDE output into raster layer**
+
 
 ```{r}
 kde_diggle_raster <- raster(kde_diggle)
@@ -527,22 +577,27 @@ kde_diggle_raster <- raster(kde_diggle)
 kde_diggle_raster
 ```
 
+
 -   Since the CRS property is NA, we need to assign a projection system to the same projection system (CRS=32646)
+
 
 ```{r}
 projection(kde_diggle_raster) <- CRS("+init=EPSG:32646")
 kde_diggle_raster
 ```
 
+
 ### 6.5 **Visualising the output in tmap**
 
 -   Display raster in cartographic map
+
 
 ```{r}
 tm_shape(kde_diggle_raster) + 
   tm_raster("layer", palette = "viridis") +
   tm_layout(legend.position = c("left", "bottom"), frame = FALSE)
 ```
+
 
 For Nearest Neighbour Analysis - see section 5.1
 
@@ -551,6 +606,7 @@ For Nearest Neighbour Analysis - see section 5.1
 ### 7.1 Extract top 3 regions
 
 -   We want to look for the top 3 regions with the highest total count of violent events belonging to that region. We also add a column displaying the violent events that took place in that region, contributing to the total count.
+
 
 ```{r}
 # Group by region and sub_event_type, and calculate the total count
@@ -568,9 +624,11 @@ top_3_regions <- violent_sf %>%
 top_3_regions
 ```
 
+
 As a result, we can see that the regions Sagaing, Mandalay, and Magway, has the highest total count of violent events that took place. After which, we want to extract these regions to perform 2nd Order SPPA.
 
 -   Extracting top 3 regions with highest count of violent events
+
 
 ```{r}
 sagaing <- violent_sf %>%
@@ -601,13 +659,17 @@ par(mfrow=c(2,2))
 plot(magway, main = "Magway")
 ```
 
+
 ### 7.2 Converting to required object forms
+
 
 ```{r}
 class(sagaing)
 ```
 
+
 -   convert to owin object form
+
 
 ```{r}
 
@@ -639,7 +701,9 @@ class(sagaing_owin)
 violent_ppp_jit
 ```
 
+
 -   combine jittered ppp object and owin objects
+
 
 ```{r}
 violent_sagaing_ppp = violent_ppp_jit[sagaing_owin]
@@ -661,20 +725,24 @@ plot(violent_mandalay_ppp.km, main="Mandalay")
 plot(violent_magway_ppp.km, main="Magway")
 ```
 
+
 ### 7.3 Analyse Spatial Point Process using G-function
 
 ### 7.3.1 Compute G-function estimate
+
 
 ```{r}
 G_violent = Gest(violent_sagaing_ppp.km, correction = "border")
 plot(G_violent)
 ```
 
+
 ### 7.1.2 Perform CSR Test
 
 -   Run Monte Carlo simulation using G-function
 
 If we are using the whole dataset: - since it is computationally intensive to run Monte-Carlo simulations with our big dataset: - we need to utilise the concept of parallelization. This will distribute the workload of the CPU cores, speeding up the process of simulation. Using the parallel package - Alternatively, we can draw a subsample of the dataset but still preserve the spatial structure, which is known as thinning. This will drastically reduce the runtime of the simulations. We can use rthin() to sample a 10% subsample of the dataset (P=0.1)
+
 
 ```{r}
 # thin_violent_ppp_owin <- rthin(violent_ppp_owin, P = 0.1)
@@ -688,20 +756,24 @@ G_violent.csr <- envelope(violent_sagaing_ppp.km, Gest, nsim = 999, parallel = T
 plot(G_violent.csr)
 ```
 
+
 ### 7.2 Analyse Spatial Point Process using F-function
 
 -   F function estimates the empty space function F(r) or its hazard rate h(r) from a point pattern in a window of arbitrary shape.
 
 ### 7.2.1 Compute F-function estimate
 
+
 ```{r}
 F_violent = Fest(violent_sagaing_ppp.km) 
 plot(F_violent)
 ```
 
+
 ### 7.2.2 Perform CSR Test
 
 -   Run Monte Carlo simulation using F-function
+
 
 ```{r}
 F_violent.csr <- envelope(violent_sagaing_ppp.km, Fest, parallel=TRUE, nsim = 999, ncore =4)
@@ -711,9 +783,11 @@ F_violent.csr <- envelope(violent_sagaing_ppp.km, Fest, parallel=TRUE, nsim = 99
 plot(F_violent.csr)
 ```
 
+
 ### 7.3 Analyse Spatial Point Process using K-function
 
 ### 7.3.1 Compute K-function estimate
+
 
 ```{r}
 
@@ -721,9 +795,11 @@ K_violent = Kest(violent_sagaing_ppp.km)
 plot(K_violent, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ```
 
+
 ### 7.3.2 Perform CSR Test
 
 -   Run Monte Carlo simulation using K-function
+
 
 ```{r}
 K_violent.csr <- envelope(violent_sagaing_ppp.km, Kest, nsim = 99, parallel=TRUE, ncore=4)
@@ -733,9 +809,11 @@ K_violent.csr <- envelope(violent_sagaing_ppp.km, Kest, nsim = 99, parallel=TRUE
 plot(K_violent.csr)
 ```
 
+
 ### 7.4 Analyse Spatial Point Process using L-function
 
 ### 7.4.1 Compute L-function estimate
+
 
 ```{r}
 L_ck = Lest(violent_sagaing_ppp.km)
@@ -745,9 +823,11 @@ plot(L_ck, . -r ~ r,
 
 ```
 
+
 ### 7.4.2 Perform CSR Test
 
 -   Run Monte Carlo simulation using G-function
+
 
 ```{r}
 L_violent.csr <- envelope(violent_sagaing_ppp.km, Lest, nsim = 99, rank = 1, glocal=TRUE)
@@ -757,11 +837,13 @@ L_violent.csr <- envelope(violent_sagaing_ppp.km, Lest, nsim = 99, rank = 1, glo
 plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ```
 
+
 ## 8.0 Derive Quarterly Spatio-Temporal KDE Layers
 
 ### 8.1 Compute STKDE layers
 
 -   Since we have Quarterly data in Q1 (Jan-Mar) , Q2 (April - June), Q3 (July-September), Q4 (October - December), we can then ...
+
 
     ```{r}
     tm_shape(myanmar_boundary)+
@@ -771,7 +853,9 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 
     ```
 
+
     -   Plotting the event points quarterly and viewing the distribution across the regions.
+
 
     ```{r}
     tm_shape(myanmar_boundary)+
@@ -783,7 +867,9 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
                 drop.units = TRUE)
     ```
 
+
 -   We can see that over the quarters, the amount of violent data points has increased over the years with the escalation of the Myanmar conflict.
+
 
     ```{r}
 
@@ -804,6 +890,7 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 
     ```
 
+
     We can see that in year 2023 quarter 4 and year 2024 quarter 2, has seen the greatest spike and cluster in violence in the Shan-North region (Dark purple color)
 
     AND
@@ -813,6 +900,7 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
     -   Computing STKDE by Quarters
 
         -   Extract by Quarter first
+
 
     ```{r}
     violent_quarter <- violent_sf %>%
@@ -834,9 +922,11 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 
     ```
 
+
     -   Since we found duplication of data points located at the same location, we want to avoid this by shifting the data points slightly to the left by using rjitter(), so that they do not end up at the same identical location.
 
         -   use rjitter() from spatstat package
+
 
     ```{r}
     violent_quarter_ppp_jittered <- rjitter(violent_quarter_ppp, nsigma = 0.01)
@@ -849,7 +939,9 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
     violent_quarter_ppp_jittered
     ```
 
+
     -   combine object forms
+
 
     ```{r}
     #use the myanmar_owin object created
@@ -861,7 +953,9 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
     plot(violent_quarter_owin)
     ```
 
+
     ### 8.2 Computing Spatio-Temporal KDE (STKDE) by Quarter
+
 
     ```{r}
     st_kde_quarter <- spattemp.density(violent_quarter_owin)
@@ -869,9 +963,11 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 
     ```
 
+
     ### 8.3 Plotting the Spatio-Temporal KDE Object
 
     -   need to readjust the tims by quarters
+
 
     ```{r}
     unique_quarters <- unique(violent_sf$Quarter)
@@ -889,7 +985,9 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
     }
     ```
 
+
     -   using improved method (BOOT.spattemp)
+
 
     ```{r}
     set.seed(1234)
@@ -910,9 +1008,11 @@ plot(L_violent.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
     plot(kde_quarter)
     ```
 
+
 ## 9.0 2nd Order Spatio-Temporal PPA
 
 -   combine jittered ppp object and owin objects
+
 
 ```{r}
 violent_quarter_sagaing_ppp = violent_quarter_ppp_jittered[sagaing_owin]
@@ -933,6 +1033,7 @@ plot(violent_quarter_sagaing_ppp.km, main="Sagaing", frame=FALSE)
 plot(violent_quarter_mandalay_ppp.km, main="Mandalay")
 plot(violent_quarter_magway_ppp.km, main="Magway")
 ```
+
 
 ## 10.0 Conclusion and Summary
 
@@ -974,3 +1075,4 @@ plot(violent_quarter_magway_ppp.km, main="Magway")
 
 -   Boundary dataset retrieval: <https://data.humdata.org/dataset/mimu-geonode-myanmar-national-boundary-mimu?>
 -   Myanmar projection code reference: <https://epsg.io/32646>
+

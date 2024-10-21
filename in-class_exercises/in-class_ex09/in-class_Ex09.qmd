@@ -98,6 +98,10 @@ qtm(shan_sf_cluster, "CLUSTER")
 
 #### SKATER
 
+-   SKATER is a hard classification method
+
+<!-- -->
+
 -   concepts:
 
     -   create geographical graphs based on their coordinates
@@ -106,9 +110,8 @@ qtm(shan_sf_cluster, "CLUSTER")
 
     -   take polygon -\> take centroid and conduct distance dissimilarity (actual distance matrix)
 
-```{=html}
 <!-- -->
-```
+
 -   st_distance used to compute the distance matrix
 
 -   distmat -\> convert distance matrix (origins and destinations)
@@ -211,6 +214,8 @@ qtm(shan_sf_spatialcluster, "skater_CLUSTER")
 
 #### [ClustGeo Method]{.underline}
 
+-   unsupervised learning method
+
 -   soft classification method -\> how many proportion of the attribute and spatial you want to use
 
 -   look for -\> the point where D0 and D1 are the closest
@@ -234,6 +239,22 @@ step 2:
 cr <-choicealpha(proxmat, distmat,
                  range.alpha= seq(0, 1, 0.1),
                  K=6, graph = TRUE)
+```
+
+-   saving the clustGeo output
+
+```{r}
+clustG <- hclustgeo(proxmat, distmat, alpha = 0.2)
+groups <- as.factor(cutree(clustG, k=6))
+shan_sf_clustGeo <- cbind(shan_sf, 
+                          as.matrix(groups)) %>%
+  rename('clustGeo' = 'as.matrix.groups.')
+```
+
+step 3: visualising the clustGeo map
+
+```{r}
+qtm(shan_sf_clustGeo, "clustGeo")
 ```
 
 ## **6.0 Measuring Dispersion??**
