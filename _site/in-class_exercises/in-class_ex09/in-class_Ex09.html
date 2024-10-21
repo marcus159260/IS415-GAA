@@ -248,9 +248,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#importing-datasets-into-environment" id="toc-importing-datasets-into-environment" class="nav-link" data-scroll-target="#importing-datasets-into-environment"><strong>3.0 Importing Datasets into Environment</strong></a></li>
   <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling"><strong>4.0 Data Wrangling</strong></a></li>
   <li><a href="#exploratory-spatial-data-analysis" id="toc-exploratory-spatial-data-analysis" class="nav-link" data-scroll-target="#exploratory-spatial-data-analysis"><strong>5.0 Exploratory Spatial Data Analysis</strong></a></li>
-  <li><a href="#measuring-dispersion" id="toc-measuring-dispersion" class="nav-link" data-scroll-target="#measuring-dispersion"><strong>6.0 Measuring Dispersion??</strong></a></li>
-  <li><a href="#first-ordersecond-order-sppa" id="toc-first-ordersecond-order-sppa" class="nav-link" data-scroll-target="#first-ordersecond-order-sppa"><strong>7.0 First Order/Second Order SPPA</strong></a></li>
-  <li><a href="#kernel-density-estimation" id="toc-kernel-density-estimation" class="nav-link" data-scroll-target="#kernel-density-estimation"><strong>8.0 Kernel Density Estimation</strong></a></li>
   </ul>
 </nav>
     </div>
@@ -645,18 +642,27 @@ Warning in segments(coords[id1, 1], coords[id1, 2], coords[id2, 1], coords[id2,
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="measuring-dispersion" class="level2">
-<h2 class="anchored" data-anchor-id="measuring-dispersion"><strong>6.0 Measuring Dispersion??</strong></h2>
-</section>
-<section id="first-ordersecond-order-sppa" class="level2">
-<h2 class="anchored" data-anchor-id="first-ordersecond-order-sppa"><strong>7.0 First Order/Second Order SPPA</strong></h2>
-</section>
-<section id="kernel-density-estimation" class="level2">
-<h2 class="anchored" data-anchor-id="kernel-density-estimation"><strong>8.0 Kernel Density Estimation</strong></h2>
+<p>step 4: characterising the clusters</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggparcoord</span>(<span class="at">data =</span> shan_sf_clustGeo,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">columns =</span> <span class="fu">c</span>(<span class="dv">17</span><span class="sc">:</span><span class="dv">21</span>),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">scale =</span> <span class="st">"globalminmax"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">alphaLines =</span> <span class="fl">0.2</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">boxplot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">title =</span> <span class="st">"Multiple Parallel Coordinates Plots of ICT Variables by Cluster"</span>) <span class="sc">+</span> </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span> clustGeo) <span class="sc">+</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="in-class_Ex09_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -269,9 +269,3 @@ ggparcoord(data = shan_sf_clustGeo,
   facet_grid(~ clustGeo) +
   theme(axis.text.x = element_text(angle = 30))
 ```
-
-## **6.0 Measuring Dispersion??**
-
-## **7.0 First Order/Second Order SPPA**
-
-## **8.0 Kernel Density Estimation**
