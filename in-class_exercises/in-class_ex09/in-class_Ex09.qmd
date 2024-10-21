@@ -1,0 +1,178 @@
+---
+title: "In-Class-Exercise 09"
+author: "Marcus Jaeson Yeo"
+date: "October 21, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+---
+
+## **1.0 Introduction**
+
+## **2.0 Importing Packages**
+
+```{r}
+pacman::p_load(spdep, tmap, sf, ClustGeo, 
+               ggpubr, cluster, factoextra, NbClust,
+               heatmaply, corrplot, psych, tidyverse, GGally)
+```
+
+## **3.0 Importing Datasets into Environment**
+
+-   geospatial, aspatial, cluster
+
+    -   ict -\> input clustering variable
+
+```{r}
+shan_sf <- read_rds("data/rds/shan_sf.rds")
+shan_ict <- read_rds("data/rds/shan_ict.rds")
+shan_sf_cluster <- read_rds("data/rds/shan_sf_cluster.rds")
+```
+
+## **4.0 Data Wrangling**
+
+#### [Hierarchical Clustering]{.underline}
+
+-   proxmat -\> proximity matrix
+
+-   minimum clusters to use should be at least 3, hence we use k=6
+
+```{r}
+proxmat <- dist(shan_ict, method='euclidean')
+hclust_ward <- hclust(proxmat, method='ward.D')
+groups <- as.factor(cutree(hclust_ward, k=6))
+
+```
+
+```{r}
+class(hclust_ward)
+
+```
+
+#### Append to the geospatial data
+
+-   cbind -\> append, different from left_join (left_join performs joining based on common identifier) but cbind does not do so on common identifier
+
+```{r}
+shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
+  rename('CLUSTER' = 'as.matrix.groups.') %>%
+  select(-c(3:4, 7:9)) %>%
+  rename(TS = TS.x)
+```
+
+#### Dendogram
+
+```{r}
+#|fig-width: 7
+#|fig-height: 12
+plot(hclust_ward, cex = 0.6)
+rect.hclust(hclust_ward, k=6, border = 2:5)
+
+```
+
+#### Cluster Map
+
+-   tmap
+
+    -   qtm (quick tmap)
+
+    -   tm_shape, tm_fill, etc
+
+```{r}
+
+qtm(shan_sf_cluster, "CLUSTER")
+```
+
+## **5.0 Exploratory Spatial Data Analysis**
+
+#### Spatially Constrained Clustering
+
+-   SKATER
+
+-   REDCAP
+
+-   ClustGeo
+
+#### SKATER
+
+-   concepts:
+
+    -   create geographical graphs based on their coordinates
+
+    -   dissimilarity -\> actual coordinate distance
+
+    -   take polygon -\> take centroid and conduct distance dissimilarity (actual distance matrix)
+
+```{=html}
+<!-- -->
+```
+-   st_distance used to compute the distance matrix
+
+-   distmat -\> convert distance matrix (origins and destinations)
+
+```{r}
+dist <- st_distance(shan_sf, shan_sf)
+distmat <- as.dist(dist)
+```
+
+step 1: computing nearest neighbours
+
+```{r}
+shan.nb <- poly2nb(shan_sf) 
+summary(shan.nb)
+```
+
+step 2: visualising neighbours
+
+```{r}
+plot(st_geometry(shan_sf), border=grey(.5))
+pts <- st_coordinates(st_centroid(shan_sf))
+plot(shan.nb, 
+     pts, 
+     col="blue",
+     add=TRUE)
+```
+
+step 3: computing minimum spanning tree
+
+-   calculating edge costs
+
+```{r}
+lcosts <- nbcosts(shan.nb, shan_ict)
+```
+
+-   incorporating these costs into a weights object
+
+```{r}
+shan.w <- nb2listw(shan.nb,
+                   lcosts,
+                   style="B")
+
+summary(shan.w)
+```
+
+-   computing MST
+
+```{r}
+shan.mst <- mstree(shan.w)
+```
+
+-   visualising MST
+
+```{r}
+plot(st_geometry(shan_sf),
+     border=gray(.5))
+plot.mst(shan.mst, 
+         pts,
+         col="blue",
+         cex.lab=0.7,
+         cex.circles=0.005,
+         add=TRUE)
+```
+
+## **6.0 Measuring Dispersion??**
+
+## **7.0 First Order/Second Order SPPA**
+
+## **8.0 Kernel Density Estimation**
