@@ -148,6 +148,11 @@ head(condo_resale.sf)
 
 Notice that the output is in point feature data frame.
 
+```{r}
+mpsz <- write_rds(mpsz, "data/rds/mpsz.rds")
+condo_resale_sf <- write_rds(condo_resale.sf, "data/rds/condo_resale_sf.rds")
+```
+
 ## **13.7 Exploratory Data Analysis (EDA)**
 
 In the section, you will learn how to use statistical graphics functions of **ggplot2** package to perform EDA.
