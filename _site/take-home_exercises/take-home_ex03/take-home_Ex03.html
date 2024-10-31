@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marcus Jaeson Yeo">
+<meta name="dcterms.date" content="2024-10-27">
+
+<title>IS415-GAA - Take-Home Exercise 3: Prototyping Modules for Geospatial Analytics Shiny Application</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">IS415-GAA</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-on Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex01/hands-on-ex1.html">
+ <span class="dropdown-text">Hands-on Exercise 1: Geospatial Data Science with R</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex02/hands-on-ex2.html">
+ <span class="dropdown-text">Hands-on Exercise 2: Thematic Mapping and GeoVisualisation with R</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex03/hands-on-ex3_p1/hands-on-ex3_p1.html">
+ <span class="dropdown-text">Hands-on Exercise 3: 1st Order SPAA</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex03/hands-on-ex3_p2/hands-on-ex3_p2.html">
+ <span class="dropdown-text">Hands-on Exercise 3: 2nd Order SPAA</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex04/in-class_Ex04.html">
+ <span class="dropdown-text">Hands-on Exercise 4: ICE4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex05/hands-on-ex5.html">
+ <span class="dropdown-text">Hands-on Exercise 5: Spatial Weights and Applications</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex06/hands-on-ex6_global/hands-on-ex6_global.html">
+ <span class="dropdown-text">Hands-on Exercise 6: Global Measures of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex06/hands-on-ex6_local/hands-on-ex6_local.html">
+ <span class="dropdown-text">Hands-on Exercise 6: Local Measures of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex07n8/hands-on-ex7n8.html">
+ <span class="dropdown-text">Hands-on Exercise 7 &amp; 8: Geographical Segmentation with Spatially Constrained Clustering Techniques</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../hands-on-exercises/Hands-on_Ex09/hands-on-ex9.html">
+ <span class="dropdown-text">Hands-on Exercise 9: Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-class Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex01/in-class_Ex01-v2.html">
+ <span class="dropdown-text">In-class Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex02/in-class_Ex02.html">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex03/in-class_Ex03.html">
+ <span class="dropdown-text">In-class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex04/in-class_Ex04.html">
+ <span class="dropdown-text">In-class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex05/in-class_Ex05.html">
+ <span class="dropdown-text">In-class Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex06/in-class_Ex06.html">
+ <span class="dropdown-text">In-class Exercise 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex09/in-class_Ex09.html">
+ <span class="dropdown-text">In-class Exercise 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../in-class_exercises/in-class_ex10/in-class_Ex10.html">
+ <span class="dropdown-text">In-class Exercise 10</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-home Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../take-home_exercises/take-home_ex01/take-home_Ex01.html">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../take-home_exercises/take-home_ex02/take-home_Ex02.html">
+ <span class="dropdown-text">Take-home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../take-home_exercises/take-home_ex03/take-home_Ex03.html">
+ <span class="dropdown-text">Take-home Exercise 3</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1.0 Overview</a>
+  <ul class="collapse">
+  <li><a href="#objectives" id="toc-objectives" class="nav-link" data-scroll-target="#objectives">1.1 Objectives</a></li>
+  <li><a href="#focus" id="toc-focus" class="nav-link" data-scroll-target="#focus">1.2 Focus</a></li>
+  <li><a href="#prototyping-for-shiny-application" id="toc-prototyping-for-shiny-application" class="nav-link" data-scroll-target="#prototyping-for-shiny-application">1.3 Prototyping for Shiny Application</a></li>
+  </ul></li>
+  <li><a href="#load-packages" id="toc-load-packages" class="nav-link" data-scroll-target="#load-packages">2.0 Load packages</a></li>
+  <li><a href="#importing-data-and-data-wrangling" id="toc-importing-data-and-data-wrangling" class="nav-link" data-scroll-target="#importing-data-and-data-wrangling">3.0 Importing Data and Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#raw-data" id="toc-raw-data" class="nav-link" data-scroll-target="#raw-data">3.1 Raw Data</a></li>
+  <li><a href="#geospatial-wrangling" id="toc-geospatial-wrangling" class="nav-link" data-scroll-target="#geospatial-wrangling">3.2 Geospatial Wrangling</a></li>
+  <li><a href="#aspatial-wrangling" id="toc-aspatial-wrangling" class="nav-link" data-scroll-target="#aspatial-wrangling">3.3 Aspatial Wrangling</a></li>
+  <li><a href="#combine-data" id="toc-combine-data" class="nav-link" data-scroll-target="#combine-data">3.4 Combine Data</a></li>
+  <li><a href="#pivot-longer-to-reduce-number-of-rows" id="toc-pivot-longer-to-reduce-number-of-rows" class="nav-link" data-scroll-target="#pivot-longer-to-reduce-number-of-rows">3.5 Pivot longer to reduce number of rows</a></li>
+  <li><a href="#projection-transformation" id="toc-projection-transformation" class="nav-link" data-scroll-target="#projection-transformation">3.6 Projection Transformation</a></li>
+  <li><a href="#visualisation" id="toc-visualisation" class="nav-link" data-scroll-target="#visualisation">3.7 Visualisation</a></li>
+  <li><a href="#writeread-rds" id="toc-writeread-rds" class="nav-link" data-scroll-target="#writeread-rds">3.8 Write/Read rds</a></li>
+  </ul></li>
+  <li><a href="#shiny-visualisation-shiny-storyboard" id="toc-shiny-visualisation-shiny-storyboard" class="nav-link" data-scroll-target="#shiny-visualisation-shiny-storyboard">4.0 Shiny Visualisation / Shiny Storyboard</a></li>
+  <li><a href="#spatial-weights-and-applications" id="toc-spatial-weights-and-applications" class="nav-link" data-scroll-target="#spatial-weights-and-applications">5.0 Spatial Weights and Applications</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section">6.0</a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">7.0</a></li>
+  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2">8.0</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take-Home Exercise 3: Prototyping Modules for Geospatial Analytics Shiny Application</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marcus Jaeson Yeo </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 27, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 1, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">1.0 Overview</h2>
+<section id="objectives" class="level3">
+<h3 class="anchored" data-anchor-id="objectives">1.1 Objectives</h3>
+<ul>
+<li><p>To evaluate and determine the necessary R packages needed for your Shiny application are supported in R CRAN,</p></li>
+<li><p>To prepare and test the specific R codes can be run and returned the correct output as expected,</p></li>
+<li><p>To determine the parameters and outputs that will be exposed on the Shiny applications, and</p></li>
+<li><p>To select the appropriate Shiny UI components for exposing the parameters determine above.</p></li>
+</ul>
+</section>
+<section id="focus" class="level3">
+<h3 class="anchored" data-anchor-id="focus">1.2 Focus</h3>
+<p>The focus within this Take-Home Exercise, as part of the group project, would be our geographical and aspatial target on:</p>
+<ul>
+<li><p>districts within East Malaysia (Sabah, Sarawak, W.P Labuan)</p></li>
+<li><p>category: assault</p></li>
+<li><p>type: rape</p></li>
+</ul>
+<p>We will be discovering the <strong>rape</strong> trends that take place within the <strong>districts</strong> of <strong>East Malaysia</strong>, across the years <strong>2020-2023</strong>, discovering the emerging hot spots and cold spots, outliers, as well as determine the spatial autocorrelation within these districts.</p>
+</section>
+<section id="prototyping-for-shiny-application" class="level3">
+<h3 class="anchored" data-anchor-id="prototyping-for-shiny-application">1.3 Prototyping for Shiny Application</h3>
+</section>
+</section>
+<section id="load-packages" class="level2">
+<h2 class="anchored" data-anchor-id="load-packages">2.0 Load packages</h2>
+<ul>
+<li><p>sf</p></li>
+<li><p>tmap</p></li>
+<li><p>tidyverse</p></li>
+<li><p>spdep</p></li>
+<li><p>sfdep</p></li>
+<li><p>dplyr</p></li>
+<li><p>tidyr</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse, spdep, sfdep, dplyr, tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importing-data-and-data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="importing-data-and-data-wrangling">3.0 Importing Data and Data Wrangling</h2>
+<section id="raw-data" class="level3">
+<h3 class="anchored" data-anchor-id="raw-data">3.1 Raw Data</h3>
+<ul>
+<li>geospatial</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>msia_adm2 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">'data/geospatial/'</span>, <span class="at">layer =</span> <span class="st">'mys_admbnda_adm2_unhcr_20210211'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `mys_admbnda_adm2_unhcr_20210211' from data source 
+  `C:\marcus159260\IS415-GAA\take-home_exercises\take-home_ex03\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 144 features and 14 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 99.64072 ymin: 0.855001 xmax: 119.2697 ymax: 7.380556
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># msia_adm2_shp &lt;- st_read(dsn = 'data/geospatial/mys_admbnda_adm1_unhcr_20210211.shp')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>aspatial</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>msia_sf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'data/aspatial/crime_district.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 19152 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr  (4): state, district, category, type
+dbl  (1): crimes
+date (1): date
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="geospatial-wrangling" class="level3">
+<h3 class="anchored" data-anchor-id="geospatial-wrangling">3.2 Geospatial Wrangling</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(msia_adm2[<span class="st">"ADM2_EN"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex03_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Upon plotting out the shapefile of Admin level 2, we can see that it takes both East and West Malaysia. However, we only want East Malaysia (Sabah, Sarawak).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(msia_adm2<span class="sc">$</span>ADM1_EN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Johor"             "Kedah"             "Kelantan"         
+ [4] "W.P. Kuala Lumpur" "W.P. Labuan"       "Melaka"           
+ [7] "Negeri Sembilan"   "Pahang"            "Perak"            
+[10] "Perlis"            "Pulau Pinang"      "Sabah"            
+[13] "Sarawak"           "Terengganu"        "W.P. Putrajaya"   
+[16] "Selangor"         </code></pre>
+</div>
+</div>
+<p>We will convert all to lowercase and do necessary trimming for appropriate left-join later to combine with our working data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>msia_adm2 <span class="ot">&lt;-</span> msia_adm2 <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ADM1_EN =</span> <span class="fu">str_to_lower</span>(ADM1_EN),  </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">ADM1_EN =</span> <span class="fu">str_trim</span>(ADM1_EN)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ADM2_EN =</span> <span class="fu">str_to_lower</span>(ADM2_EN),  </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">ADM2_EN =</span> <span class="fu">str_trim</span>(ADM2_EN)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we separate East Malaysia, only filtering “sabah”, “sarawak”, “w.p. labuan” regions. We will select only the necessary columns: ADM1_EN, ADM2_EN, geometry.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>msia_adm2_east <span class="ot">&lt;-</span> msia_adm2 <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADM1_EN <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"sabah"</span>, <span class="st">"sarawak"</span>, <span class="st">"w.p. labuan"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">"ADM1_EN"</span>, <span class="st">"ADM2_EN"</span>, <span class="st">"geometry"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>msia_adm2_east</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 57 features and 2 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 109.5379 ymin: 0.855001 xmax: 119.2697 ymax: 7.380556
+Geodetic CRS:  WGS 84
+First 10 features:
+       ADM1_EN       ADM2_EN                       geometry
+1  w.p. labuan   w.p. labuan MULTIPOLYGON (((115.2528 5....
+2        sabah      beaufort MULTIPOLYGON (((115.58 5.21...
+3        sabah       beluran MULTIPOLYGON (((117.7142 6....
+4        sabah      keningau MULTIPOLYGON (((116.0938 4....
+5        sabah  kinabatangan MULTIPOLYGON (((119.2474 5....
+6        sabah    kota belud MULTIPOLYGON (((116.61 6.66...
+7        sabah kota kinabalu MULTIPOLYGON (((116.3009 5....
+8        sabah   kota marudu MULTIPOLYGON (((116.3408 6....
+9        sabah   kuala penyu MULTIPOLYGON (((115.3682 5....
+10       sabah         kudat MULTIPOLYGON (((116.6292 6....</code></pre>
+</div>
+</div>
+<p>Now, when we plot back, we can see that only East Malaysia polygon shapes are filtered.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(msia_adm2_east)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="take-home_Ex03_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>3 states, 57 districts</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(msia_adm2_east<span class="sc">$</span>ADM1_EN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "w.p. labuan" "sabah"       "sarawak"    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(msia_adm2_east<span class="sc">$</span>ADM2_EN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "w.p. labuan"   "beaufort"      "beluran"       "keningau"     
+ [5] "kinabatangan"  "kota belud"    "kota kinabalu" "kota marudu"  
+ [9] "kuala penyu"   "kudat"         "kunak"         "lahad datu"   
+[13] "nabawan"       "papar"         "penampang"     "pitas"        
+[17] "putatan"       "ranau"         "sandakan"      "semporna"     
+[21] "sipitang"      "tambunan"      "tawau"         "tenom"        
+[25] "tongod"        "tuaran"        "asajaya"       "bau"          
+[29] "belaga"        "betong"        "bintulu"       "dalat"        
+[33] "daro"          "julau"         "kanowit"       "kapit"        
+[37] "kuching"       "lawas"         "limbang"       "lubok antu"   
+[41] "lundu"         "marudi"        "matu"          "meradong"     
+[45] "miri"          "mukah"         "pakan"         "samarahan"    
+[49] "saratok"       "sarikei"       "selangau"      "serian"       
+[53] "sibu"          "simunjan"      "song"          "sri aman"     
+[57] "tatau"        </code></pre>
+</div>
+</div>
+</section>
+<section id="aspatial-wrangling" class="level3">
+<h3 class="anchored" data-anchor-id="aspatial-wrangling">3.3 Aspatial Wrangling</h3>
+<ul>
+<li>Likewise, we do filtering and wrangling on the <strong>state</strong> and <strong>district, category: assault</strong> and <strong>type: rape.</strong></li>
+</ul>
+<p>First, we see the columns and rows available in sf using glimpse.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(msia_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 19,152
+Columns: 6
+$ state    &lt;chr&gt; "Malaysia", "Malaysia", "Malaysia", "Malaysia", "Malaysia", "…
+$ district &lt;chr&gt; "All", "All", "All", "All", "All", "All", "All", "All", "All"…
+$ category &lt;chr&gt; "assault", "assault", "assault", "assault", "assault", "assau…
+$ type     &lt;chr&gt; "all", "all", "all", "all", "all", "all", "all", "all", "caus…
+$ date     &lt;date&gt; 2016-01-01, 2017-01-01, 2018-01-01, 2019-01-01, 2020-01-01, …
+$ crimes   &lt;dbl&gt; 22327, 21366, 16902, 16489, 13279, 11495, 10348, 10453, 5531,…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>msia_sf <span class="ot">&lt;-</span> msia_sf <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">state =</span> <span class="fu">str_to_lower</span>(state),  </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">state =</span> <span class="fu">str_trim</span>(state)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">district =</span> <span class="fu">str_to_lower</span>(district),  </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">district =</span> <span class="fu">str_trim</span>(district)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we separate East Malaysia, only filtering “sabah” and “sarawak” regions. We will select only the necessary columns: ADM1_EN, ADM2_EN, geometry.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>msia_sf_east <span class="ot">&lt;-</span> msia_sf <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(state <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"sabah"</span>, <span class="st">"sarawak"</span>), </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>         category <span class="sc">==</span> <span class="st">"assault"</span>, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>         type <span class="sc">==</span> <span class="st">"rape"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>msia_sf_east</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 400 × 6
+   state district category type  date       crimes
+   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;date&gt;      &lt;dbl&gt;
+ 1 sabah all      assault  rape  2016-01-01    193
+ 2 sabah all      assault  rape  2017-01-01    211
+ 3 sabah all      assault  rape  2018-01-01    178
+ 4 sabah all      assault  rape  2019-01-01    219
+ 5 sabah all      assault  rape  2020-01-01    153
+ 6 sabah all      assault  rape  2021-01-01    140
+ 7 sabah all      assault  rape  2022-01-01    197
+ 8 sabah all      assault  rape  2023-01-01    225
+ 9 sabah beaufort assault  rape  2016-01-01     11
+10 sabah beaufort assault  rape  2017-01-01     14
+# ℹ 390 more rows</code></pre>
+</div>
+</div>
+<p>We see that we do not need the “all” results for districts and we need to do a sorting by their date of occurrence in ascending order.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>msia_sf_east <span class="ot">&lt;-</span> msia_sf_east <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(<span class="fu">ymd</span>(date)) <span class="sc">&gt;=</span> <span class="dv">2020</span> <span class="sc">&amp;</span> <span class="fu">year</span>(<span class="fu">ymd</span>(date)) <span class="sc">&lt;=</span> <span class="dv">2023</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(district <span class="sc">!=</span> <span class="st">"all"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><u><strong>Dealing with Inconsistencies and mispelled districts</strong></u></p>
+<ul>
+<li><p><strong>“kota kinabatangan”</strong> in <code>msia_sf_east$district</code> should be <strong>“kinabatangan”</strong> as in <code>msia_adm2_east$ADM2_EN</code>.</p>
+<ul>
+<li>rename “kota kinbatangan” to “kinabatangan” in <code>msia_sf_east$district</code></li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li><p><strong>“matu daro”</strong> in <code>msia_sf_east$district</code> might represent two separate districts: <strong>“matu”</strong> and <strong>“daro”</strong> in <code>msia_adm2_east$ADM2_EN</code>.</p>
+<ul>
+<li>will split first half of the (matu daro) rows take matu, second half take daro, impute with the average of the crimes of matu daro rows in <code>msia_sf_east$district</code></li>
+</ul></li>
+<li><p><strong>“padawan”</strong> in <code>msia_sf_east$district</code> does not appear in <code>msia_adm2_east$ADM2_EN</code>, as Padawan is often categorized within <strong>“kuching”</strong> but may need verification as a separate district.</p>
+<ul>
+<li>follow shapefile, so we rename “<strong>padawan”</strong> in <code>msia_sf_east$district</code> to”<strong>kuching”</strong></li>
+</ul></li>
+<li><p><strong>“w.p. labuan”</strong> appears in <code>msia_sf_east$district</code> but is not listed in <code>msia_adm2_east$ADM2_EN</code>, which could be due to handling federal territories separately.</p>
+<ul>
+<li>Update “w.p. labuan” as a separate state and district in <code>msia_sf_east$district</code></li>
+</ul></li>
+<li><p><strong>“kota samarahan”</strong> in <code>msia_sf_east$district</code> should be <strong>“samarahan”</strong> as in <code>msia_adm2_east$ADM2_EN</code>.</p>
+<ul>
+<li>rename <strong>“kota samarahan”</strong> to <strong>“samarahan”</strong> in <code>msia_sf_east$district</code></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>msia_sf_east_dealt <span class="ot">&lt;-</span> msia_sf_east <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">district =</span> <span class="fu">gsub</span>(<span class="st">"^kota kinabatangan$"</span>, <span class="st">"kinabatangan"</span>, district),  <span class="co"># Rename "kota kinbatangan" to "kinabatangan"</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">district =</span> <span class="fu">gsub</span>(<span class="st">"^padawan$"</span>, <span class="st">"kuching"</span>, district),</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">district =</span> <span class="fu">gsub</span>(<span class="st">"^kota samarahan$"</span>, <span class="st">"samarahan"</span>, district)) <span class="sc">%&gt;%</span> <span class="co">#rename "padawan" to "kuching" </span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Update "w.p. labuan" as a separate state and district</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">state =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="st">"sabah"</span> <span class="sc">&amp;</span> district <span class="sc">==</span> <span class="st">"w.p. labuan"</span>, <span class="st">"w.p. labuan"</span>, state),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">district =</span> <span class="fu">if_else</span>(state <span class="sc">==</span> <span class="st">"w.p. labuan"</span> <span class="sc">&amp;</span> district <span class="sc">==</span> <span class="st">"w.p. labuan"</span>, <span class="st">"w.p. labuan"</span>, district)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>impute average for matu daro, and split matu and daro</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>split_matu_daro <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter rows for "matu daro"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  matu_daro_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(district <span class="sc">==</span> <span class="st">"matu daro"</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(matu_daro_data)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate the average crimes for "matu" and "daro" from all entries</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  total_crimes <span class="ot">&lt;-</span> <span class="fu">sum</span>(matu_daro_data<span class="sc">$</span>crimes) <span class="co"># Total crimes</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  num_entries <span class="ot">&lt;-</span> <span class="fu">nrow</span>(matu_daro_data)        <span class="co"># Number of entries</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Average for both "matu" and "daro"</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  average_crime <span class="ot">&lt;-</span> <span class="fu">round</span>(total_crimes <span class="sc">/</span> num_entries) <span class="co"># Round to nearest whole number</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(average_crime)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Calculate midpoint for splitting the data</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  midpoint <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(num_entries <span class="sc">/</span> <span class="dv">2</span>) <span class="co"># Use ceiling to handle odd numbers</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create new entries for "matu" and "daro"</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  new_entries <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(matu_daro_data[<span class="dv">1</span><span class="sc">:</span>midpoint, ], <span class="at">district =</span> <span class="st">"matu"</span>, <span class="at">crimes =</span> average_crime), <span class="co"># First half for "matu"</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(matu_daro_data[(midpoint <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>num_entries, ], <span class="at">district =</span> <span class="st">"daro"</span>, <span class="at">crimes =</span> average_crime) <span class="co"># Second half for "daro"</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Print new entries for debugging</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(new_entries)</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(new_entries)</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>matu_daro_split <span class="ot">&lt;-</span> <span class="fu">split_matu_daro</span>(msia_sf_east_dealt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  state   district  category type  date       crimes
+  &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt; &lt;date&gt;      &lt;dbl&gt;
+1 sarawak matu daro assault  rape  2020-01-01      1
+2 sarawak matu daro assault  rape  2021-01-01      1
+3 sarawak matu daro assault  rape  2022-01-01      2
+4 sarawak matu daro assault  rape  2023-01-01      0
+[1] 1
+# A tibble: 4 × 6
+  state   district category type  date       crimes
+  &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;date&gt;      &lt;dbl&gt;
+1 sarawak matu     assault  rape  2020-01-01      1
+2 sarawak matu     assault  rape  2021-01-01      1
+3 sarawak daro     assault  rape  2022-01-01      1
+4 sarawak daro     assault  rape  2023-01-01      1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the new entries with the existing data, removing old "matu daro" entries</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>msia_sf_east_final <span class="ot">&lt;-</span> msia_sf_east_dealt <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(district <span class="sc">!=</span> <span class="st">"matu daro"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(matu_daro_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>3 states, 48 districts</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(msia_sf_east_final<span class="sc">$</span>state)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "sabah"       "w.p. labuan" "sarawak"    </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(msia_sf_east_final<span class="sc">$</span>district)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "beaufort"      "beluran"       "keningau"      "kota belud"   
+ [5] "kota kinabalu" "kinabatangan"  "kota marudu"   "kudat"        
+ [9] "kunak"         "lahad datu"    "papar"         "penampang"    
+[13] "ranau"         "sandakan"      "semporna"      "sipitang"     
+[17] "tawau"         "tenom"         "tuaran"        "w.p. labuan"  
+[21] "bau"           "belaga"        "betong"        "bintulu"      
+[25] "dalat"         "julau"         "kanowit"       "kapit"        
+[29] "samarahan"     "kuching"       "lawas"         "limbang"      
+[33] "lubok antu"    "lundu"         "marudi"        "meradong"     
+[37] "miri"          "mukah"         "saratok"       "sarikei"      
+[41] "serian"        "sibu"          "simunjan"      "song"         
+[45] "sri aman"      "tatau"         "matu"          "daro"         </code></pre>
+</div>
+</div>
+</section>
+<section id="combine-data" class="level3">
+<h3 class="anchored" data-anchor-id="combine-data">3.4 Combine Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>msia_left_join <span class="ot">&lt;-</span> msia_adm2_east <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(msia_sf_east_final, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ADM1_EN"</span> <span class="ot">=</span> <span class="st">"state"</span>, <span class="st">"ADM2_EN"</span> <span class="ot">=</span> <span class="st">"district"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>missing_values <span class="ot">&lt;-</span> msia_left_join <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(crimes)) <span class="co"># Replace 'crimes' with the relevant column(s) you want to check</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(missing_values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 9 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 110.4736 ymin: 1.519756 xmax: 117.5625 ymax: 7.013332
+Geodetic CRS:  WGS 84
+  ADM1_EN     ADM2_EN category type date crimes                       geometry
+1   sabah kuala penyu     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((115.3682 5....
+2   sabah     nabawan     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((115.8903 4....
+3   sabah       pitas     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((116.9781 6....
+4   sabah     putatan     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((116.0662 5....
+5   sabah    tambunan     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((116.552 5.5...
+6   sabah      tongod     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((117.5155 4....
+7 sarawak     asajaya     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((110.664 1.5...
+8 sarawak       pakan     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((111.7907 1....
+9 sarawak    selangau     &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;     NA MULTIPOLYGON (((112.6285 2....</code></pre>
+</div>
+</div>
+<p>After left-joining, we see that these are the columns that are not present in our working data but are present in our boundary data, we thus have no choice but to drop them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>msia_left_join <span class="ot">&lt;-</span> msia_left_join <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(crimes)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">5</span><span class="sc">:</span><span class="dv">7</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="pivot-longer-to-reduce-number-of-rows" class="level3">
+<h3 class="anchored" data-anchor-id="pivot-longer-to-reduce-number-of-rows">3.5 Pivot longer to reduce number of rows</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>msia_left_join_pivot <span class="ot">&lt;-</span> msia_left_join <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure 'date' is of Date type, if not already</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract year from the date</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group by the necessary columns and summarize</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, ADM2_EN, geometry, year) <span class="sc">%&gt;%</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Summarize the crimes for each group, summing them up</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">crimes =</span> <span class="fu">sum</span>(crimes, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Pivot wider to create crime columns for each year</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> year, </span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> crimes,</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">"crimes_"</span>,</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_fill =</span> <span class="fu">list</span>(<span class="at">crimes =</span> <span class="cn">NULL</span>)  <span class="co"># Fill NA values with NULL</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="co"># View the resulting dataset</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(msia_left_join_pivot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 48 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 109.5379 ymin: 0.855001 xmax: 119.2697 ymax: 7.380556
+Geodetic CRS:  WGS 84
+# A tibble: 48 × 7
+   ADM1_EN ADM2_EN                  geometry crimes_2020 crimes_2021 crimes_2022
+   &lt;chr&gt;   &lt;chr&gt;          &lt;MULTIPOLYGON [°]&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1 sabah   beaufo… (((115.58 5.213697, 115.…           4           7           7
+ 2 sabah   beluran (((117.7142 6.260833, 11…           8           6          16
+ 3 sabah   kening… (((116.0938 4.861981, 11…           6           8          14
+ 4 sabah   kinaba… (((119.2474 5.26962, 118…           5           4           5
+ 5 sabah   kota b… (((116.61 6.666111, 116.…           7           6           6
+ 6 sabah   kota k… (((116.3009 5.85547, 116…          22          15          31
+ 7 sabah   kota m… (((116.3408 6.401667, 11…           9           5           9
+ 8 sabah   kudat   (((116.6292 6.688926, 11…           2           6           8
+ 9 sabah   kunak   (((118.1334 4.862195, 11…           3           1           1
+10 sabah   lahad … (((117.746 4.758972, 117…           7          11          10
+# ℹ 38 more rows
+# ℹ 1 more variable: crimes_2023 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>msia_left_join <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">as.Date</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(date)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, ADM2_EN, geometry, year) <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)  <span class="co"># This will show any groups with duplicates</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 4 features and 4 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 110.1278 ymin: 1.05063 xmax: 110.5339 ymax: 1.80667
+Geodetic CRS:  WGS 84
+# A tibble: 4 × 5
+  ADM1_EN ADM2_EN                                           geometry  year     n
+* &lt;chr&gt;   &lt;chr&gt;                                   &lt;MULTIPOLYGON [°]&gt; &lt;dbl&gt; &lt;int&gt;
+1 sarawak kuching (((110.1389 1.684166, 110.1389 1.685, 110.1391 1.…  2020     2
+2 sarawak kuching (((110.1389 1.684166, 110.1389 1.685, 110.1391 1.…  2021     2
+3 sarawak kuching (((110.1389 1.684166, 110.1389 1.685, 110.1391 1.…  2022     2
+4 sarawak kuching (((110.1389 1.684166, 110.1389 1.685, 110.1391 1.…  2023     2</code></pre>
+</div>
+</div>
+</section>
+<section id="projection-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="projection-transformation">3.6 Projection Transformation</h3>
+<p>Acquiring the code from <a href="https://epsg.io/32649" class="uri">https://epsg.io/32649</a>,</p>
+<ul>
+<li>We will transform the it to East Malaysias’s projected coordinate system (UTM Zone 49N) with the EPSG code: 32649</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(msia_left_join_pivot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: WGS 84 
+  wkt:
+GEOGCRS["WGS 84",
+    DATUM["World Geodetic System 1984",
+        ELLIPSOID["WGS 84",6378137,298.257223563,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["latitude",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["longitude",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    ID["EPSG",4326]]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>msia <span class="ot">&lt;-</span> msia_left_join_pivot <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32649</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(msia)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: EPSG:32649 
+  wkt:
+PROJCRS["WGS 84 / UTM zone 49N",
+    BASEGEOGCRS["WGS 84",
+        ENSEMBLE["World Geodetic System 1984 ensemble",
+            MEMBER["World Geodetic System 1984 (Transit)"],
+            MEMBER["World Geodetic System 1984 (G730)"],
+            MEMBER["World Geodetic System 1984 (G873)"],
+            MEMBER["World Geodetic System 1984 (G1150)"],
+            MEMBER["World Geodetic System 1984 (G1674)"],
+            MEMBER["World Geodetic System 1984 (G1762)"],
+            MEMBER["World Geodetic System 1984 (G2139)"],
+            ELLIPSOID["WGS 84",6378137,298.257223563,
+                LENGTHUNIT["metre",1]],
+            ENSEMBLEACCURACY[2.0]],
+        PRIMEM["Greenwich",0,
+            ANGLEUNIT["degree",0.0174532925199433]],
+        ID["EPSG",4326]],
+    CONVERSION["UTM zone 49N",
+        METHOD["Transverse Mercator",
+            ID["EPSG",9807]],
+        PARAMETER["Latitude of natural origin",0,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8801]],
+        PARAMETER["Longitude of natural origin",111,
+            ANGLEUNIT["degree",0.0174532925199433],
+            ID["EPSG",8802]],
+        PARAMETER["Scale factor at natural origin",0.9996,
+            SCALEUNIT["unity",1],
+            ID["EPSG",8805]],
+        PARAMETER["False easting",500000,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8806]],
+        PARAMETER["False northing",0,
+            LENGTHUNIT["metre",1],
+            ID["EPSG",8807]]],
+    CS[Cartesian,2],
+        AXIS["(E)",east,
+            ORDER[1],
+            LENGTHUNIT["metre",1]],
+        AXIS["(N)",north,
+            ORDER[2],
+            LENGTHUNIT["metre",1]],
+    USAGE[
+        SCOPE["Navigation and medium accuracy spatial referencing."],
+        AREA["Between 108°E and 114°E, northern hemisphere between equator and 84°N, onshore and offshore. China. Hong Kong. Indonesia. Macao. Malaysia - East Malaysia - Sarawak. Mongolia. Russian Federation. Vietnam."],
+        BBOX[0,108,84,114]],
+    ID["EPSG",32649]]</code></pre>
+</div>
+</div>
+</section>
+<section id="visualisation" class="level3">
+<h3 class="anchored" data-anchor-id="visualisation">3.7 Visualisation</h3>
+</section>
+<section id="writeread-rds" class="level3">
+<h3 class="anchored" data-anchor-id="writeread-rds">3.8 Write/Read rds</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(msia, <span class="st">"data/rds/msia.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>msia <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/msia.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="shiny-visualisation-shiny-storyboard" class="level2">
+<h2 class="anchored" data-anchor-id="shiny-visualisation-shiny-storyboard">4.0 Shiny Visualisation / Shiny Storyboard</h2>
+</section>
+<section id="spatial-weights-and-applications" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-weights-and-applications">5.0 Spatial Weights and Applications</h2>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section">6.0</h2>
+</section>
+<section id="section-1" class="level2">
+<h2 class="anchored" data-anchor-id="section-1">7.0</h2>
+</section>
+<section id="section-2" class="level2">
+<h2 class="anchored" data-anchor-id="section-2">8.0</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

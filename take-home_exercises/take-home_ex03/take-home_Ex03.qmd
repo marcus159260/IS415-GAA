@@ -21,4 +21,329 @@ execute:
 
 -   To select the appropriate Shiny UI components for exposing the parameters determine above.
 
-### 1.1 Prototyping for Shiny Application
+### 1.2 Focus
+
+The focus within this Take-Home Exercise, as part of the group project, would be our geographical and aspatial target on:
+
+-   districts within East Malaysia (Sabah, Sarawak, W.P Labuan)
+
+-   category: assault
+
+-   type: rape
+
+We will be discovering the **rape** trends that take place within the **districts** of **East Malaysia**, across the years **2020-2023**, discovering the emerging hot spots and cold spots, outliers, as well as determine the spatial autocorrelation within these districts.
+
+### 1.3 Prototyping for Shiny Application
+
+## 2.0 Load packages
+
+-   sf
+
+-   tmap
+
+-   tidyverse
+
+-   spdep
+
+-   sfdep
+
+-   dplyr
+
+-   tidyr
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse, spdep, sfdep, dplyr, tidyr)
+```
+
+## 3.0 Importing Data and Data Wrangling
+
+### 3.1 Raw Data
+
+-   geospatial
+
+```{r}
+
+msia_adm2 <- st_read(dsn = 'data/geospatial/', layer = 'mys_admbnda_adm2_unhcr_20210211')
+# msia_adm2_shp <- st_read(dsn = 'data/geospatial/mys_admbnda_adm1_unhcr_20210211.shp')
+```
+
+-   aspatial
+
+```{r}
+msia_sf <- read_csv('data/aspatial/crime_district.csv')
+
+```
+
+### 3.2 Geospatial Wrangling
+
+```{r}
+plot(msia_adm2["ADM2_EN"])
+```
+
+Upon plotting out the shapefile of Admin level 2, we can see that it takes both East and West Malaysia. However, we only want East Malaysia (Sabah, Sarawak).
+
+```{r}
+unique(msia_adm2$ADM1_EN)
+```
+
+We will convert all to lowercase and do necessary trimming for appropriate left-join later to combine with our working data.
+
+```{r}
+msia_adm2 <- msia_adm2 %>%
+  mutate(ADM1_EN = str_to_lower(ADM1_EN),  
+         ADM1_EN = str_trim(ADM1_EN)) %>%
+  mutate(ADM2_EN = str_to_lower(ADM2_EN),  
+       ADM2_EN = str_trim(ADM2_EN)) 
+```
+
+Now, we separate East Malaysia, only filtering "sabah", "sarawak", "w.p. labuan" regions. We will select only the necessary columns: ADM1_EN, ADM2_EN, geometry.
+
+```{r}
+msia_adm2_east <- msia_adm2 %>%
+  filter(ADM1_EN %in% c("sabah", "sarawak", "w.p. labuan")) %>%
+  select("ADM1_EN", "ADM2_EN", "geometry")
+
+msia_adm2_east
+```
+
+Now, when we plot back, we can see that only East Malaysia polygon shapes are filtered.
+
+```{r}
+plot(msia_adm2_east)
+```
+
+3 states, 57 districts
+
+```{r}
+unique(msia_adm2_east$ADM1_EN)
+unique(msia_adm2_east$ADM2_EN)
+```
+
+### 3.3 Aspatial Wrangling
+
+-   Likewise, we do filtering and wrangling on the **state** and **district, category: assault** and **type: rape.**
+
+First, we see the columns and rows available in sf using glimpse.
+
+```{r}
+glimpse(msia_sf)
+
+```
+
+```{r}
+msia_sf <- msia_sf %>%
+  mutate(state = str_to_lower(state),  
+         state = str_trim(state)) %>%
+  mutate(district = str_to_lower(district),  
+       district = str_trim(district)) 
+```
+
+Now, we separate East Malaysia, only filtering "sabah" and "sarawak" regions. We will select only the necessary columns: ADM1_EN, ADM2_EN, geometry.
+
+```{r}
+msia_sf_east <- msia_sf %>%
+  filter(state %in% c("sabah", "sarawak"), 
+         category == "assault", 
+         type == "rape")
+
+msia_sf_east
+```
+
+We see that we do not need the "all" results for districts and we need to do a sorting by their date of occurrence in ascending order.
+
+```{r}
+msia_sf_east <- msia_sf_east %>%
+  filter(year(ymd(date)) >= 2020 & year(ymd(date)) <= 2023) %>%
+  filter(district != "all") %>%
+  arrange(date) 
+```
+
+[**Dealing with Inconsistencies and mispelled districts**]{.underline}
+
+-   **"kota kinabatangan"** in `msia_sf_east$district` should be **"kinabatangan"** as in `msia_adm2_east$ADM2_EN`.
+
+    -   rename "kota kinbatangan" to "kinabatangan" in `msia_sf_east$district`
+
+```{=html}
+<!-- -->
+```
+-   **"matu daro"** in `msia_sf_east$district` might represent two separate districts: **"matu"** and **"daro"** in `msia_adm2_east$ADM2_EN`.
+
+    -   will split first half of the (matu daro) rows take matu, second half take daro, impute with the average of the crimes of matu daro rows in `msia_sf_east$district`
+
+-   **"padawan"** in `msia_sf_east$district` does not appear in `msia_adm2_east$ADM2_EN`, as Padawan is often categorized within **"kuching"** but may need verification as a separate district.
+
+    -   follow shapefile, so we rename "**padawan"** in `msia_sf_east$district` to "**kuching"**
+
+-   **"w.p. labuan"** appears in `msia_sf_east$district` but is not listed in `msia_adm2_east$ADM2_EN`, which could be due to handling federal territories separately.
+
+    -   Update "w.p. labuan" as a separate state and district in `msia_sf_east$district`
+
+-   **"kota samarahan"** in `msia_sf_east$district` should be **"samarahan"** as in `msia_adm2_east$ADM2_EN`.
+
+    -   rename **"kota samarahan"** to **"samarahan"** in `msia_sf_east$district`
+
+```{r}
+msia_sf_east_dealt <- msia_sf_east %>%
+  mutate(district = gsub("^kota kinabatangan$", "kinabatangan", district),  # Rename "kota kinbatangan" to "kinabatangan"
+         district = gsub("^padawan$", "kuching", district),
+         district = gsub("^kota samarahan$", "samarahan", district)) %>% #rename "padawan" to "kuching" 
+  
+  # Update "w.p. labuan" as a separate state and district
+  mutate(
+    state = if_else(state == "sabah" & district == "w.p. labuan", "w.p. labuan", state),
+    district = if_else(state == "w.p. labuan" & district == "w.p. labuan", "w.p. labuan", district)
+  )
+
+```
+
+-   impute average for matu daro, and split matu and daro
+
+```{r}
+split_matu_daro <- function(data) {
+  # Filter rows for "matu daro"
+  matu_daro_data <- data %>%
+    filter(district == "matu daro")
+  print(matu_daro_data)
+  
+  # Calculate the average crimes for "matu" and "daro" from all entries
+  total_crimes <- sum(matu_daro_data$crimes) # Total crimes
+  num_entries <- nrow(matu_daro_data)        # Number of entries
+  
+  # Average for both "matu" and "daro"
+  average_crime <- round(total_crimes / num_entries) # Round to nearest whole number
+  print(average_crime)
+  
+   # Calculate midpoint for splitting the data
+  midpoint <- ceiling(num_entries / 2) # Use ceiling to handle odd numbers
+  
+  # Create new entries for "matu" and "daro"
+  new_entries <- bind_rows(
+    mutate(matu_daro_data[1:midpoint, ], district = "matu", crimes = average_crime), # First half for "matu"
+    mutate(matu_daro_data[(midpoint + 1):num_entries, ], district = "daro", crimes = average_crime) # Second half for "daro"
+  )
+  
+  # Print new entries for debugging
+  print(new_entries)
+  return(new_entries)
+}
+
+matu_daro_split <- split_matu_daro(msia_sf_east_dealt)
+
+# Combine the new entries with the existing data, removing old "matu daro" entries
+msia_sf_east_final <- msia_sf_east_dealt %>%
+  filter(district != "matu daro") %>%
+  bind_rows(matu_daro_split)
+
+```
+
+3 states, 48 districts
+
+```{r}
+unique(msia_sf_east_final$state)
+unique(msia_sf_east_final$district)
+```
+
+### 3.4 Combine Data
+
+```{r}
+msia_left_join <- msia_adm2_east %>%
+  left_join(msia_sf_east_final, by = c("ADM1_EN" = "state", "ADM2_EN" = "district"))
+```
+
+```{r}
+missing_values <- msia_left_join %>%
+  filter(is.na(crimes)) # Replace 'crimes' with the relevant column(s) you want to check
+
+print(missing_values)
+```
+
+After left-joining, we see that these are the columns that are not present in our working data but are present in our boundary data, we thus have no choice but to drop them.
+
+```{r}
+
+msia_left_join <- msia_left_join %>%
+  filter(!is.na(crimes)) %>%
+  arrange(date) %>%
+  select(1:2, 5:7) 
+  
+```
+
+### 3.5 Pivot longer to reduce number of rows
+
+```{r}
+
+msia_left_join_pivot <- msia_left_join %>%
+  # Ensure 'date' is of Date type, if not already
+  mutate(date = as.Date(date)) %>%
+  # Extract year from the date
+  mutate(year = year(date)) %>%
+  # Group by the necessary columns and summarize
+  group_by(ADM1_EN, ADM2_EN, geometry, year) %>%
+  # Summarize the crimes for each group, summing them up
+  summarise(crimes = sum(crimes, na.rm = TRUE), .groups = "drop") %>%
+  # Pivot wider to create crime columns for each year
+  pivot_wider(
+    names_from = year, 
+    values_from = crimes,
+    names_prefix = "crimes_",
+    values_fill = list(crimes = NULL)  # Fill NA values with NULL
+  )
+
+# View the resulting dataset
+print(msia_left_join_pivot)
+
+```
+
+```{r}
+msia_left_join %>%
+  mutate(date = as.Date(date)) %>%
+  mutate(year = year(date)) %>%
+  group_by(ADM1_EN, ADM2_EN, geometry, year) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  filter(n > 1)  # This will show any groups with duplicates
+```
+
+### 3.6 Projection Transformation
+
+Acquiring the code from <https://epsg.io/32649>,
+
+-   We will transform the it to East Malaysias's projected coordinate system (UTM Zone 49N) with the EPSG code: 32649
+
+```{r}
+st_crs(msia_left_join_pivot)
+```
+
+```{r}
+
+msia <- msia_left_join_pivot %>%
+  st_transform(crs=32649)
+
+```
+
+```{r}
+st_crs(msia)
+```
+
+### 3.7 Visualisation
+
+### 3.8 Write/Read rds
+
+```{r}
+write_rds(msia, "data/rds/msia.rds")
+
+```
+
+```{r}
+msia <- read_rds("data/rds/msia.rds")
+```
+
+## 4.0 Shiny Visualisation / Shiny Storyboard
+
+## 5.0 Spatial Weights and Applications
+
+## 6.0
+
+## 7.0
+
+## 8.0
