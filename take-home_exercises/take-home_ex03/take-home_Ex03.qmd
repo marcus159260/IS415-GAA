@@ -8,3 +8,17 @@ execute:
   echo: true
   freeze: true
 ---
+
+## 1.0 Overview
+
+### 1.1 Objectives
+
+-   To evaluate and determine the necessary R packages needed for your Shiny application are supported in R CRAN,
+
+-   To prepare and test the specific R codes can be run and returned the correct output as expected,
+
+-   To determine the parameters and outputs that will be exposed on the Shiny applications, and
+
+-   To select the appropriate Shiny UI components for exposing the parameters determine above.
+
+### 1.1 Prototyping for Shiny Application
