@@ -52,7 +52,8 @@ website:
             href: "take-home_exercises/take-home_ex01/take-home_Ex01.html"
           - text: "Take-home Exercise 2"
             href: "take-home_exercises/take-home_ex02/take-home_Ex02.html"
-        
+          - text: "Take-home Exercise 3"
+            href: "take-home_exercises/take-home_ex03/take-home_Ex03.html"
     right: 
       - href: index.qmd
         text: Home

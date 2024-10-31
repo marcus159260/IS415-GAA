@@ -1,0 +1,10 @@
+---
+title: "Take-Home Exercise 3: Prototyping Modules for Geospatial Analytics Shiny Application"
+author: "Marcus Jaeson Yeo"
+date: "October 27, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
