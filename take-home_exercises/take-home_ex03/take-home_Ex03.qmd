@@ -31,9 +31,9 @@ The focus within this Take-Home Exercise, as part of the group project, would be
 
 -   category: assault
 
--   type: rape
+-   type: all types
 
-We will be discovering the **rape** trends that take place within the **districts** of **East Malaysia**, across the years **2020-2023**, discovering the emerging hot spots and cold spots, outliers, as well as determine the spatial autocorrelation within these districts.
+We will be discovering **all types** trends that take place within the **districts** of **East Malaysia**, across the years **2020-2023**, discovering the emerging hot spots and cold spots, outliers, as well as determine the spatial autocorrelation within these districts.
 
 ### 1.3 Prototyping for Shiny Application
 
