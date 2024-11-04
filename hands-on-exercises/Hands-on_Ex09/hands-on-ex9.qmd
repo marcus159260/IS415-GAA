@@ -1,5 +1,5 @@
 ---
-title: "Hands-on-Exercise 9: Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method"
+title: "Hands-on-Exercise 9 & 10: Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method"
 author: "Marcus Jaeson Yeo"
 date: "October 27, 2024"
 date-modified: "last-modified"

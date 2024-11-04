@@ -1,4 +1,4 @@
-pacman::p_load(shiny, sf, tmap, bslib, tidyverse,
+pacman::p_load(shiny, sf, tmap, bslib, tidyverse, spdep,
                sfdep, shinydashboard, shinythemes, lubridate)
 
 msia <- read_rds("data/rds/msia.rds")
