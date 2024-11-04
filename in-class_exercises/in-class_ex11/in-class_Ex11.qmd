@@ -63,7 +63,6 @@ for(postcode in postcode) {
 ### Tidying field names
 
 ```{r}
-#| eval: false
 found <- found %>%
   select(c(6:8)) %>%
   rename(POSTAL = `results.POSTAL`,
