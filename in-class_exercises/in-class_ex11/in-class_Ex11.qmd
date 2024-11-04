@@ -1,0 +1,109 @@
+---
+title: "In-class Exercise 11: Geographically Weighted Regression"
+author: "Marcus Jaeson Yeo"
+date: "November 3, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
+
+### Loading packages
+
+```{r}
+pacman::p_load(tidyverse, sf, tmap, httr, performance)
+```
+
+### Importing data
+
+-   imports multiple csv files in a specified folder and append them into a single tibble data frame.
+
+```{r}
+folder_path <- "data/aspatial"
+file_list <- list.files(path = folder_path,
+                        pattern = "^realis.*\\.csv$",
+                        full.names = TRUE)
+
+realis_data <- file_list %>%
+  map_dfr(read_csv)
+```
+
+### Wrangling Data
+
+```{r}
+condo_resale <- realis_data %>%
+  mutate(`Sale Date` = dmy(`Sale Date`)) %>%
+  filter(`Type of Sale` == "Resale" &
+           `Property Type` == "Condominium")
+```
+
+### Geocoding
+
+```{r}
+postcode <- unique(condo_resale$`Postal Code`)
+```
+
+```{r}
+url <- "https://onemap.gov.sg/api/common/elastic/search"
+found <- data.frame()
+not_found <- data.frame()
+
+for(postcode in postcode) {
+  query <- list('searchVal' = postcode, 'returnGeom'='Y',
+                'getAddrDetails' = 'Y', 'pageNum' = '1')
+  res <- GET(url, query = query)
+  if ((content(res)$found) != 0) {
+    found <- rbind(found, data.frame(content(res))[4:13])
+  } else {not_found = data.frame(postcode)
+  }
+}
+```
+
+### Tidying field names
+
+```{r}
+#| eval: false
+found <- found %>%
+  select(c(6:8)) %>%
+  rename(POSTAL = `results.POSTAL`,
+         XCOORD = `results.X`,
+         YCOORD = `results.Y`)
+```
+
+### Joining Tables
+
+```{r}
+condo_resale.geocoded <- left_join(
+  condo_resale,
+  found,
+  by = c('Postal Code' = 'POSTAL')
+)
+```
+
+### Converting to sf
+
+```{r}
+#| echo: false
+condo_resale_sf <- st_as_sf(condo_resale.geocoded,
+                            coords = c("XCOORD",
+                                       "YCOORD"),
+                            crs=3414)
+```
+
+### Cleaning Spatial Data
+
+-   check if there are overlapping point features
+
+```{r}
+overlapping_points <- condo_resale_sf %>%
+  mutate(overlap = lengths(st_equals(., .)) > 1)
+
+```
+
+-   Perform jittering to move the point features by 5 meters to avoid overlapping point features.
+
+```{r}
+condo_resale_sf <- condo_resale_sf %>%
+  st_jitter(amount=2)
+```
